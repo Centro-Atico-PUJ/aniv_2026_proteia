@@ -1,0 +1,8 @@
+# Copias de seguridad locales
+*.bak
+
+# Basura del SO / editores
+.DS_Store
+Thumbs.db
+desktop.ini
+.vscode/

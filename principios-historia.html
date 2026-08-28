@@ -1,0 +1,344 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Una apuesta por la imaginaci&oacute;n — proteia</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Podkova:wght@400..800&family=Source+Serif+4:ital,opsz,wght@0,8..60,200..900;1,8..60,200..900&display=swap" rel="stylesheet">
+<style>
+/* ============================================================
+   proteia — Principios / la historia ("haz click aqui")
+   Colores, coordenadas y trazos extraidos del PDF original
+   (lienzo 1440x1663; la barra inferior arranca en y=1551).
+   1cqw = 1% del ancho de la escena: a 1440px cae exacto.
+   ============================================================ */
+:root{
+  --morado:#5E3986;
+  --crema:#EEEEEE;
+  --gris:#D9D9D9;
+  --naranja:#FCB95C;
+
+  --font-display:'Podkova','Bitter',Georgia,'Times New Roman',serif;
+  --font-body:'Source Serif 4','PT Serif',Georgia,'Times New Roman',serif;
+}
+
+*,*::before,*::after{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{
+  margin:0;
+  background:var(--morado);
+  color:var(--crema);
+  font-family:var(--font-body);
+  -webkit-font-smoothing:antialiased;
+}
+
+/* ---------- Escena ---------- */
+.stage{
+  position:relative;
+  width:100%;
+  aspect-ratio:1440/1551;
+  container-type:inline-size;
+  overflow:hidden;
+}
+.texture{position:absolute;inset:0;width:100%;height:100%;z-index:0;pointer-events:none}
+.stage > *:not(.texture){position:absolute;z-index:1}
+
+/* ---------- Cabecera ---------- */
+.brandline{left:2.847cqw;top:4.514cqw;display:flex;align-items:center;gap:1.11cqw}
+.brandline svg{width:5.972cqw;height:auto;display:block}
+.brandline span{
+  font-family:var(--font-display);
+  font-size:2.153cqw;
+  line-height:1.2;
+  color:var(--gris);
+}
+
+/* ---------- Titular ---------- */
+.title{
+  margin:0;
+  left:9.93cqw;
+  top:13.19cqw;
+  font-family:var(--font-display);
+  font-weight:700;
+  font-size:4.444cqw;
+  line-height:1.3;
+  white-space:nowrap;
+}
+
+/* ---------- Cuerpo ---------- */
+.body{
+  left:9.93cqw;
+  top:35.69cqw;
+  width:65.9cqw;
+  font-size:1.389cqw;
+  line-height:1.75;
+}
+.body p{margin:0 0 2.43cqw}
+.body p:last-child{margin-bottom:0}
+
+/* ---------- Figuras ---------- */
+.fig{width:5.972cqw;height:auto}
+.fig--sun{left:83.13cqw;top:10.35cqw}
+.fig--blue{left:1.528cqw;top:56.39cqw}
+.fig--coral{left:80.56cqw;top:86.25cqw}
+
+/* ---------- Barra de navegacion ---------- */
+.nav{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:clamp(16px,3vw,40px);
+  min-height:clamp(88px,7.78vw,112px);
+  padding:14px clamp(20px,5.07vw,73px);
+  background:var(--naranja);
+}
+.brand{
+  display:flex;
+  flex-direction:column;
+  align-items:flex-start;
+  flex:none;
+  color:var(--morado);
+  text-decoration:none;
+  font-family:var(--font-display);
+  font-weight:500;
+  font-size:clamp(26px,2.92vw,42px);
+  line-height:.87;
+}
+.brand__tag{font-size:.13em;letter-spacing:.05em;margin-top:.55em;white-space:nowrap}
+.nav__links{display:flex;align-items:center;justify-content:flex-end;flex-wrap:wrap;gap:clamp(16px,4.72vw,68px)}
+.nav__links a{
+  font-family:var(--font-display);
+  font-size:clamp(15px,1.74vw,25px);
+  color:var(--morado);
+  text-decoration:none;
+}
+.nav__links a:hover{text-decoration:underline;text-underline-offset:.2em}
+.nav__links a[aria-current="page"]{text-decoration:underline;text-underline-offset:.2em;text-decoration-thickness:2px}
+
+a:focus-visible{outline:2px solid var(--crema);outline-offset:6px;border-radius:6px}
+.nav a:focus-visible{outline-color:var(--morado)}
+
+/* ---------- Movil: la escena se apila ---------- */
+@media (max-width:900px){
+  .stage{
+    display:flex;
+    flex-direction:column;
+    aspect-ratio:auto;
+    overflow:visible;
+    padding:26px 22px 54px;
+  }
+  .stage > *:not(.texture){position:static;left:auto;top:auto;width:auto}
+  .texture{height:auto;bottom:auto;aspect-ratio:1440/1551}
+  .brandline{gap:12px;order:1}
+  .brandline svg{width:56px}
+  .brandline span{font-size:clamp(18px,4.6vw,26px)}
+  .title{
+    order:2;
+    margin-top:26px;
+    font-size:clamp(28px,7.2vw,52px);
+    line-height:1.25;
+    white-space:normal;
+  }
+  .fig--sun{order:3;width:64px;margin:26px auto 0}
+  .body{order:4;margin-top:22px;font-size:clamp(15px,4vw,20px);line-height:1.7}
+  .body p{margin-bottom:22px}
+  .fig--blue{order:5;width:64px;margin:6px auto 0}
+  .fig--coral{display:none}
+  .nav{flex-direction:column;justify-content:center;gap:20px;padding:26px 20px}
+  .brand{align-items:center}
+  .nav__links{justify-content:center;gap:18px 26px}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+</style>
+</head>
+<body>
+
+<main class="stage">
+
+  <svg class="texture" viewBox="0 0 1440 1551" preserveAspectRatio="xMidYMin slice" aria-hidden="true" focusable="false">
+<defs>
+<path id="cw0" d="M0 1.8C0 1 0.2 0 3.8 0C3.8 4.8 8.1 9.5 8.1 9.5C8.1 9.5 9.7 14 21.4 14C23.6 14 26.5 13.8 29.5 13.3L54.4 10.1L55.2 10.1C63.5 10.1 67.9 28 67.9 28L69.2 27.3C69.2 26.8 72.2 12.2 81.1 12.2L106.6 14.1C110.9 14.1 121.5 13.6 124.4 11.6C127.4 9.5 131.4 0 131.4 0L135 1C135 5.1 130.4 24.9 115.2 24.9C108.5 24.9 98.8 21.2 94.1 21.2C90.3 21.2 78.2 23.6 78.2 23.6L72.2 38.5L65.5 40C65.5 37.9 57.6 22.3 57.6 22.3C57.6 22.3 46.8 19.9 41.7 19.9L23.8 24.7C2.4 24.7 0 5.1 0 1.8Z"/>
+<path id="cw1" d="M0 1.8C0 1 0.2 0 3.8 0C3.8 4.8 8.1 9.5 8.1 9.5C8.1 9.5 9.7 14 21.4 14C23.6 14 26.5 13.8 29.5 13.3L54.4 10.1L55.2 10.1C63.4 10.1 67.9 28 67.9 28L69.2 27.3C69.2 26.8 72.2 12.2 81.1 12.2L106.6 14.1C110.9 14.1 121.5 13.6 124.4 11.6C127.4 9.5 131.3 0 131.3 0L135 1C135 5.1 130.4 24.9 115.2 24.9C108.5 24.9 98.8 21.2 94.1 21.2C90.3 21.2 78.2 23.6 78.2 23.6L72.2 38.5L65.5 40C65.5 37.9 57.6 22.3 57.6 22.3C57.6 22.3 46.8 19.9 41.7 19.9L23.8 24.7C2.4 24.7 0 5.1 0 1.8Z"/>
+<path id="cw2" d="M0 1.8C0 1 0.2 0 3.8 0C3.8 4.8 8.1 9.5 8.1 9.5C8.1 9.5 9.7 14 21.4 14C23.6 14 26.5 13.8 29.5 13.3L54.4 10.1L55.2 10.1C63.5 10.1 67.9 27.9 67.9 27.9L69.2 27.3C69.2 26.8 72.2 12.2 81.1 12.2L106.6 14.1C110.9 14.1 121.5 13.7 124.4 11.6C127.4 9.5 131.4 0 131.4 0L135 1C135 5.1 130.4 24.9 115.2 24.9C108.5 24.9 98.8 21.2 94.1 21.2C90.3 21.2 78.2 23.6 78.2 23.6L72.2 38.5L65.5 40C65.5 37.9 57.6 22.3 57.6 22.3C57.6 22.3 46.8 19.9 41.7 19.9L23.8 24.7C2.4 24.7 0 5.1 0 1.8Z"/>
+<path id="cw3" d="M0 1.8C0 1 0.2 0 3.8 0C3.8 4.8 8.1 9.5 8.1 9.5C8.1 9.5 9.7 14 21.4 14C23.6 14 26.5 13.8 29.5 13.3L54.4 10.1L55.2 10.1C63.5 10.1 67.9 27.9 67.9 27.9L69.2 27.3C69.2 26.8 72.2 12.2 81.1 12.2L106.6 14.1C110.9 14.1 121.5 13.7 124.4 11.6C127.4 9.5 131.3 0 131.3 0L135 1C135 5.1 130.4 24.9 115.2 24.9C108.5 24.9 98.8 21.2 94.1 21.2C90.3 21.2 78.2 23.6 78.2 23.6L72.2 38.5L65.5 40C65.5 37.9 57.6 22.3 57.6 22.3C57.6 22.3 46.8 19.9 41.7 19.9L23.8 24.7C2.4 24.7 0 5.1 0 1.8Z"/>
+<path id="cw4" d="M0 1.8C0 1 0.2 0 3.8 0C3.8 4.8 8.1 9.5 8.1 9.5C8.1 9.5 9.7 14 21.4 14C23.6 14 26.5 13.8 29.5 13.3L54.4 10.1L55.2 10.1C63.5 10.1 67.9 28 67.9 28L69.2 27.3C69.2 26.8 72.2 12.2 81.1 12.2L106.6 14.1C110.9 14.1 121.5 13.6 124.4 11.6C127.4 9.5 131.3 0 131.3 0L135 1C135 5.1 130.4 24.9 115.2 24.9C108.5 24.9 98.8 21.2 94.1 21.2C90.3 21.2 78.2 23.6 78.2 23.6L72.2 38.5L65.5 40C65.5 37.9 57.6 22.3 57.6 22.3C57.6 22.3 46.8 19.9 41.7 19.9L23.8 24.7C2.4 24.7 0 5.1 0 1.8Z"/>
+<path id="cw5" d="M0 1.8C0 1 0.2 0 3.8 0C3.8 4.8 8.1 9.5 8.1 9.5C8.1 9.5 9.7 14 21.4 14C23.6 14 26.5 13.8 29.5 13.3L54.4 10.1L55.2 10.1C63.4 10.1 67.9 27.9 67.9 27.9L69.2 27.3C69.2 26.8 72.2 12.2 81.1 12.2L106.6 14.1C110.9 14.1 121.5 13.7 124.4 11.6C127.4 9.5 131.4 0 131.4 0L135 1C135 5.1 130.4 24.9 115.2 24.9C108.5 24.9 98.8 21.2 94.1 21.2C90.3 21.2 78.2 23.6 78.2 23.6L72.2 38.5L65.5 40C65.5 37.9 57.6 22.3 57.6 22.3C57.6 22.3 46.8 19.9 41.7 19.9L23.8 24.7C2.4 24.7 0 5.1 0 1.8Z"/>
+<path id="cw6" d="M0 1.8C0 1 0.2 0 3.8 0C3.8 4.8 8.1 9.5 8.1 9.5C8.1 9.5 9.7 14 21.4 14C23.6 14 26.5 13.8 29.5 13.3L54.4 10.1L55.2 10.1C63.4 10.1 67.9 27.9 67.9 27.9L69.2 27.3C69.2 26.8 72.2 12.2 81.1 12.2L106.6 14.1C110.9 14.1 121.5 13.7 124.4 11.6C127.4 9.5 131.4 0 131.4 0L135 1C135 5.1 130.4 24.9 115.2 24.9C108.5 24.9 98.8 21.2 94.1 21.2C90.3 21.2 78.2 23.6 78.2 23.6L72.2 38.6L65.5 40C65.5 37.9 57.6 22.3 57.6 22.3C57.6 22.3 46.8 19.9 41.7 19.9L23.8 24.7C2.4 24.7 0 5.1 0 1.8Z"/>
+<path id="cw7" d="M0 1.8C0 1 0.2 0 3.8 0C3.8 4.8 8.1 9.5 8.1 9.5C8.1 9.5 9.7 14 21.4 14C23.6 14 26.5 13.8 29.5 13.3L54.4 10.1L55.2 10.1C63.4 10.1 67.9 28 67.9 28L69.2 27.3C69.2 26.8 72.2 12.2 81.1 12.2L106.6 14.1C110.9 14.1 121.5 13.7 124.4 11.6C127.4 9.5 131.4 0 131.4 0L135 1C135 5.1 130.4 24.9 115.2 24.9C108.5 24.9 98.8 21.2 94.1 21.2C90.3 21.2 78.2 23.6 78.2 23.6L72.2 38.5L65.5 40C65.5 37.9 57.6 22.3 57.6 22.3C57.6 22.3 46.8 19.9 41.7 19.9L23.8 24.7C2.4 24.7 0 5.1 0 1.8Z"/>
+<path id="cw8" d="M0 1.8C0 1 0.2 0 3.8 0C3.8 4.8 8.1 9.5 8.1 9.5C8.1 9.5 9.7 14 21.4 14C23.6 14 26.5 13.8 29.5 13.3L54.4 10.1L55.2 10.1C63.5 10.1 67.9 28 67.9 28L69.2 27.3C69.2 26.8 72.2 12.2 81.1 12.2L106.6 14.1C110.9 14.1 121.5 13.7 124.4 11.6C127.4 9.5 131.4 0 131.4 0L135 1C135 5.1 130.4 24.9 115.2 24.9C108.5 24.9 98.8 21.2 94.1 21.2C90.3 21.2 78.2 23.6 78.2 23.6L72.2 38.5L65.5 40C65.5 37.9 57.6 22.3 57.6 22.3C57.6 22.3 46.8 19.9 41.7 19.9L23.8 24.7C2.4 24.7 0 5.1 0 1.8Z"/>
+<path id="cw9" d="M0 1.8C0 1 0.2 0 3.8 0C3.8 4.8 8.1 9.5 8.1 9.5C8.1 9.5 9.7 14 21.4 14C23.6 14 26.5 13.8 29.5 13.3L54.4 10.1L55.2 10.1C63.5 10.1 67.9 27.9 67.9 27.9L69.2 27.3C69.2 26.8 72.2 12.2 81.1 12.2L106.6 14.1C110.9 14.1 121.5 13.7 124.4 11.6C127.4 9.5 131.4 0 131.4 0L135 1C135 5.1 130.4 24.9 115.2 24.9C108.5 24.9 98.8 21.2 94.1 21.2C90.3 21.2 78.2 23.6 78.2 23.6L72.2 38.6L65.5 40C65.5 37.9 57.6 22.3 57.6 22.3C57.6 22.3 46.8 19.9 41.7 19.9L23.8 24.7C2.4 24.7 0 5.1 0 1.8Z"/>
+<path id="cw10" d="M0 1.8C0 1 0.2 0 3.8 0C3.8 4.8 8.1 9.5 8.1 9.5C8.1 9.5 9.7 14 21.4 14C23.6 14 26.5 13.8 29.5 13.3L54.4 10.1L55.2 10.1C63.4 10.1 67.9 28 67.9 28L69.2 27.3C69.2 26.8 72.2 12.2 81.1 12.2L106.6 14.1C110.9 14.1 121.5 13.6 124.4 11.6C127.4 9.5 131.4 0 131.4 0L135 1C135 5.1 130.4 24.9 115.2 24.9C108.5 24.9 98.8 21.2 94.1 21.2C90.3 21.2 78.2 23.6 78.2 23.6L72.2 38.5L65.5 40C65.5 37.9 57.6 22.3 57.6 22.3C57.6 22.3 46.8 19.9 41.7 19.9L23.8 24.7C2.4 24.7 0 5.1 0 1.8Z"/>
+<path id="cw11" d="M135 38.2C135 39 134.8 40 131.2 40C131.2 35.2 126.9 30.5 126.9 30.5C126.9 30.5 125.3 26 113.6 26C111.4 26 108.5 26.2 105.5 26.7L80.6 29.9L79.8 29.9C71.6 29.9 67.1 12 67.1 12L65.8 12.7C65.8 13.2 62.8 27.8 53.9 27.8L28.4 25.9C24.1 25.9 13.5 26.3 10.6 28.4C7.6 30.5 3.7 40 3.7 40L0 39C0 34.9 4.6 15.1 19.8 15.1C26.5 15.1 36.2 18.8 40.9 18.8C44.7 18.8 56.8 16.4 56.8 16.4L62.8 1.5L69.5 0C69.5 2.1 77.4 17.7 77.4 17.7C77.4 17.7 88.2 20.1 93.3 20.1L111.2 15.3C132.6 15.3 135 34.9 135 38.2Z"/>
+<path id="cw12" d="M135 38.2C135 39 134.8 40 131.2 40C131.2 35.2 126.9 30.5 126.9 30.5C126.9 30.5 125.3 26 113.6 26C111.4 26 108.5 26.2 105.5 26.7L80.6 29.9L79.8 29.9C71.6 29.9 67.1 12 67.1 12L65.8 12.7C65.8 13.2 62.8 27.8 53.9 27.8L28.4 25.9C24.1 25.9 13.5 26.3 10.6 28.4C7.6 30.5 3.6 40 3.6 40L0 39C0 34.9 4.6 15.1 19.8 15.1C26.5 15.1 36.2 18.8 40.9 18.8C44.7 18.8 56.8 16.4 56.8 16.4L62.8 1.5L69.5 0C69.5 2.1 77.4 17.7 77.4 17.7C77.4 17.7 88.2 20.1 93.3 20.1L111.2 15.3C132.6 15.3 135 34.9 135 38.2Z"/>
+<path id="cw13" d="M135 38.2C135 39 134.8 40 131.2 40C131.2 35.2 126.9 30.5 126.9 30.5C126.9 30.5 125.3 26 113.6 26C111.4 26 108.5 26.2 105.5 26.7L80.6 29.9L79.8 29.9C71.5 29.9 67.1 12 67.1 12L65.8 12.7C65.8 13.2 62.8 27.8 53.9 27.8L28.4 25.9C24.1 25.9 13.5 26.3 10.6 28.4C7.6 30.5 3.7 40 3.7 40L0 39C0 34.9 4.6 15.1 19.8 15.1C26.5 15.1 36.2 18.8 40.9 18.8C44.7 18.8 56.8 16.4 56.8 16.4L62.8 1.5L69.5 0C69.5 2.1 77.4 17.7 77.4 17.7C77.4 17.7 88.2 20.1 93.3 20.1L111.2 15.3C132.6 15.3 135 34.9 135 38.2Z"/>
+<path id="cw14" d="M135 38.2C135 39 134.8 40 131.2 40C131.2 35.2 126.9 30.5 126.9 30.5C126.9 30.5 125.3 26 113.6 26C111.4 26 108.5 26.2 105.5 26.7L80.6 29.9L79.8 29.9C71.5 29.9 67.1 12 67.1 12L65.8 12.7C65.8 13.2 62.8 27.8 53.9 27.8L28.4 25.9C24.1 25.9 13.5 26.3 10.6 28.4C7.6 30.5 3.6 40 3.6 40L0 39C0 34.9 4.6 15.1 19.8 15.1C26.5 15.1 36.2 18.8 40.9 18.8C44.7 18.8 56.8 16.4 56.8 16.4L62.8 1.5L69.5 0C69.5 2.1 77.4 17.7 77.4 17.7C77.4 17.7 88.2 20.1 93.3 20.1L111.2 15.3C132.6 15.3 135 34.9 135 38.2Z"/>
+<path id="cw15" d="M135 38.2C135 39 134.8 40 131.2 40C131.2 35.2 126.9 30.5 126.9 30.5C126.9 30.5 125.3 26 113.6 26C111.4 26 108.5 26.2 105.5 26.7L80.6 29.9L79.8 29.9C71.5 29.9 67.1 12 67.1 12L65.8 12.7C65.8 13.2 62.8 27.8 53.9 27.8L28.4 25.9C24.1 25.9 13.5 26.4 10.6 28.4C7.6 30.5 3.7 40 3.7 40L0 39C0 34.9 4.6 15.1 19.8 15.1C26.5 15.1 36.2 18.8 40.9 18.8C44.7 18.8 56.8 16.4 56.8 16.4L62.8 1.5L69.5 0C69.5 2.1 77.4 17.7 77.4 17.7C77.4 17.7 88.2 20.1 93.3 20.1L111.2 15.3C132.6 15.3 135 34.9 135 38.2Z"/>
+</defs>
+<g fill="#EEEEEE" fill-opacity="0.1426">
+<use href="#cw0" x="617.0" y="29.0"/>
+<use href="#cw1" x="85.0" y="29.0"/>
+<use href="#cw2" x="550.0" y="-11.0"/>
+<use href="#cw3" x="18.0" y="-11.0"/>
+<use href="#cw0" x="484.0" y="29.0"/>
+<use href="#cw4" x="-48.0" y="29.0"/>
+<use href="#cw5" x="417.0" y="-11.0"/>
+<use href="#cw3" x="-115.0" y="-11.0"/>
+<use href="#cw6" x="423.0" y="149.0"/>
+<use href="#cw6" x="356.0" y="109.0"/>
+<use href="#cw7" x="289.0" y="69.0"/>
+<use href="#cw8" x="554.0" y="69.0"/>
+<use href="#cw9" x="486.0" y="109.0"/>
+<use href="#cw7" x="419.0" y="69.0"/>
+<use href="#cw8" x="684.0" y="69.0"/>
+<use href="#cw10" x="351.0" y="29.0"/>
+<use href="#cw5" x="284.0" y="-11.0"/>
+<use href="#cw10" x="218.0" y="29.0"/>
+<use href="#cw5" x="151.0" y="-11.0"/>
+<use href="#cw11" x="217.0" y="1362.0"/>
+<use href="#cw11" x="217.0" y="1522.0"/>
+<use href="#cw11" x="217.0" y="1442.0"/>
+<use href="#cw12" x="284.0" y="1402.0"/>
+<use href="#cw12" x="284.0" y="1482.0"/>
+<use href="#cw12" x="350.0" y="1362.0"/>
+<use href="#cw12" x="350.0" y="1522.0"/>
+<use href="#cw12" x="350.0" y="1442.0"/>
+<use href="#cw13" x="-115.0" y="1402.0"/>
+<use href="#cw12" x="417.0" y="1402.0"/>
+<use href="#cw13" x="-115.0" y="1482.0"/>
+<use href="#cw12" x="417.0" y="1482.0"/>
+<use href="#cw13" x="-121.0" y="1242.0"/>
+<use href="#cw14" x="-54.0" y="1282.0"/>
+<use href="#cw14" x="13.0" y="1322.0"/>
+<use href="#cw13" x="-117.0" y="1322.0"/>
+<use href="#cw14" x="-49.0" y="1362.0"/>
+<use href="#cw14" x="483.0" y="1362.0"/>
+<use href="#cw14" x="-49.0" y="1522.0"/>
+<use href="#cw14" x="483.0" y="1522.0"/>
+<use href="#cw14" x="-49.0" y="1442.0"/>
+<use href="#cw14" x="483.0" y="1442.0"/>
+<use href="#cw14" x="18.0" y="1402.0"/>
+<use href="#cw14" x="550.0" y="1402.0"/>
+<use href="#cw14" x="18.0" y="1482.0"/>
+<use href="#cw14" x="550.0" y="1482.0"/>
+<use href="#cw11" x="84.0" y="1362.0"/>
+<use href="#cw14" x="616.0" y="1362.0"/>
+<use href="#cw11" x="84.0" y="1522.0"/>
+<use href="#cw14" x="616.0" y="1522.0"/>
+<use href="#cw11" x="84.0" y="1442.0"/>
+<use href="#cw14" x="616.0" y="1442.0"/>
+<use href="#cw11" x="151.0" y="1402.0"/>
+<use href="#cw14" x="683.0" y="1402.0"/>
+<use href="#cw11" x="151.0" y="1482.0"/>
+<use href="#cw14" x="683.0" y="1482.0"/>
+</g>
+<g fill="#EEEEEE" fill-opacity="0.1694">
+<use href="#cw15" x="1160.0" y="742.0"/>
+<use href="#cw15" x="1160.0" y="902.0"/>
+<use href="#cw15" x="1160.0" y="822.0"/>
+<use href="#cw15" x="1227.0" y="782.0"/>
+<use href="#cw15" x="1227.0" y="942.0"/>
+<use href="#cw15" x="1227.0" y="862.0"/>
+<use href="#cw15" x="1293.0" y="742.0"/>
+<use href="#cw15" x="1293.0" y="902.0"/>
+<use href="#cw15" x="1293.0" y="822.0"/>
+<use href="#cw15" x="1360.0" y="782.0"/>
+<use href="#cw15" x="1360.0" y="942.0"/>
+<use href="#cw15" x="1360.0" y="862.0"/>
+<use href="#cw15" x="1354.0" y="622.0"/>
+<use href="#cw15" x="1421.0" y="662.0"/>
+<use href="#cw15" x="1223.0" y="702.0"/>
+<use href="#cw15" x="1291.0" y="662.0"/>
+<use href="#cw15" x="1358.0" y="702.0"/>
+<use href="#cw15" x="1093.0" y="702.0"/>
+<use href="#cw15" x="1426.0" y="742.0"/>
+<use href="#cw15" x="1426.0" y="902.0"/>
+<use href="#cw15" x="1426.0" y="822.0"/>
+</g>
+  </svg>
+
+  <div class="brandline">
+    <span>Principios</span>
+  </div>
+
+  <h1 class="title">Una apuesta por la imaginaci&oacute;n<br>como herramienta para mejorar<br>la sociedad</h1>
+
+  <svg class="fig fig--sun" viewBox="0 0 86 130" aria-hidden="true" focusable="false">
+<path fill="#776DFF" d="M0 87C0 63.2 19.2 44 43 44C66.8 44 86 63.2 86 87C86 110.8 66.8 130 43 130C19.2 130 0 110.8 0 87Z"/>
+<path fill="#776DFF" d="M0 43C0 19.2 19.2 0 43 0C66.8 0 86 19.2 86 43C86 66.8 66.8 86 43 86C19.2 86 0 66.8 0 43Z"/>
+<path fill="#FCB95C" d="M43 85.8C27.4 85.8 13.7 77.5 6.2 65C13.7 52.5 27.4 44.2 43 44.2C58.7 44.2 72.3 52.5 79.9 65C72.3 77.5 58.7 85.8 43 85.8Z"/>
+<path fill="#EDF486" d="M62 43C62 38 60 33.1 56.6 29.6C53.1 26 48.4 24 43.5 24C38.6 24 33.9 26 30.4 29.6C27 33.1 25 38 25 43L19 43C19 37.4 20.9 31.9 24.3 27.5L11 14.3C12.4 12.8 13.8 11.4 15.3 10.1L28.5 23.2C32 20.5 36.1 18.7 40.5 18.2L40.5 0.1C41.3 0 42.2 0 43 0C44.2 0 45.3 0.1 46.5 0.1L46.5 18.2C51.1 18.8 55.5 20.7 59.1 23.7L71.7 11C73.2 12.4 74.6 13.8 75.9 15.3L63.2 28.1C66.3 32.4 68 37.6 68 43L62 43Z"/>
+<path fill="#EDF486" d="M62 87C62 92 60 96.9 56.6 100.4C53.1 104 48.4 106 43.5 106C38.6 106 33.9 104 30.4 100.4C27 96.9 25 92 25 87L19 87C19 92.6 20.9 98.1 24.3 102.5L11 115.7C12.4 117.2 13.8 118.6 15.3 119.9L28.5 106.8C32 109.5 36.1 111.3 40.5 111.8L40.5 129.9C41.3 130 42.2 130 43 130C44.2 130 45.3 129.9 46.5 129.9L46.5 111.8C51.1 111.2 55.5 109.3 59.1 106.3L71.7 119C73.2 117.6 74.6 116.2 75.9 114.7L63.2 101.9C66.3 97.6 68 92.4 68 87L62 87Z"/>
+  </svg>
+
+  <div class="body">
+    <p>Proteia nace de la confluencia de tres miradas. Primero, una convicci&oacute;n: la vida
+      intelectual resplandece con particular belleza cuando se pone al servicio de los desaf&iacute;os
+      que enfrentan las personas y las comunidades; cuando se comprende, fundamentalmente, como un
+      medio para servir. Segundo, una intuici&oacute;n: la imaginaci&oacute;n cumple un papel
+      interdisciplinar fundamental en la formaci&oacute;n y transformaci&oacute;n de nuestras miradas
+      de mundo. Tercero, un sue&ntilde;o: la consiliencia humana, entendida como el anhelo de crear
+      formas culturales donde la diversidad de imaginarios sea reconocida como una riqueza, evitando
+      tanto el aislamiento como el enfrentamiento violento y promoviendo articulaciones
+      dial&oacute;gicas.</p>
+
+    <p>La fundamentaci&oacute;n te&oacute;rica de Proteia es la tesis doctoral Vanquishing the Wars
+      Within: Religious Imaginaries and the Pursuit of Human Consilience (University of Oxford,
+      2020&ndash;2024). La investigaci&oacute;n explor&oacute; dos preguntas: &iquest;qu&eacute; papel
+      desempe&ntilde;a la imaginaci&oacute;n en la transformaci&oacute;n de creencias?
+      &iquest;C&oacute;mo puede utilizarse este papel para contribuir a la construcci&oacute;n de paz
+      en Colombia? Ante la primera pregunta, la tesis propone entender los imaginarios como
+      estructuras que configuran sentidos cognitivo-afectivos y fundamentan las pr&aacute;cticas
+      culturales. Estas estructuras pueden transformarse mediante plataformas de coincidencia:
+      espacios donde la diversidad se articula para posibilitar la visualizaci&oacute;n,
+      evaluaci&oacute;n y adaptaci&oacute;n de imaginarios. Ante la segunda pregunta, la tesis revisa
+      el Informe Final de la Comisi&oacute;n de la Verdad (2022), atendiendo al papel cultural de los
+      imaginarios y, particularmente, de los imaginarios religiosos.</p>
+
+    <p>&iquest;C&oacute;mo poner estas ideas al servicio del pa&iacute;s, m&aacute;s all&aacute; de la
+      reflexi&oacute;n acad&eacute;mica? El proyecto Seeking the God of Peace (Pontificia Universidad
+      Javeriana, 2025&ndash;2027) parte de los hallazgos de la tesis para reconfigurarlos en materiales
+      pedag&oacute;gicos orientados al dise&ntilde;o de espacios de transformaci&oacute;n de
+      imaginarios. Proteia es el resultado de este proceso.</p>
+  </div>
+
+  <svg class="fig fig--blue" viewBox="0 0 86 130" aria-hidden="true" focusable="false">
+<path fill="#3D508F" d="M86 43C86 66.8 66.8 86 43 86C19.2 86 0 66.8 0 43C0 19.2 19.2 0 43 0C66.8 0 86 19.2 86 43Z"/>
+<path fill="#5CD1FC" d="M86 87C86 110.8 66.8 130 43 130C19.2 130 0 110.8 0 87C0 63.2 19.2 44 43 44C66.8 44 86 63.2 86 87Z"/>
+<path fill="#776DFF" d="M43 44.2C58.6 44.2 72.3 52.5 79.8 65C72.3 77.5 58.6 85.8 43 85.8C27.4 85.8 13.7 77.5 6.1 65C13.7 52.5 27.4 44.2 43 44.2Z"/>
+<path fill="#EDF486" d="M61 51C61 61.5 52.7 70 42.5 70C32.3 70 24 61.5 24 51C24 40.5 32.3 32 42.5 32C52.7 32 61 40.5 61 51Z"/>
+<path fill="#F85E84" d="M49 18C49 21.3 46.3 24 43 24C39.7 24 37 21.3 37 18C37 14.7 39.7 12 43 12C46.3 12 49 14.7 49 18Z"/>
+<path fill="#EDF486" d="M24 87C24 92 26 96.9 29.4 100.4C32.9 104 37.6 106 42.5 106C47.4 106 52.1 104 55.6 100.4C59 96.9 61 92 61 87L67 87C67 92.6 65.1 98.1 61.7 102.5L75 115.7C73.6 117.2 72.2 118.6 70.7 119.9L57.5 106.8C54 109.5 49.9 111.3 45.5 111.8L45.5 129.9C44.7 130 43.8 130 43 130C41.8 130 40.6 130 39.5 129.9L39.5 111.8C34.9 111.2 30.5 109.3 26.9 106.3L14.3 119C12.8 117.6 11.4 116.2 10.1 114.7L22.8 101.9C19.7 97.6 18 92.4 18 87L24 87Z"/>
+  </svg>
+
+  <svg class="fig fig--coral" viewBox="0 0 86 130" aria-hidden="true" focusable="false">
+<path fill="#F85E84" d="M86 43C86 66.8 66.8 86 43 86C19.2 86 0 66.8 0 43C0 19.2 19.2 0 43 0C66.8 0 86 19.2 86 43Z"/>
+<path fill="#F85E84" d="M86 87C86 110.8 66.8 130 43 130C19.2 130 0 110.8 0 87C0 63.2 19.2 44 43 44C66.8 44 86 63.2 86 87Z"/>
+<path fill="#EDF486" d="M43 44.2C58.6 44.2 72.3 52.5 79.8 65C72.3 77.5 58.6 85.8 43 85.8C27.3 85.8 13.7 77.5 6.1 65C13.7 52.5 27.3 44.2 43 44.2Z"/>
+<path fill="#CC426F" d="M61 65C61 75.5 52.7 84 42.5 84C32.3 84 24 75.5 24 65C24 54.5 32.3 46 42.5 46C52.7 46 61 54.5 61 65Z"/>
+<path fill="#5CD1FC" d="M49 65C49 68.3 46.3 71 43 71C39.7 71 37 68.3 37 65C37 61.7 39.7 59 43 59C46.3 59 49 61.7 49 65Z"/>
+  </svg>
+
+</main>
+
+<footer class="nav">
+  <a class="brand" href="index.html">
+    <span>pro</span>
+    <span>teia</span>
+    <span class="brand__tag">PEDAGOG&Iacute;AS PARA REIMAGINAR</span>
+  </a>
+  <nav class="nav__links" aria-label="Principal">
+    <a href="index.html">Inicio</a>
+    <a href="retos.html">Momentos</a>
+    <a href="principios.html" aria-current="page">Principios</a>
+    <a href="#">Glosario</a>
+    <a href="#">Podcast</a>
+    <a href="#">Contacto</a>
+  </nav>
+</footer>
+
+<script src="eye-menu.js" defer></script>
+
+</body>
+</html>

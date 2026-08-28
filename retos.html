@@ -1,0 +1,556 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Los Tres Retos para transformar imaginarios — proteia</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Podkova:wght@400..800&family=Source+Serif+4:ital,opsz,wght@0,8..60,200..900;1,8..60,200..900&display=swap" rel="stylesheet">
+<style>
+/* ============================================================
+   proteia — Los Tres Retos
+   Colores, coordenadas y trazos extraidos de los PDF originales
+   (lienzo 1440x1825). Ilustraciones, ojo, llaves y trama de
+   ondas son los vectores originales, no re-dibujos.
+   ============================================================ */
+:root{
+  --fondo:#282828;
+  --crema:#EEEEEE;
+  --naranja:#FCB95C;
+  --morado:#5E3986;
+  --coral:#F85E84;
+  --magenta:#CC426F;
+  --amarillo:#EDF486;
+  --cian:#5CD1FC;
+  --violeta:#776DFF;
+  --azul:#3D508F;
+
+  --font-display:'Podkova','Bitter',Georgia,'Times New Roman',serif;
+  --font-body:'Source Serif 4','PT Serif',Georgia,'Times New Roman',serif;
+}
+
+*,*::before,*::after{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{
+  margin:0;
+  background:var(--fondo);
+  color:var(--crema);
+  font-family:var(--font-body);
+  -webkit-font-smoothing:antialiased;
+}
+
+/* ---------- Seccion oscura ---------- */
+.retos{
+  position:relative;
+  overflow:hidden;
+  padding-bottom:clamp(64px,8.4vw,121px);
+}
+.texture{
+  position:absolute;
+  top:0;
+  left:50%;
+  transform:translateX(-50%);
+  width:max(1100px,100%);
+  height:auto;
+  z-index:0;
+  pointer-events:none;
+}
+.wrap{
+  position:relative;
+  z-index:1;
+  padding-left:10.07%;
+  padding-right:5.28%;
+}
+
+/* ---------- Titulo ---------- */
+.title{
+  margin:0;
+  padding-top:clamp(96px,10.4vw,150px);
+  font-family:var(--font-display);
+  font-weight:700;
+  font-size:clamp(27px,3.33vw,48px);
+  line-height:1.16;
+  letter-spacing:.005em;
+  text-wrap:balance;
+}
+
+/* ---------- Dos columnas de texto ---------- */
+.cols{
+  display:grid;
+  grid-template-columns:46.02% 46.02%;
+  column-gap:7.96%;
+  margin-top:clamp(38px,5.4vw,78px);
+}
+.cols p{margin:0;font-size:clamp(15px,1.39vw,20px);line-height:1.9}
+.col--right{
+  margin-top:clamp(58px,20.5vw,300px);
+  text-align:right;
+}
+
+/* ---------- Aviso ---------- */
+.hint{
+  display:inline-flex;
+  align-items:center;
+  gap:.85em;
+  margin-top:clamp(40px,4.65vw,67px);
+  padding:clamp(8px,.83vw,12px) clamp(16px,1.6vw,23px);
+  border:2px solid var(--crema);
+  border-radius:999px;
+  font-size:clamp(14px,1.32vw,19px);
+  font-style:italic;
+  line-height:1.25;
+}
+.hint__icon{
+  flex:none;
+  display:grid;
+  place-items:center;
+  width:1.45em;
+  height:1.45em;
+  border:1px solid var(--crema);
+  border-radius:50%;
+  font-size:.9em;
+  font-style:italic;
+  font-family:var(--font-body);
+  line-height:1;
+}
+
+/* ---------- Los tres retos ---------- */
+.cards{
+  display:grid;
+  grid-template-columns:repeat(3,27.73%);
+  justify-content:space-between;
+  margin-top:clamp(70px,10.76vw,155px);
+}
+.card{
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  text-decoration:none;
+  color:var(--crema);
+}
+.card__media{position:relative;display:block;width:100%}
+.card__art{
+  display:block;
+  width:100%;
+  height:auto;
+  overflow:visible;
+  transition:transform .32s cubic-bezier(.22,.61,.36,1);
+}
+.card:hover .card__art,
+.card:focus-visible .card__art{transform:translateY(calc(var(--shift) * -1))}
+
+/* descripcion entre llaves: aparece en el hueco que deja la figura */
+.card__desc{
+  position:absolute;
+  top:70.9%;
+  left:0;
+  right:0;
+  height:32.46%;
+  display:flex;
+  align-items:stretch;
+  opacity:0;
+  visibility:hidden;
+  transition:opacity .28s ease .04s,visibility 0s linear .32s;
+}
+.card:hover .card__desc,
+.card:focus-visible .card__desc{opacity:1;visibility:visible;transition-delay:.1s,0s}
+.card__brace{flex:none;width:11.83%;height:100%}
+.card__descText{
+  flex:1;
+  min-width:0;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:0 .35em;
+  text-align:center;
+  font-size:clamp(11px,1.11vw,16px);
+  line-height:1.875;
+}
+
+.card__label{
+  margin-top:clamp(18px,2.5vw,36px);
+  font-family:var(--font-display);
+  font-weight:500;
+  font-size:clamp(20px,2.36vw,34px);
+  text-align:center;
+}
+
+/* ---------- Barra de navegacion ---------- */
+.nav{
+  position:relative;
+  z-index:2;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:clamp(16px,3vw,40px);
+  min-height:clamp(88px,7.78vw,112px);
+  padding:14px clamp(20px,5.07vw,73px);
+  background:var(--naranja);
+  color:var(--morado);
+}
+.brand{
+  display:flex;
+  flex-direction:column;
+  align-items:flex-start;
+  flex:none;
+  color:var(--morado);
+  text-decoration:none;
+  font-family:var(--font-display);
+  font-weight:500;
+  font-size:clamp(26px,2.92vw,42px);
+  line-height:.87;
+}
+.brand__tag{font-size:.13em;letter-spacing:.05em;margin-top:.55em;white-space:nowrap}
+.nav__links{
+  display:flex;
+  align-items:center;
+  justify-content:flex-end;
+  flex-wrap:wrap;
+  gap:clamp(16px,4.72vw,68px);
+}
+.nav__links a{
+  font-family:var(--font-display);
+  font-size:clamp(15px,1.74vw,25px);
+  color:var(--morado);
+  text-decoration:none;
+}
+.nav__links a:hover{text-decoration:underline;text-underline-offset:.2em}
+.nav__links a[aria-current="page"]{
+  text-decoration:underline;
+  text-underline-offset:.2em;
+  text-decoration-thickness:2px;
+}
+
+a:focus-visible{outline:2px solid var(--crema);outline-offset:6px;border-radius:6px}
+.nav a:focus-visible{outline-color:var(--morado)}
+
+/* ---------- Responsive ---------- */
+@media (max-width:1000px){
+  .wrap{padding-left:7%;padding-right:7%}
+  .cols{grid-template-columns:1fr;row-gap:28px}
+  .col--right{margin-top:0;text-align:left}
+  .cards{grid-template-columns:repeat(3,30%);justify-content:space-between}
+}
+@media (max-width:860px){
+  .nav{flex-direction:column;justify-content:center;gap:20px;padding:26px 20px}
+  .brand{align-items:center}
+  .nav__links{justify-content:center;gap:18px 26px}
+}
+@media (max-width:680px){
+  .cards{grid-template-columns:1fr;row-gap:52px;justify-items:center}
+  .card{max-width:340px}
+  .hint{align-items:flex-start;border-radius:26px}
+}
+
+/* Sin hover (tactil) o en una sola columna: la descripcion queda siempre visible */
+@media (hover:none),(max-width:680px){
+  .card__art{transform:none!important}
+  .card__desc{
+    position:static;
+    height:auto;
+    margin-top:clamp(14px,2vw,22px);
+    opacity:1;
+    visibility:visible;
+    transition:none;
+  }
+  .card__brace{height:auto;align-self:stretch}
+  .card__descText{padding:.4em .35em}
+  .card__label{margin-top:clamp(14px,2vw,22px)}
+}
+
+@media (prefers-reduced-motion:reduce){
+  *{transition:none!important;animation:none!important}
+}
+</style>
+</head>
+<body>
+
+<section class="retos">
+
+  <svg class="texture" viewBox="0 0 1440 995" preserveAspectRatio="xMidYMin meet" aria-hidden="true" focusable="false">
+<defs>
+<path id="w0" d="M135 38.2C135 39 134.8 40 131.2 40C131.2 35.2 126.9 30.5 126.9 30.5C126.9 30.5 125.3 26 113.6 26C111.4 26 108.5 26.2 105.5 26.7L80.6 29.9L79.8 29.9C71.6 29.9 67.1 12 67.1 12L65.8 12.7C65.8 13.2 62.8 27.8 53.9 27.8L28.4 25.9C24.1 25.9 13.5 26.4 10.6 28.4C7.6 30.5 3.6 40 3.6 40L0 39C0 34.9 4.6 15.1 19.8 15.1C26.5 15.1 36.2 18.8 40.9 18.8C44.7 18.8 56.8 16.4 56.8 16.4L62.8 1.5L69.5 0C69.5 2.1 77.4 17.7 77.4 17.7C77.4 17.7 88.2 20.1 93.3 20.1L111.2 15.3C132.6 15.3 135 34.9 135 38.2Z"/>
+<path id="w1" d="M135 38.2C135 39 134.8 40 131.2 40C131.2 35.2 126.9 30.5 126.9 30.5C126.9 30.5 125.3 26 113.6 26C111.4 26 108.5 26.2 105.5 26.7L80.6 29.9L79.8 29.9C71.5 29.9 67.1 12 67.1 12L65.8 12.7C65.8 13.2 62.8 27.8 53.9 27.8L28.4 25.9C24.1 25.9 13.5 26.4 10.6 28.4C7.6 30.5 3.6 40 3.6 40L0 39C0 34.9 4.6 15.1 19.8 15.1C26.5 15.1 36.2 18.8 40.9 18.8C44.7 18.8 56.8 16.4 56.8 16.4L62.8 1.5L69.5 0C69.5 2.1 77.4 17.7 77.4 17.7C77.4 17.7 88.2 20.1 93.3 20.1L111.2 15.3C132.6 15.3 135 34.9 135 38.2Z"/>
+<path id="w2" d="M135 38.2C135 39 134.8 40 131.2 40C131.2 35.2 126.9 30.5 126.9 30.5C126.9 30.5 125.3 26 113.6 26C111.4 26 108.5 26.2 105.5 26.7L80.6 29.9L79.8 29.9C71.5 29.9 67.1 12 67.1 12L65.8 12.7C65.8 13.2 62.8 27.8 53.9 27.8L28.4 25.9C24.1 25.9 13.5 26.4 10.6 28.4C7.6 30.5 3.7 40 3.7 40L0 39C0 34.9 4.6 15.1 19.8 15.1C26.5 15.1 36.2 18.8 40.9 18.8C44.7 18.8 56.8 16.4 56.8 16.4L62.8 1.5L69.5 0C69.5 2.1 77.4 17.7 77.4 17.7C77.4 17.7 88.2 20.1 93.3 20.1L111.2 15.3C132.6 15.3 135 34.9 135 38.2Z"/>
+<path id="w3" d="M135 38.2C135 39 134.8 40 131.2 40C131.2 35.2 126.9 30.5 126.9 30.5C126.9 30.5 125.3 26 113.6 26C111.4 26 108.5 26.2 105.5 26.7L80.6 29.9L79.8 29.9C71.6 29.9 67.1 12 67.1 12L65.8 12.7C65.8 13.2 62.8 27.8 53.9 27.8L28.4 25.9C24.1 25.9 13.5 26.4 10.6 28.4C7.6 30.5 3.7 40 3.7 40L0 39C0 34.9 4.6 15.1 19.8 15.1C26.5 15.1 36.2 18.8 40.9 18.8C44.7 18.8 56.8 16.4 56.8 16.4L62.8 1.5L69.5 0C69.5 2.1 77.4 17.7 77.4 17.7C77.4 17.7 88.2 20.1 93.3 20.1L111.2 15.3C132.6 15.3 135 34.9 135 38.2Z"/>
+<path id="w4" d="M0 1.8C0 1 0.2 0 3.8 0C3.8 4.8 8.1 9.5 8.1 9.5C8.1 9.5 9.7 14 21.4 14C23.6 14 26.5 13.8 29.5 13.3L54.4 10.1L55.2 10.1C63.5 10.1 67.9 27.9 67.9 27.9L69.2 27.3C69.2 26.8 72.2 12.2 81.1 12.2L106.6 14.1C110.9 14.1 121.5 13.6 124.4 11.6C127.4 9.5 131.3 0 131.3 0L135 1C135 5.1 130.4 24.9 115.2 24.9C108.5 24.9 98.8 21.2 94.1 21.2C90.3 21.2 78.2 23.6 78.2 23.6L72.2 38.6L65.5 40C65.5 37.9 57.6 22.3 57.6 22.3C57.6 22.3 46.8 19.9 41.7 19.9L23.8 24.7C2.4 24.7 0 5.1 0 1.8Z"/>
+<path id="w5" d="M0 1.8C0 1 0.2 0 3.8 0C3.8 4.8 8.1 9.5 8.1 9.5C8.1 9.5 9.7 14 21.4 14C23.6 14 26.5 13.8 29.5 13.3L54.4 10.1L55.2 10.1C63.5 10.1 67.9 27.9 67.9 27.9L69.2 27.3C69.2 26.8 72.2 12.2 81.1 12.2L106.6 14.1C110.9 14.1 121.5 13.6 124.4 11.6C127.4 9.5 131.4 0 131.4 0L135 1C135 5.1 130.4 24.9 115.2 24.9C108.5 24.9 98.8 21.2 94.1 21.2C90.3 21.2 78.2 23.6 78.2 23.6L72.2 38.6L65.5 40C65.5 37.9 57.6 22.3 57.6 22.3C57.6 22.3 46.8 19.9 41.7 19.9L23.8 24.7C2.4 24.7 0 5.1 0 1.8Z"/>
+<path id="w6" d="M0 1.8C0 1 0.2 0 3.8 0C3.8 4.8 8.1 9.5 8.1 9.5C8.1 9.5 9.7 14 21.4 14C23.6 14 26.5 13.8 29.5 13.3L54.4 10.1L55.2 10.1C63.5 10.1 67.9 28 67.9 28L69.2 27.3C69.2 26.8 72.2 12.2 81.1 12.2L106.6 14.1C110.9 14.1 121.5 13.7 124.4 11.6C127.4 9.5 131.3 0 131.3 0L135 1C135 5.1 130.4 24.9 115.2 24.9C108.5 24.9 98.8 21.2 94.1 21.2C90.3 21.2 78.2 23.6 78.2 23.6L72.2 38.5L65.5 40C65.5 37.9 57.6 22.3 57.6 22.3C57.6 22.3 46.8 19.9 41.7 19.9L23.8 24.7C2.4 24.7 0 5.1 0 1.8Z"/>
+<path id="w7" d="M0 1.8C0 1 0.2 0 3.8 0C3.8 4.8 8.1 9.5 8.1 9.5C8.1 9.5 9.7 14 21.4 14C23.6 14 26.5 13.8 29.5 13.3L54.4 10.1L55.2 10.1C63.5 10.1 67.9 28 67.9 28L69.2 27.3C69.2 26.8 72.2 12.2 81.1 12.2L106.6 14.1C110.9 14.1 121.5 13.7 124.4 11.6C127.4 9.5 131.4 0 131.4 0L135 1C135 5.1 130.4 24.9 115.2 24.9C108.5 24.9 98.8 21.2 94.1 21.2C90.3 21.2 78.2 23.6 78.2 23.6L72.2 38.5L65.5 40C65.5 37.9 57.6 22.3 57.6 22.3C57.6 22.3 46.8 19.9 41.7 19.9L23.8 24.7C2.4 24.7 0 5.1 0 1.8Z"/>
+<path id="w8" d="M0 1.8C0 1 0.2 0 3.8 0C3.8 4.8 8.1 9.5 8.1 9.5C8.1 9.5 9.7 14 21.4 14C23.6 14 26.5 13.8 29.5 13.3L54.4 10.1L55.2 10.1C63.5 10.1 67.9 27.9 67.9 27.9L69.2 27.3C69.2 26.8 72.2 12.2 81.1 12.2L106.6 14.1C110.9 14.1 121.5 13.7 124.4 11.6C127.4 9.5 131.3 0 131.3 0L135 1C135 5.1 130.4 24.9 115.2 24.9C108.5 24.9 98.8 21.2 94.1 21.2C90.3 21.2 78.2 23.6 78.2 23.6L72.2 38.6L65.5 40C65.5 37.9 57.6 22.3 57.6 22.3C57.6 22.3 46.8 19.9 41.7 19.9L23.8 24.7C2.4 24.7 0 5.1 0 1.8Z"/>
+<path id="w9" d="M0 1.8C0 1 0.2 0 3.8 0C3.8 4.8 8.1 9.5 8.1 9.5C8.1 9.5 9.7 14 21.4 14C23.6 14 26.5 13.8 29.5 13.3L54.4 10.1L55.2 10.1C63.5 10.1 67.9 27.9 67.9 27.9L69.2 27.3C69.2 26.8 72.2 12.2 81.1 12.2L106.6 14.1C110.9 14.1 121.5 13.7 124.4 11.6C127.4 9.5 131.4 0 131.4 0L135 1C135 5.1 130.4 24.9 115.2 24.9C108.5 24.9 98.8 21.2 94.1 21.2C90.3 21.2 78.2 23.6 78.2 23.6L72.2 38.6L65.5 40C65.5 37.9 57.6 22.3 57.6 22.3C57.6 22.3 46.8 19.9 41.7 19.9L23.8 24.7C2.4 24.7 0 5.1 0 1.8Z"/>
+<path id="w10" d="M0 1.8C0 1 0.2 0 3.8 0C3.8 4.8 8.1 9.5 8.1 9.5C8.1 9.5 9.7 14 21.4 14C23.6 14 26.5 13.8 29.5 13.3L54.4 10.1L55.2 10.1C63.5 10.1 67.9 28 67.9 28L69.2 27.3C69.2 26.8 72.2 12.2 81.1 12.2L106.6 14.1C110.9 14.1 121.5 13.6 124.4 11.6C127.4 9.5 131.3 0 131.3 0L135 1C135 5.1 130.4 24.9 115.2 24.9C108.5 24.9 98.8 21.2 94.1 21.2C90.3 21.2 78.2 23.6 78.2 23.6L72.2 38.5L65.5 40C65.5 37.9 57.6 22.3 57.6 22.3C57.6 22.3 46.8 19.9 41.7 19.9L23.8 24.7C2.4 24.7 0 5.1 0 1.8Z"/>
+<path id="w11" d="M0 1.8C0 1 0.2 0 3.8 0C3.8 4.8 8.1 9.5 8.1 9.5C8.1 9.5 9.7 14 21.4 14C23.6 14 26.5 13.8 29.5 13.3L54.4 10.1L55.2 10.1C63.5 10.1 67.9 28 67.9 28L69.2 27.3C69.2 26.8 72.2 12.2 81.1 12.2L106.6 14.1C110.9 14.1 121.5 13.6 124.4 11.6C127.4 9.5 131.4 0 131.4 0L135 1C135 5.1 130.4 24.9 115.2 24.9C108.5 24.9 98.8 21.2 94.1 21.2C90.3 21.2 78.2 23.6 78.2 23.6L72.2 38.5L65.5 40C65.5 37.9 57.6 22.3 57.6 22.3C57.6 22.3 46.8 19.9 41.7 19.9L23.8 24.7C2.4 24.7 0 5.1 0 1.8Z"/>
+<path id="w12" d="M0 1.8C0 1 0.2 0 3.8 0C3.8 4.8 8.1 9.5 8.1 9.5C8.1 9.5 9.7 14 21.4 14C23.6 14 26.5 13.8 29.5 13.3L54.4 10.1L55.2 10.1C63.4 10.1 67.9 27.9 67.9 27.9L69.2 27.3C69.2 26.8 72.2 12.2 81.1 12.2L106.6 14.1C110.9 14.1 121.5 13.7 124.4 11.6C127.4 9.5 131.4 0 131.4 0L135 1C135 5.1 130.4 24.9 115.2 24.9C108.5 24.9 98.8 21.2 94.1 21.2C90.3 21.2 78.2 23.6 78.2 23.6L72.2 38.6L65.5 40C65.5 37.9 57.6 22.3 57.6 22.3C57.6 22.3 46.8 19.9 41.7 19.9L23.8 24.7C2.4 24.7 0 5.1 0 1.8Z"/>
+<path id="w13" d="M0 1.8C0 1 0.2 0 3.8 0C3.8 4.8 8.1 9.5 8.1 9.5C8.1 9.5 9.7 14 21.4 14C23.6 14 26.5 13.8 29.5 13.3L54.4 10.1L55.2 10.1C63.4 10.1 67.9 28 67.9 28L69.2 27.3C69.2 26.8 72.2 12.2 81.1 12.2L106.6 14.1C110.9 14.1 121.5 13.6 124.4 11.6C127.4 9.5 131.4 0 131.4 0L135 1C135 5.1 130.4 24.9 115.2 24.9C108.5 24.9 98.8 21.2 94.1 21.2C90.3 21.2 78.2 23.6 78.2 23.6L72.2 38.5L65.5 40C65.5 37.9 57.6 22.3 57.6 22.3C57.6 22.3 46.8 19.9 41.7 19.9L23.8 24.7C2.4 24.7 0 5.1 0 1.8Z"/>
+<path id="w14" d="M0 1.8C0 1 0.2 0 3.8 0C3.8 4.8 8.1 9.5 8.1 9.5C8.1 9.5 9.7 14 21.4 14C23.6 14 26.5 13.8 29.5 13.3L54.4 10.1L55.2 10.1C63.5 10.1 67.9 27.9 67.9 27.9L69.2 27.3C69.2 26.8 72.2 12.2 81.1 12.2L106.6 14.1C110.9 14.1 121.5 13.6 124.4 11.6C127.4 9.5 131.3 0 131.3 0L135 1C135 5.1 130.4 24.9 115.2 24.9C108.5 24.9 98.8 21.2 94.1 21.2C90.3 21.2 78.2 23.6 78.2 23.6L72.2 38.5L65.5 40C65.5 37.9 57.6 22.3 57.6 22.3C57.6 22.3 46.8 19.9 41.7 19.9L23.8 24.7C2.4 24.7 0 5.1 0 1.8Z"/>
+<path id="w15" d="M0 1.8C0 1 0.2 0 3.8 0C3.8 4.8 8.1 9.5 8.1 9.5C8.1 9.5 9.7 14 21.4 14C23.6 14 26.5 13.8 29.5 13.3L54.4 10.1L55.2 10.1C63.4 10.1 67.9 27.9 67.9 27.9L69.2 27.3C69.2 26.8 72.2 12.2 81.1 12.2L106.6 14.1C110.9 14.1 121.5 13.6 124.4 11.6C127.4 9.5 131.4 0 131.4 0L135 1C135 5.1 130.4 24.9 115.2 24.9C108.5 24.9 98.8 21.2 94.1 21.2C90.3 21.2 78.2 23.6 78.2 23.6L72.2 38.5L65.5 40C65.5 37.9 57.6 22.3 57.6 22.3C57.6 22.3 46.8 19.9 41.7 19.9L23.8 24.7C2.4 24.7 0 5.1 0 1.8Z"/>
+<path id="w16" d="M0 1.8C0 1 0.2 0 3.8 0C3.8 4.8 8.1 9.5 8.1 9.5C8.1 9.5 9.7 14 21.4 14C23.6 14 26.5 13.8 29.5 13.3L54.4 10.1L55.2 10.1C63.4 10.1 67.9 27.9 67.9 27.9L69.2 27.3C69.2 26.8 72.2 12.2 81.1 12.2L106.6 14.1C110.9 14.1 121.5 13.6 124.4 11.6C127.4 9.5 131.4 0 131.4 0L135 1C135 5.1 130.4 24.9 115.2 24.9C108.5 24.9 98.8 21.2 94.1 21.2C90.3 21.2 78.2 23.6 78.2 23.6L72.2 38.6L65.5 40C65.5 37.9 57.6 22.3 57.6 22.3C57.6 22.3 46.8 19.9 41.7 19.9L23.8 24.7C2.4 24.7 0 5.1 0 1.8Z"/>
+<path id="w17" d="M0 1.8C0 1 0.2 0 3.8 0C3.8 4.8 8.1 9.5 8.1 9.5C8.1 9.5 9.7 14 21.4 14C23.6 14 26.5 13.8 29.5 13.3L54.4 10.1L55.2 10.1C63.4 10.1 67.9 28 67.9 28L69.2 27.3C69.2 26.8 72.2 12.2 81.1 12.2L106.6 14.1C110.9 14.1 121.5 13.7 124.4 11.6C127.4 9.5 131.4 0 131.4 0L135 1C135 5.1 130.4 24.9 115.2 24.9C108.5 24.9 98.8 21.2 94.1 21.2C90.3 21.2 78.2 23.6 78.2 23.6L72.2 38.5L65.5 40C65.5 37.9 57.6 22.3 57.6 22.3C57.6 22.3 46.8 19.9 41.7 19.9L23.8 24.7C2.4 24.7 0 5.1 0 1.8Z"/>
+<path id="w18" d="M0 1.8C0 1 0.2 0 3.8 0C3.8 4.8 8.1 9.5 8.1 9.5C8.1 9.5 9.7 14 21.4 14C23.6 14 26.5 13.8 29.5 13.3L54.4 10.1L55.2 10.1C63.5 10.1 67.9 27.9 67.9 27.9L69.2 27.3C69.2 26.8 72.2 12.2 81.1 12.2L106.6 14.1C110.9 14.1 121.5 13.6 124.4 11.6C127.4 9.5 131.4 0 131.4 0L135 1C135 5.1 130.4 24.9 115.2 24.9C108.5 24.9 98.8 21.2 94.1 21.2C90.3 21.2 78.2 23.6 78.2 23.6L72.2 38.5L65.5 40C65.5 37.9 57.6 22.3 57.6 22.3C57.6 22.3 46.8 19.9 41.7 19.9L23.8 24.7C2.4 24.7 0 5.1 0 1.8Z"/>
+<path id="w19" d="M0 1.8C0 1 0.2 0 3.8 0C3.8 4.8 8.1 9.5 8.1 9.5C8.1 9.5 9.7 14 21.4 14C23.6 14 26.5 13.8 29.5 13.3L54.4 10.1L55.2 10.1C63.4 10.1 67.9 27.9 67.9 27.9L69.2 27.3C69.2 26.8 72.2 12.2 81.1 12.2L106.6 14.1C110.9 14.1 121.5 13.7 124.4 11.6C127.4 9.5 131.3 0 131.3 0L135 1C135 5.1 130.4 24.9 115.2 24.9C108.5 24.9 98.8 21.2 94.1 21.2C90.3 21.2 78.2 23.6 78.2 23.6L72.2 38.6L65.5 40C65.5 37.9 57.6 22.3 57.6 22.3C57.6 22.3 46.8 19.9 41.7 19.9L23.8 24.7C2.4 24.7 0 5.1 0 1.8Z"/>
+<path id="w20" d="M0 1.8C0 1 0.2 0 3.8 0C3.8 4.8 8.1 9.5 8.1 9.5C8.1 9.5 9.7 14 21.4 14C23.6 14 26.5 13.8 29.5 13.3L54.4 10.1L55.2 10.1C63.4 10.1 67.9 28 67.9 28L69.2 27.3C69.2 26.8 72.2 12.2 81.1 12.2L106.6 14.1C110.9 14.1 121.5 13.6 124.4 11.6C127.4 9.5 131.3 0 131.3 0L135 1C135 5.1 130.4 24.9 115.2 24.9C108.5 24.9 98.8 21.2 94.1 21.2C90.3 21.2 78.2 23.6 78.2 23.6L72.2 38.5L65.5 40C65.5 37.9 57.6 22.3 57.6 22.3C57.6 22.3 46.8 19.9 41.7 19.9L23.8 24.7C2.4 24.7 0 5.1 0 1.8Z"/>
+</defs>
+<g fill="#EEEEEE" fill-opacity="0.1426">
+<use href="#w0" x="287.0" y="675.0"/>
+<use href="#w0" x="287.0" y="835.0"/>
+<use href="#w1" x="819.0" y="835.0"/>
+<use href="#w0" x="287.0" y="755.0"/>
+<use href="#w1" x="819.0" y="755.0"/>
+<use href="#w0" x="287.0" y="915.0"/>
+<use href="#w1" x="819.0" y="915.0"/>
+<use href="#w0" x="354.0" y="715.0"/>
+<use href="#w0" x="354.0" y="875.0"/>
+<use href="#w1" x="886.0" y="875.0"/>
+<use href="#w0" x="354.0" y="795.0"/>
+<use href="#w1" x="886.0" y="795.0"/>
+<use href="#w0" x="354.0" y="955.0"/>
+<use href="#w1" x="886.0" y="955.0"/>
+<use href="#w0" x="420.0" y="675.0"/>
+<use href="#w0" x="420.0" y="835.0"/>
+<use href="#w1" x="952.0" y="835.0"/>
+<use href="#w0" x="420.0" y="755.0"/>
+<use href="#w1" x="952.0" y="755.0"/>
+<use href="#w0" x="420.0" y="915.0"/>
+<use href="#w1" x="952.0" y="915.0"/>
+<use href="#w1" x="487.0" y="715.0"/>
+<use href="#w1" x="487.0" y="875.0"/>
+<use href="#w1" x="1019.0" y="875.0"/>
+<use href="#w1" x="487.0" y="795.0"/>
+<use href="#w1" x="1019.0" y="795.0"/>
+<use href="#w1" x="487.0" y="955.0"/>
+<use href="#w1" x="1019.0" y="955.0"/>
+<use href="#w1" x="481.0" y="555.0"/>
+<use href="#w1" x="548.0" y="595.0"/>
+<use href="#w1" x="615.0" y="635.0"/>
+<use href="#w0" x="350.0" y="635.0"/>
+<use href="#w0" x="418.0" y="595.0"/>
+<use href="#w1" x="485.0" y="635.0"/>
+<use href="#w1" x="553.0" y="675.0"/>
+<use href="#w1" x="553.0" y="835.0"/>
+<use href="#w2" x="1085.0" y="835.0"/>
+<use href="#w1" x="553.0" y="755.0"/>
+<use href="#w2" x="1085.0" y="755.0"/>
+<use href="#w1" x="553.0" y="915.0"/>
+<use href="#w2" x="1085.0" y="915.0"/>
+<use href="#w1" x="620.0" y="715.0"/>
+<use href="#w1" x="620.0" y="875.0"/>
+<use href="#w2" x="1152.0" y="875.0"/>
+<use href="#w1" x="620.0" y="795.0"/>
+<use href="#w2" x="1152.0" y="795.0"/>
+<use href="#w1" x="620.0" y="955.0"/>
+<use href="#w1" x="686.0" y="835.0"/>
+<use href="#w2" x="1218.0" y="835.0"/>
+<use href="#w1" x="686.0" y="755.0"/>
+<use href="#w2" x="1218.0" y="755.0"/>
+<use href="#w1" x="686.0" y="915.0"/>
+<use href="#w1" x="753.0" y="875.0"/>
+<use href="#w1" x="753.0" y="795.0"/>
+<use href="#w1" x="753.0" y="955.0"/>
+<use href="#w2" x="-116.0" y="679.0"/>
+<use href="#w2" x="-116.0" y="599.0"/>
+<use href="#w2" x="-116.0" y="759.0"/>
+<use href="#w1" x="-50.0" y="639.0"/>
+<use href="#w1" x="-50.0" y="559.0"/>
+<use href="#w1" x="-50.0" y="719.0"/>
+<use href="#w1" x="17.0" y="679.0"/>
+<use href="#w1" x="17.0" y="599.0"/>
+<use href="#w1" x="17.0" y="759.0"/>
+<use href="#w3" x="83.0" y="639.0"/>
+<use href="#w3" x="83.0" y="559.0"/>
+<use href="#w3" x="83.0" y="719.0"/>
+<use href="#w3" x="150.0" y="679.0"/>
+<use href="#w3" x="150.0" y="599.0"/>
+<use href="#w3" x="216.0" y="639.0"/>
+<use href="#w3" x="216.0" y="559.0"/>
+</g>
+<g fill="#EEEEEE" fill-opacity="0.0975">
+<use href="#w2" x="1152.0" y="955.0"/>
+<use href="#w2" x="1285.0" y="795.0"/>
+<use href="#w3" x="150.0" y="759.0"/>
+<use href="#w0" x="283.0" y="599.0"/>
+</g>
+<g fill="#EEEEEE" fill-opacity="0.1694">
+<use href="#w4" x="987.0" y="245.0"/>
+<use href="#w5" x="455.0" y="245.0"/>
+<use href="#w6" x="987.0" y="85.0"/>
+<use href="#w7" x="455.0" y="85.0"/>
+<use href="#w8" x="987.0" y="165.0"/>
+<use href="#w9" x="455.0" y="165.0"/>
+<use href="#w10" x="987.0" y="5.0"/>
+<use href="#w11" x="455.0" y="5.0"/>
+<use href="#w8" x="920.0" y="205.0"/>
+<use href="#w12" x="388.0" y="205.0"/>
+<use href="#w10" x="920.0" y="45.0"/>
+<use href="#w13" x="388.0" y="45.0"/>
+<use href="#w8" x="920.0" y="125.0"/>
+<use href="#w12" x="388.0" y="125.0"/>
+<use href="#w14" x="920.0" y="-35.0"/>
+<use href="#w15" x="388.0" y="-35.0"/>
+<use href="#w5" x="854.0" y="245.0"/>
+<use href="#w16" x="322.0" y="245.0"/>
+<use href="#w7" x="854.0" y="85.0"/>
+<use href="#w17" x="322.0" y="85.0"/>
+<use href="#w9" x="854.0" y="165.0"/>
+<use href="#w12" x="322.0" y="165.0"/>
+<use href="#w11" x="854.0" y="5.0"/>
+<use href="#w13" x="322.0" y="5.0"/>
+<use href="#w9" x="787.0" y="205.0"/>
+<use href="#w12" x="255.0" y="205.0"/>
+<use href="#w11" x="787.0" y="45.0"/>
+<use href="#w13" x="255.0" y="45.0"/>
+<use href="#w9" x="787.0" y="125.0"/>
+<use href="#w12" x="255.0" y="125.0"/>
+<use href="#w18" x="787.0" y="-35.0"/>
+<use href="#w5" x="793.0" y="365.0"/>
+<use href="#w5" x="726.0" y="325.0"/>
+<use href="#w5" x="659.0" y="285.0"/>
+<use href="#w4" x="924.0" y="285.0"/>
+<use href="#w5" x="856.0" y="325.0"/>
+<use href="#w5" x="789.0" y="285.0"/>
+<use href="#w4" x="1054.0" y="285.0"/>
+<use href="#w5" x="721.0" y="245.0"/>
+<use href="#w16" x="189.0" y="245.0"/>
+<use href="#w7" x="721.0" y="85.0"/>
+<use href="#w17" x="189.0" y="85.0"/>
+<use href="#w9" x="721.0" y="165.0"/>
+<use href="#w12" x="189.0" y="165.0"/>
+<use href="#w11" x="721.0" y="5.0"/>
+<use href="#w13" x="189.0" y="5.0"/>
+<use href="#w9" x="654.0" y="205.0"/>
+<use href="#w19" x="122.0" y="205.0"/>
+<use href="#w11" x="654.0" y="45.0"/>
+<use href="#w20" x="122.0" y="45.0"/>
+<use href="#w9" x="654.0" y="125.0"/>
+<use href="#w19" x="122.0" y="125.0"/>
+<use href="#w18" x="654.0" y="-35.0"/>
+<use href="#w5" x="588.0" y="245.0"/>
+<use href="#w4" x="56.0" y="245.0"/>
+<use href="#w7" x="588.0" y="85.0"/>
+<use href="#w6" x="56.0" y="85.0"/>
+<use href="#w9" x="588.0" y="165.0"/>
+<use href="#w8" x="56.0" y="165.0"/>
+<use href="#w11" x="588.0" y="5.0"/>
+<use href="#w9" x="521.0" y="205.0"/>
+<use href="#w8" x="-11.0" y="205.0"/>
+<use href="#w11" x="521.0" y="45.0"/>
+<use href="#w9" x="521.0" y="125.0"/>
+<use href="#w8" x="-11.0" y="125.0"/>
+<use href="#w18" x="521.0" y="-35.0"/>
+</g>
+<g fill="#EEEEEE" fill-opacity="0.06">
+<use href="#w10" x="56.0" y="5.0"/>
+<use href="#w14" x="-11.0" y="-35.0"/>
+</g>
+  </svg>
+
+  <div class="wrap">
+
+    <h1 class="title">Los Tres Retos para transformar imaginarios</h1>
+
+    <div class="cols">
+      <p class="col--left">Interdum et malesuada fames ac ante ipsum primis in faucibus. Sed et
+        tincidunt leo. Proin in lectus augue. Donec sollicitudin erat et libero mattis, a semper
+        lorem mollis. Quisque pellentesque placerat dolor, vel placerat dui rhoncus quis.
+        Maecenas eget pretium orci. Integer suscipit lacus turpis, dapibus finibus justo egestas
+        ut. Praesent sed convallis purus, vitae eleifend orci. In vel convallis nulla.</p>
+      <p class="col--right">Phasellus efficitur nunc sit amet leo feugiat, sed maximus odio
+        molestie. Maecenas at ultricies velit. Nullam ac pulvinar mauris, sed porta sem. Duis
+        molestie, mauris in feugiat vulputate, mauris ante dapibus mi, quis bibendum neque nulla
+        nec metus. Aenean euismod imperdiet diam at rhoncus. Donec congue metus nisl, a eleifend
+        eros ornare eu.</p>
+    </div>
+
+    <p class="hint">
+      <span class="hint__icon" aria-hidden="true">i</span>
+      Haz clic sobre los elementos para ingresar a cada secci&oacute;n.
+    </p>
+
+    <div class="cards">
+      <a class="card" href="visualizacion.html" style="--shift:29.29%">
+        <span class="card__media">
+          <svg class="card__art" viewBox="0 0 338 536" aria-hidden="true" focusable="false">
+<path fill="#F85E84" d="M338 193C338 286.3 262.3 362 169 362C75.7 362 0 286.3 0 193C0 99.7 75.7 24 169 24C262.3 24 338 99.7 338 193Z"/>
+<path fill="#F85E84" d="M338 367C338 460.3 262.3 536 169 536C75.7 536 0 460.3 0 367C0 273.7 75.7 198 169 198C262.3 198 338 273.7 338 367Z"/>
+<path fill="#EDF486" d="M168.9 198.1C230.4 198.1 284.2 230.9 313.8 280C284.2 329.1 230.4 361.9 168.9 361.9C107.5 361.9 53.7 329.1 24.1 280C53.7 230.9 107.5 198.1 168.9 198.1Z"/>
+<path fill="#CC426F" d="M168.9 198.1L168.9 181.1L168.9 181.1L168.9 198.1ZM313.8 280L328.3 288.8L333.6 280L328.3 271.2L313.8 280ZM168.9 361.9L168.9 378.9L168.9 378.9L168.9 361.9ZM24.1 280L9.6 271.2L4.3 280L9.6 288.8L24.1 280ZM168.9 198.1L168.9 215.1C224.2 215.1 272.6 244.6 299.2 288.8L313.8 280L328.3 271.2C295.8 217.3 236.6 181.1 168.9 181.1L168.9 198.1ZM313.8 280L299.2 271.2C272.6 315.4 224.2 344.9 168.9 344.9L168.9 361.9L168.9 378.9C236.6 378.9 295.8 342.7 328.3 288.8L313.8 280ZM168.9 361.9L168.9 344.9C113.7 344.9 65.3 315.4 38.7 271.2L24.1 280L9.6 288.8C42.1 342.7 101.3 378.9 168.9 378.9L168.9 361.9ZM24.1 280L38.7 288.8C65.3 244.6 113.7 215.1 168.9 215.1L168.9 198.1L168.9 181.1C101.3 181.1 42.1 217.3 9.6 271.2L24.1 280Z"/>
+<path fill="#F85E84" d="M266 243L253 243C253 265.1 235.1 283 213 283L213 296L213 309C249.4 309 279 279.5 279 243L266 243ZM213 296L213 283C190.9 283 173 265.1 173 243L160 243L147 243C147 279.5 176.6 309 213 309L213 296ZM160 243L173 243C173 220.9 190.9 203 213 203L213 190L213 177C176.6 177 147 206.5 147 243L160 243ZM213 190L213 203C235.1 203 253 220.9 253 243L266 243L279 243C279 206.5 249.4 177 213 177L213 190Z"/>
+<path fill="#CC426F" d="M266 243C266 272.3 242.3 296 213 296C183.7 296 160 272.3 160 243C160 213.7 183.7 190 213 190C242.3 190 266 213.7 266 243Z"/>
+<path fill="#5CD1FC" d="M219 223.5C219 232.6 211.6 240 202.5 240C193.4 240 186 232.6 186 223.5C186 214.4 193.4 207 202.5 207C211.6 207 219 214.4 219 223.5Z"/>
+          </svg>
+          <span class="card__desc">
+            <svg class="card__brace" viewBox="0 0 40 174" preserveAspectRatio="none" aria-hidden="true" focusable="false"><path fill="#EEEEEE" d="M38.23 0C39.04 0 40 0.2 40 4.91C35.18 4.91 30.52 10.43 30.52 10.43C30.52 10.43 26.02 12.47 26.02 27.6C26.02 30.47 26.18 34.15 26.67 38.03L29.88 70.13L29.88 71.15C29.88 81.79 12.05 87.51 12.05 87.51L12.69 89.15C13.17 89.15 27.79 93.03 27.79 104.48L25.86 137.4C25.86 142.92 26.35 156.62 28.43 160.3C30.52 164.19 40 169.3 40 169.3L39.04 174C34.86 174 15.1 168.07 15.1 148.44C15.1 139.85 18.8 127.38 18.8 121.25C18.8 116.34 16.39 100.8 16.39 100.8L1.45 93.03L0 84.44C2.09 84.44 17.67 74.22 17.67 74.22C17.67 74.22 20.08 60.32 20.08 53.77L15.26 30.67C15.26 3.07 34.86 0 38.23 0Z"/></svg>
+            <span class="card__descText">Para transformar un imaginario, necesitamos reconocerlo. Visualizar imaginarios es tomar consciencia de los lentes a trav&eacute;s de los cuales vemos el mundo.</span>
+            <svg class="card__brace" viewBox="0 0 39 174" preserveAspectRatio="none" aria-hidden="true" focusable="false"><path fill="#EEEEEE" d="M2.19 0C4.86 0 24.12 3.07 24.12 30.67L19.42 53.77C19.42 60.32 21.77 74.22 21.77 74.22C21.77 74.22 36.96 84.44 39 84.44L37.59 93.03L23.02 100.8C23.02 100.8 20.67 116.34 20.67 121.25C20.67 127.38 24.28 139.85 24.28 148.44C24.28 168.07 5.01 174 0.94 174L0 169.3C0 169.3 9.24 164.19 11.28 160.3C13.16 156.82 13.78 142.51 13.78 137.4L11.9 104.48C11.9 93.03 26.16 89.15 26.63 89.15L27.25 87.51C27.25 87.51 9.87 81.79 9.87 71.15L9.87 70.13L13 38.03C13.31 34.15 13.47 30.87 13.47 28.01C13.47 12.88 9.24 10.43 9.24 10.43C9.24 10.43 4.7 4.91 0 4.91L0 4.09C0 1.64 0.16 0 2.19 0Z"/></svg>
+          </span>
+        </span>
+        <span class="card__label">Visualizaci&oacute;n</span>
+      </a>
+      <a class="card" href="evaluacion.html" style="--shift:24.63%">
+        <span class="card__media">
+          <svg class="card__art" viewBox="0 0 338 536" aria-hidden="true" focusable="false">
+<path fill="#5CD1FC" d="M338 169C338 262.3 262.3 338 169 338C75.7 338 0 262.3 0 169C0 75.7 75.7 0 169 0C262.3 0 338 75.7 338 169Z"/>
+<path fill="#5CD1FC" d="M338 343C338 436.3 262.3 512 169 512C75.7 512 0 436.3 0 343C0 249.7 75.7 174 169 174C262.3 174 338 249.7 338 343Z"/>
+<path fill="#FCB95C" d="M34.8 240.4C60.3 288.3 110.9 321 169 321C227.1 321 277.6 288.4 303.2 240.5C307 245.4 310.5 250.6 313.8 256C284.2 305.1 230.4 337.9 168.9 337.9C107.5 337.9 53.7 305.1 24.1 256C27.4 250.6 30.9 245.4 34.8 240.4Z"/>
+<path fill="#3D508F" d="M321 169C321 253 253 321 169 321C85 321 17 253 17 169C17 85 85 17 169 17C253 17 321 85 321 169Z"/>
+<path fill="#776DFF" d="M169 174C223.7 174 272.4 200 303.2 240.3C277.7 288.3 227.2 321 169 321C110.8 321 60.3 288.3 34.8 240.3C65.6 200 114.3 174 169 174Z"/>
+<path fill="#EDF486" d="M183 200C183 222.1 165.1 240 143 240C120.9 240 103 222.1 103 200C103 177.9 120.9 160 143 160C165.1 160 183 177.9 183 200Z"/>
+<path fill="#F85E84" d="M183 94C183 101.7 176.7 108 169 108C161.3 108 155 101.7 155 94C155 86.3 161.3 80 169 80C176.7 80 183 86.3 183 94Z"/>
+<path fill="#5CD1FC" d="M241 140C241 156 228 169 212 169C196 169 183 156 183 140C183 124 196 111 212 111C228 111 241 124 241 140Z"/>
+<path fill="#EDF486" d="M26.8 332.1C30.3 326.8 38.1 327.4 41.6 332.7C68.7 374.2 115.6 401.6 168.9 401.6C222.1 401.6 269 374.2 296.1 332.7C299.6 327.4 307.4 326.8 310.8 332.2C312.6 334.9 312.6 338.4 310.9 341.1C307.4 346.4 303.7 351.5 299.7 356.4L327.9 377.5C332.4 380.8 333.3 387.1 330 391.5C326.7 395.9 320.4 396.8 316 393.5L286.1 371.2C275.5 381.4 263.5 390.3 250.5 397.5L280.4 443C283.4 447.6 282.1 453.8 277.5 456.9C272.9 459.9 266.7 458.6 263.6 454L232.3 406.2C216.4 412.6 199.3 416.7 181.5 418C181.5 418.4 181.5 418.7 181.5 419L181.5 479.5C181.5 485 177 489.5 171.5 489.5C166 489.5 161.5 485 161.5 479.5L161.5 419C161.5 418.8 161.5 418.6 161.5 418.3C143.6 417.6 126.4 414 110.4 408.1L80.3 454C77.3 458.6 71.1 459.9 66.5 456.9C61.9 453.8 60.6 447.6 63.6 443L91.8 400C77.7 392.7 64.7 383.6 53.3 372.8L28.3 393.2C24.1 396.7 17.8 396.1 14.3 391.8C10.8 387.6 11.4 381.3 15.7 377.8L39.5 358.3C34.9 352.8 30.7 347.1 26.8 341.1C25 338.4 25 334.9 26.8 332.1Z"/>
+          </svg>
+          <span class="card__desc">
+            <svg class="card__brace" viewBox="0 0 40 174" preserveAspectRatio="none" aria-hidden="true" focusable="false"><path fill="#EEEEEE" d="M38.23 0C39.04 0 40 0.2 40 4.91C35.18 4.91 30.52 10.43 30.52 10.43C30.52 10.43 26.02 12.47 26.02 27.6C26.02 30.47 26.18 34.15 26.67 38.03L29.88 70.13L29.88 71.15C29.88 81.79 12.05 87.51 12.05 87.51L12.69 89.15C13.17 89.15 27.79 93.03 27.79 104.48L25.86 137.4C25.86 142.92 26.35 156.62 28.43 160.3C30.52 164.19 40 169.3 40 169.3L39.04 174C34.86 174 15.1 168.07 15.1 148.44C15.1 139.85 18.8 127.38 18.8 121.25C18.8 116.34 16.39 100.8 16.39 100.8L1.45 93.03L0 84.44C2.09 84.44 17.67 74.22 17.67 74.22C17.67 74.22 20.08 60.32 20.08 53.77L15.26 30.67C15.26 3.07 34.86 0 38.23 0Z"/></svg>
+            <span class="card__descText">Los imaginarios son realidades vivas y din&aacute;micas. Evaluar imaginarios es revisar si siguen siendo importantes, si requieren refuerzos o reconfiguraciones.</span>
+            <svg class="card__brace" viewBox="0 0 39 174" preserveAspectRatio="none" aria-hidden="true" focusable="false"><path fill="#EEEEEE" d="M2.19 0C4.86 0 24.12 3.07 24.12 30.67L19.42 53.77C19.42 60.32 21.77 74.22 21.77 74.22C21.77 74.22 36.96 84.44 39 84.44L37.59 93.03L23.02 100.8C23.02 100.8 20.67 116.34 20.67 121.25C20.67 127.38 24.28 139.85 24.28 148.44C24.28 168.07 5.01 174 0.94 174L0 169.3C0 169.3 9.24 164.19 11.28 160.3C13.16 156.82 13.78 142.51 13.78 137.4L11.9 104.48C11.9 93.03 26.16 89.15 26.63 89.15L27.25 87.51C27.25 87.51 9.87 81.79 9.87 71.15L9.87 70.13L13 38.03C13.31 34.15 13.47 30.87 13.47 28.01C13.47 12.88 9.24 10.43 9.24 10.43C9.24 10.43 4.7 4.91 0 4.91L0 4.09C0 1.64 0.16 0 2.19 0Z"/></svg>
+          </span>
+        </span>
+        <span class="card__label">Evaluaci&oacute;n</span>
+      </a>
+      <a class="card" href="adaptacion.html" style="--shift:28.54%">
+        <span class="card__media">
+          <svg class="card__art" viewBox="0 0 338 536" aria-hidden="true" focusable="false">
+<path fill="#776DFF" d="M0 367C0 273.7 75.7 198 169 198C262.3 198 338 273.7 338 367C338 460.3 262.3 536 169 536C75.7 536 0 460.3 0 367Z"/>
+<path fill="#776DFF" d="M0 193C0 99.7 75.7 24 169 24C262.3 24 338 99.7 338 193C338 286.3 262.3 362 169 362C75.7 362 0 286.3 0 193Z"/>
+<path fill="#FCB95C" d="M169.1 362C107.6 362 53.7 329.1 24.2 280C53.7 230.9 107.6 198 169.1 198C230.6 198 284.4 230.9 314 280C284.4 329.1 230.6 362 169.1 362Z"/>
+<path fill="#5E3986" d="M24.2 280L9.6 271.2L4.3 280L9.6 288.8L24.2 280ZM314 280L328.6 288.8L333.8 280L328.6 271.2L314 280ZM169.1 362L169.1 345C113.8 345 65.4 315.5 38.7 271.2L24.2 280L9.6 288.8C42.1 342.8 101.4 379 169.1 379L169.1 362ZM24.2 280L38.7 288.8C65.4 244.5 113.8 215 169.1 215L169.1 198L169.1 181C101.4 181 42.1 217.2 9.6 271.2L24.2 280ZM169.1 198L169.1 215C224.4 215 272.8 244.5 299.4 288.8L314 280L328.6 271.2C296.1 217.2 236.8 181 169.1 181L169.1 198ZM314 280L299.4 271.2C272.8 315.5 224.4 345 169.1 345L169.1 362L169.1 379C236.8 379 296.1 342.8 328.6 288.8L314 280Z"/>
+<path fill="#EDF486" d="M209 294C209 316.1 191.1 334 169 334C146.9 334 129 316.1 129 294C129 271.9 146.9 254 169 254C191.1 254 209 271.9 209 294Z"/>
+<path fill="#F85E84" d="M183 348C183 355.7 176.7 362 169 362C161.3 362 155 355.7 155 348C155 340.3 161.3 334 169 334C176.7 334 183 340.3 183 348Z"/>
+<path fill="#5CD1FC" d="M198 227C198 243 185 256 169 256C153 256 140 243 140 227C140 211 153 198 169 198C185 198 198 211 198 227Z"/>
+<path fill="#EDF486" d="M314.2 207.4C310.7 212.7 302.9 212.1 299.4 206.8C272.3 165.3 225.4 137.9 172.1 137.9C118.9 137.9 72 165.3 44.8 206.8C41.4 212.1 33.6 212.7 30.2 207.3C28.4 204.6 28.4 201.1 30.2 198.4C33.6 193.1 37.3 188 41.3 183.1L13.1 162C8.6 158.7 7.7 152.4 11 148C14.3 143.6 20.6 142.7 25 146L54.9 168.3C65.5 158.1 77.5 149.2 90.5 142L60.6 96.5C57.6 91.9 58.9 85.7 63.5 82.6C68.1 79.6 74.3 80.9 77.4 85.5L108.7 133.3C124.6 126.9 141.7 122.8 159.5 121.5C159.5 121.1 159.5 120.8 159.5 120.5L159.5 60C159.5 54.5 164 50 169.5 50C175 50 179.5 54.5 179.5 60L179.5 120.5C179.5 120.7 179.5 120.9 179.5 121.2C197.4 121.9 214.6 125.5 230.6 131.4L260.7 85.5C263.7 80.9 269.9 79.6 274.5 82.6C279.1 85.7 280.4 91.9 277.4 96.5L249.2 139.5C263.3 146.8 276.3 155.9 287.7 166.7L312.7 146.3C316.9 142.8 323.2 143.4 326.7 147.7C330.2 151.9 329.6 158.2 325.3 161.7L301.5 181.2C306.1 186.7 310.3 192.4 314.2 198.4C316 201.1 316 204.6 314.2 207.4Z"/>
+<path fill="#EDF486" d="M314.2 352.7C310.7 347.4 302.9 348 299.4 353.3C272.3 394.8 225.4 422.2 172.1 422.2C118.9 422.2 72 394.8 44.8 353.3C41.4 348 33.6 347.4 30.2 352.8C28.4 355.5 28.4 359 30.2 361.7C33.6 367 37.3 372.1 41.3 377L13.1 398.1C8.6 401.4 7.7 407.7 11 412.1C14.3 416.5 20.6 417.4 25 414.1L54.9 391.8C65.5 402 77.5 410.9 90.5 418.1L60.6 463.6C57.6 468.2 58.9 474.4 63.5 477.5C68.1 480.5 74.3 479.2 77.4 474.6L108.7 426.8C124.6 433.2 141.7 437.3 159.5 438.6C159.5 439 159.5 439.3 159.5 439.6L159.5 500.1C159.5 505.6 164 510.1 169.5 510.1C175 510.1 179.5 505.6 179.5 500.1L179.5 439.6C179.5 439.4 179.5 439.2 179.5 439C197.4 438.2 214.6 434.6 230.6 428.7L260.7 474.6C263.7 479.2 269.9 480.5 274.5 477.5C279.1 474.4 280.4 468.2 277.4 463.6L249.2 420.6C263.3 413.3 276.3 404.2 287.7 393.4L312.7 413.8C316.9 417.3 323.2 416.7 326.7 412.4C330.2 408.2 329.6 401.8 325.3 398.4L301.5 378.9C306.1 373.4 310.3 367.7 314.2 361.7C316 359 316 355.5 314.2 352.7Z"/>
+          </svg>
+          <span class="card__desc">
+            <svg class="card__brace" viewBox="0 0 40 174" preserveAspectRatio="none" aria-hidden="true" focusable="false"><path fill="#EEEEEE" d="M38.23 0C39.04 0 40 0.2 40 4.91C35.18 4.91 30.52 10.43 30.52 10.43C30.52 10.43 26.02 12.47 26.02 27.6C26.02 30.47 26.18 34.15 26.67 38.03L29.88 70.13L29.88 71.15C29.88 81.79 12.05 87.51 12.05 87.51L12.69 89.15C13.17 89.15 27.79 93.03 27.79 104.48L25.86 137.4C25.86 142.92 26.35 156.62 28.43 160.3C30.52 164.19 40 169.3 40 169.3L39.04 174C34.86 174 15.1 168.07 15.1 148.44C15.1 139.85 18.8 127.38 18.8 121.25C18.8 116.34 16.39 100.8 16.39 100.8L1.45 93.03L0 84.44C2.09 84.44 17.67 74.22 17.67 74.22C17.67 74.22 20.08 60.32 20.08 53.77L15.26 30.67C15.26 3.07 34.86 0 38.23 0Z"/></svg>
+            <span class="card__descText">Es m&aacute;s f&aacute;cil reimaginar junto a otros. Adaptar imaginarios es permitirnos ser curiosos para jugar, explorar posibilidades y reconfigurar nuestras relaciones.</span>
+            <svg class="card__brace" viewBox="0 0 39 174" preserveAspectRatio="none" aria-hidden="true" focusable="false"><path fill="#EEEEEE" d="M2.19 0C4.86 0 24.12 3.07 24.12 30.67L19.42 53.77C19.42 60.32 21.77 74.22 21.77 74.22C21.77 74.22 36.96 84.44 39 84.44L37.59 93.03L23.02 100.8C23.02 100.8 20.67 116.34 20.67 121.25C20.67 127.38 24.28 139.85 24.28 148.44C24.28 168.07 5.01 174 0.94 174L0 169.3C0 169.3 9.24 164.19 11.28 160.3C13.16 156.82 13.78 142.51 13.78 137.4L11.9 104.48C11.9 93.03 26.16 89.15 26.63 89.15L27.25 87.51C27.25 87.51 9.87 81.79 9.87 71.15L9.87 70.13L13 38.03C13.31 34.15 13.47 30.87 13.47 28.01C13.47 12.88 9.24 10.43 9.24 10.43C9.24 10.43 4.7 4.91 0 4.91L0 4.09C0 1.64 0.16 0 2.19 0Z"/></svg>
+          </span>
+        </span>
+        <span class="card__label">Adaptaci&oacute;n</span>
+      </a>
+    </div>
+
+  </div>
+</section>
+
+<footer class="nav">
+  <a class="brand" href="index.html">
+    <span>pro</span>
+    <span>teia</span>
+    <span class="brand__tag">PEDAGOG&Iacute;AS PARA REIMAGINAR</span>
+  </a>
+  <nav class="nav__links" aria-label="Principal">
+    <a href="index.html">Inicio</a>
+    <a href="retos.html" aria-current="page">Momentos</a>
+    <a href="principios.html">Principios</a>
+    <a href="#">Glosario</a>
+    <a href="#">Podcast</a>
+    <a href="#">Contacto</a>
+  </nav>
+</footer>
+
+<script src="eye-menu.js" defer></script>
+
+</body>
+</html>

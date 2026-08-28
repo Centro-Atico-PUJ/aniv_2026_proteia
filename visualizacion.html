@@ -1,0 +1,728 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Visualizaci&oacute;n — proteia</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Podkova:wght@400..800&family=Source+Serif+4:ital,opsz,wght@0,8..60,200..900;1,8..60,200..900&display=swap" rel="stylesheet">
+<style>
+/* ============================================================
+   proteia — Visualizacion (scroll horizontal, 3 paneles)
+   Colores, coordenadas y trazos extraidos del PDF original
+   (lienzo 4314x1024 = 3 paneles de 1438 + barra de 112).
+   Las medidas interiores van en cqw: 1cqw = 1% del ancho del
+   panel, asi que a 1440px la maqueta coincide exactamente.
+   ============================================================ */
+:root{
+  --rosa:#CC426F;
+  --coral:#F85E84;
+  --amarillo:#EDF486;
+  --cian:#5CD1FC;
+  --crema:#EEEEEE;
+  --tinta:#282828;
+  --morado:#5E3986;
+  --nav:#D9D9D9;
+  --nav-h:clamp(88px,7.78vw,112px);
+
+  --font-display:'Podkova','Bitter',Georgia,'Times New Roman',serif;
+  --font-body:'Source Serif 4','PT Serif',Georgia,'Times New Roman',serif;
+}
+
+*,*::before,*::after{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{
+  margin:0;
+  min-height:100vh;
+  min-height:100svh;
+  display:flex;
+  flex-direction:column;
+  background:var(--rosa);
+  color:var(--crema);
+  font-family:var(--font-body);
+  -webkit-font-smoothing:antialiased;
+}
+
+/* ---------- Carril horizontal ---------- */
+.scroller{
+  position:relative;
+  flex:1 1 auto;
+  min-height:0;
+  overflow-x:auto;
+  overflow-y:hidden;
+  scroll-snap-type:x mandatory;
+  scroll-behavior:smooth;
+  overscroll-behavior-x:contain;
+  scrollbar-width:none;
+  cursor:grab;
+  touch-action:pan-y;
+}
+.scroller.is-dragging{cursor:grabbing;scroll-snap-type:none;scroll-behavior:auto}
+.scroller::-webkit-scrollbar{display:none}
+.track{display:flex;align-items:center;height:100%}
+.scroll-hint{
+  position:absolute;
+  z-index:4;
+  right:clamp(6px,1vw,14px);
+  bottom:clamp(18px,4vw,42px);
+  display:flex;
+  align-items:center;
+  gap:.45em;
+  padding:.5em .7em .5em .9em;
+  border:1px solid currentColor;
+  border-radius:999px;
+  background:rgba(40,40,40,.78);
+  color:var(--crema);
+  font-family:var(--font-display);
+  font-size:clamp(14px,1.25vw,18px);
+  line-height:1;
+  pointer-events:none;
+  transition:opacity .25s ease;
+}
+.scroll-hint__arrow{font-size:1.6em;line-height:.7}
+.scroll-hint.is-hidden{opacity:0}
+
+.panel{
+  position:relative;
+  /* el panel nunca es mas alto que el espacio que queda sobre la barra */
+  flex:0 0 min(100%,1440px,calc((100svh - var(--nav-h)) * 1438 / 912));
+  aspect-ratio:1438/912;
+  container-type:inline-size;
+  overflow:hidden;
+  scroll-snap-align:start;
+  border-right:0;
+}
+.panel__bg{
+  position:absolute;
+  inset:0;
+  width:100%;
+  height:100%;
+  z-index:0;
+  pointer-events:none;
+}
+.panel > *:not(.panel__bg){position:relative;z-index:1}
+
+/* ---------- Panel 1 : Visualizacion ---------- */
+.p1{display:flex;padding:5.56% 9.24% 0 8.26%}
+.p1__art{flex:0 0 28.5%;height:auto;align-self:flex-start;display:block}
+.p1__text{flex:1;margin-left:2.92%;padding-top:4.03%}
+.p1__title{
+  margin:0;
+  font-family:var(--font-display);
+  font-weight:700;
+  font-size:7.99cqw;
+  line-height:1.1;
+}
+.p1__text p{
+  margin:4.3% 0 0;
+  font-size:2.5cqw;
+  line-height:1.389;
+}
+.p1__text p + p{margin-top:2.78%}
+
+/* ---------- Panel 2 : Herramientas ---------- */
+.p2__head,.p3__head{
+  margin:5.07% 0 0;
+  font-family:var(--font-display);
+  font-weight:700;
+  font-size:3.33cqw;
+  line-height:1.15;
+}
+.p2__head{margin-left:7.43%}
+.p2__intro,.p3__intro{
+  margin-top:1.7%;
+  font-size:1.667cqw;
+  line-height:1.917;
+}
+.p2__intro{margin-left:7.43%;max-width:42.8%}
+
+.tools{
+  display:flex;
+  justify-content:space-between;
+  margin:7.26% 2.57% 0 3.06%;
+}
+.tool{
+  position:relative;
+  flex:0 0 19.93%;
+  height:40.21cqw;
+  padding:0 6.94%;
+  border-radius:2.083cqw;
+  background:var(--amarillo);
+  color:var(--tinta);
+  text-align:center;
+}
+.tool__tab{
+  position:absolute;
+  left:50%;
+  top:-4.1cqw;
+  transform:translateX(-50%);
+  display:grid;
+  place-items:center;
+  width:4.03cqw;
+  height:6.11cqw;
+  border-radius:999px;
+  background:var(--coral);
+}
+.tool__dot{
+  width:2.57cqw;
+  height:2.64cqw;
+  border-radius:50%;
+  background:var(--amarillo);
+}
+.tool__num{
+  display:block;
+  padding-top:5.97cqw;
+  font-family:var(--font-display);
+  font-weight:700;
+  font-size:5cqw;
+  line-height:1.2;
+}
+.tool__text{
+  margin:1.6cqw 0 0;
+  font-size:1.389cqw;
+  line-height:1.85;
+}
+
+/* ---------- Panel 3 : Preguntas ---------- */
+.p3{text-align:center}
+.p3__intro{margin-inline:auto;max-width:42.4%}
+.ask{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:2.2%;
+  width:55.76%;
+  height:35.97cqw;
+  margin:3.51% auto 0;
+  padding:0 4.23%;
+  border-radius:2.083cqw;
+  background:var(--amarillo);
+  color:var(--tinta);
+}
+.ask__brace{flex:none;width:7.35%;height:39.4%}
+.ask__q{
+  margin:0;
+  max-width:68.7%;
+  font-size:3.96cqw;
+  line-height:1.368;
+}
+
+/* ---------- Barra de navegacion ---------- */
+.nav{
+  position:relative;
+  z-index:2;
+  flex:none;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:clamp(16px,3vw,40px);
+  min-height:var(--nav-h);
+  padding:14px clamp(20px,5.07vw,73px);
+  background:var(--morado);
+}
+.brand{
+  display:flex;
+  flex-direction:column;
+  align-items:flex-start;
+  flex:none;
+  color:var(--crema);
+  text-decoration:none;
+  font-family:var(--font-display);
+  font-weight:500;
+  font-size:clamp(26px,2.92vw,42px);
+  line-height:.87;
+}
+.brand__tag{font-size:.13em;letter-spacing:.05em;margin-top:.55em;white-space:nowrap}
+.nav__links{display:flex;align-items:center;justify-content:flex-end;flex-wrap:wrap;gap:clamp(16px,4.72vw,68px)}
+.nav__links a{
+  font-family:var(--font-display);
+  font-size:clamp(15px,1.74vw,25px);
+  color:var(--nav);
+  text-decoration:none;
+}
+.nav__links a:hover{text-decoration:underline;text-underline-offset:.2em}
+.nav__links a[aria-current="page"]{text-decoration:underline;text-underline-offset:.2em;text-decoration-thickness:2px}
+
+a:focus-visible{outline:2px solid var(--crema);outline-offset:6px;border-radius:6px}
+.scroller:focus-visible{outline:2px solid var(--crema);outline-offset:-4px}
+
+/* ---------- Movil: los paneles se apilan ---------- */
+@media (max-width:680px){
+  .scroller{display:block;flex:none;overflow:visible;scroll-snap-type:none;cursor:default;touch-action:auto}
+  .scroll-hint{display:none}
+  .track{flex-direction:column;align-items:stretch;height:auto}
+  .panel{
+    flex:1 1 auto;
+    width:100%;
+    aspect-ratio:auto;
+    border-right:0;
+    border-bottom:0;
+    padding-bottom:44px;
+  }
+  .nav{min-height:auto}
+  .p1{display:block;padding:0 22px}
+  .p1__art{width:52%;max-width:240px;margin:8px 0 20px}
+  .p1__text{margin-left:0;padding-top:0}
+  .p1__title{font-size:clamp(38px,10vw,72px)}
+  .p1__text p{font-size:clamp(15px,4.2vw,22px);line-height:1.6;margin-top:20px}
+  .p1__text p + p{margin-top:20px}
+  .p2,.p3{padding:0 22px}
+  .p2__head,.p3__head{margin:34px 0 0;font-size:clamp(24px,6.4vw,40px)}
+  .p2__intro,.p3__intro{
+    margin-top:12px;
+    max-width:none;
+    font-size:clamp(14px,3.8vw,20px);
+    line-height:1.7;
+  }
+  .p2__head,.p2__intro{margin-left:0}
+  .tools{display:grid;grid-template-columns:repeat(2,1fr);gap:64px 16px;margin:64px 0 0}
+  .tool{flex:none;height:auto;padding:0 16px 24px;border-radius:22px}
+  .tool__tab{top:-28px;width:40px;height:60px}
+  .tool__dot{width:26px;height:26px}
+  .tool__num{padding-top:34px;font-size:clamp(30px,8vw,48px)}
+  .tool__text{margin-top:12px;font-size:clamp(12px,3.2vw,15px);line-height:1.7}
+  .ask{
+    width:100%;
+    height:auto;
+    gap:12px;
+    margin-top:26px;
+    padding:34px 16px;
+    border-radius:22px;
+  }
+  .ask__brace{width:26px;height:auto;align-self:stretch}
+  .ask__q{max-width:none;font-size:clamp(20px,5.6vw,34px);line-height:1.35}
+  .nav{flex-direction:column;justify-content:center;gap:20px;padding:26px 20px}
+  .brand{align-items:center}
+  .nav__links{justify-content:center;gap:18px 26px}
+}
+@media (max-width:420px){
+  .tools{grid-template-columns:1fr;gap:60px}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+</style>
+</head>
+<body>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false"><defs>
+<path id="wv0" d="M135 38.2C135 39 134.8 40 131.2 40C131.2 35.2 126.9 30.5 126.9 30.5C126.9 30.5 125.3 26 113.6 26C111.4 26 108.5 26.2 105.5 26.7L80.6 29.9L79.8 29.9C71.5 29.9 67.1 12 67.1 12L65.8 12.7C65.8 13.2 62.8 27.8 53.9 27.8L28.4 25.9C24.1 25.9 13.5 26.4 10.6 28.4C7.6 30.5 3.6 40 3.6 40L0 39C0 34.9 4.6 15.1 19.8 15.1C26.5 15.1 36.2 18.8 40.9 18.8C44.7 18.8 56.8 16.4 56.8 16.4L62.8 1.5L69.5 0C69.5 2.1 77.4 17.7 77.4 17.7C77.4 17.7 88.2 20.1 93.3 20.1L111.2 15.3C132.6 15.3 135 34.9 135 38.2Z"/>
+<path id="wv1" d="M135 38.2C135 39 134.8 40 131.2 40C131.2 35.2 126.9 30.5 126.9 30.5C126.9 30.5 125.3 26 113.6 26C111.4 26 108.5 26.2 105.5 26.7L80.6 29.9L79.8 29.9C71.6 29.9 67.1 12 67.1 12L65.8 12.7C65.8 13.2 62.8 27.8 53.9 27.8L28.4 25.9C24.1 25.9 13.5 26.4 10.6 28.4C7.6 30.5 3.7 40 3.7 40L0 39C0 34.9 4.6 15.1 19.8 15.1C26.5 15.1 36.2 18.8 40.9 18.8C44.7 18.8 56.8 16.4 56.8 16.4L62.8 1.5L69.5 0C69.5 2.1 77.4 17.7 77.4 17.7C77.4 17.7 88.2 20.1 93.3 20.1L111.2 15.3C132.6 15.3 135 34.9 135 38.2Z"/>
+<path id="wv2" d="M135 38.2C135 39 134.8 40 131.2 40C131.2 35.2 126.9 30.5 126.9 30.5C126.9 30.5 125.3 26 113.6 26C111.4 26 108.5 26.2 105.5 26.7L80.6 29.9L79.8 29.9C71.6 29.9 67.1 12 67.1 12L65.8 12.7C65.8 13.2 62.8 27.8 53.9 27.8L28.4 25.9C24.1 25.9 13.5 26.4 10.6 28.4C7.6 30.5 3.6 40 3.6 40L0 39C0 34.9 4.6 15.1 19.8 15.1C26.5 15.1 36.2 18.8 40.9 18.8C44.7 18.8 56.8 16.4 56.8 16.4L62.8 1.5L69.5 0C69.5 2.1 77.4 17.7 77.4 17.7C77.4 17.7 88.2 20.1 93.3 20.1L111.2 15.3C132.6 15.3 135 34.9 135 38.2Z"/>
+<path id="wv3" d="M135 38.2C135 39 134.8 40 131.2 40C131.2 35.2 126.9 30.5 126.9 30.5C126.9 30.5 125.3 26 113.6 26C111.4 26 108.5 26.2 105.5 26.7L80.6 29.9L79.8 29.9C71.5 29.9 67.1 12 67.1 12L65.8 12.7C65.8 13.2 62.8 27.8 53.9 27.8L28.4 25.9C24.1 25.9 13.5 26.4 10.6 28.4C7.6 30.5 3.7 40 3.7 40L0 39C0 34.9 4.6 15.1 19.8 15.1C26.5 15.1 36.2 18.8 40.9 18.8C44.7 18.8 56.8 16.4 56.8 16.4L62.8 1.5L69.5 0C69.5 2.1 77.4 17.7 77.4 17.7C77.4 17.7 88.2 20.1 93.3 20.1L111.2 15.3C132.6 15.3 135 34.9 135 38.2Z"/>
+<path id="wv4" d="M0 1.8C0 1 0.2 0 3.8 0C3.8 4.8 8.1 9.5 8.1 9.5C8.1 9.5 9.7 14 21.4 14C23.6 14 26.5 13.8 29.5 13.3L54.4 10.1L55.2 10.1C63.4 10.1 67.9 27.9 67.9 27.9L69.2 27.3C69.2 26.8 72.2 12.2 81.1 12.2L106.6 14.1C110.9 14.1 121.5 13.7 124.4 11.6C127.4 9.5 131.3 0 131.3 0L135 1C135 5.1 130.4 24.9 115.2 24.9C108.5 24.9 98.8 21.2 94.1 21.2C90.3 21.2 78.2 23.6 78.2 23.6L72.2 38.6L65.5 40C65.5 37.9 57.6 22.3 57.6 22.3C57.6 22.3 46.8 19.9 41.7 19.9L23.8 24.7C2.4 24.7 0 5.1 0 1.8Z"/>
+<path id="wv5" d="M0 1.8C0 1 0.2 0 3.8 0C3.8 4.8 8.1 9.5 8.1 9.5C8.1 9.5 9.7 14 21.4 14C23.6 14 26.5 13.8 29.5 13.3L54.4 10.1L55.2 10.1C63.4 10.1 67.9 28 67.9 28L69.2 27.3C69.2 26.8 72.2 12.2 81.1 12.2L106.6 14.1C110.9 14.1 121.5 13.6 124.4 11.6C127.4 9.5 131.3 0 131.3 0L135 1C135 5.1 130.4 24.9 115.2 24.9C108.5 24.9 98.8 21.2 94.1 21.2C90.3 21.2 78.2 23.6 78.2 23.6L72.2 38.5L65.5 40C65.5 37.9 57.6 22.3 57.6 22.3C57.6 22.3 46.8 19.9 41.7 19.9L23.8 24.7C2.4 24.7 0 5.1 0 1.8Z"/>
+<path id="wv6" d="M0 1.8C0 1 0.2 0 3.8 0C3.8 4.8 8.1 9.5 8.1 9.5C8.1 9.5 9.7 14 21.4 14C23.6 14 26.5 13.8 29.5 13.3L54.4 10.1L55.2 10.1C63.4 10.1 67.9 28 67.9 28L69.2 27.3C69.2 26.8 72.2 12.2 81.1 12.2L106.6 14.1C110.9 14.1 121.5 13.7 124.4 11.6C127.4 9.5 131.3 0 131.3 0L135 1C135 5.1 130.4 24.9 115.2 24.9C108.5 24.9 98.8 21.2 94.1 21.2C90.3 21.2 78.2 23.6 78.2 23.6L72.2 38.5L65.5 40C65.5 37.9 57.6 22.3 57.6 22.3C57.6 22.3 46.8 19.9 41.7 19.9L23.8 24.7C2.4 24.7 0 5.1 0 1.8Z"/>
+<path id="wv7" d="M0 1.8C0 1 0.2 0 3.8 0C3.8 4.8 8.1 9.5 8.1 9.5C8.1 9.5 9.7 14 21.4 14C23.6 14 26.5 13.8 29.5 13.3L54.4 10.1L55.2 10.1C63.4 10.1 67.9 27.9 67.9 27.9L69.2 27.3C69.2 26.8 72.2 12.2 81.1 12.2L106.6 14.1C110.9 14.1 121.5 13.7 124.4 11.6C127.4 9.5 131.3 0 131.3 0L135 1C135 5.1 130.4 24.9 115.2 24.9C108.5 24.9 98.8 21.2 94.1 21.2C90.3 21.2 78.2 23.6 78.2 23.6L72.2 38.5L65.5 40C65.5 37.9 57.6 22.3 57.6 22.3C57.6 22.3 46.8 19.9 41.7 19.9L23.8 24.7C2.4 24.7 0 5.1 0 1.8Z"/>
+<path id="wv8" d="M0 1.8C0 1 0.2 0 3.8 0C3.8 4.8 8.1 9.5 8.1 9.5C8.1 9.5 9.7 14 21.4 14C23.6 14 26.5 13.8 29.5 13.3L54.4 10.1L55.2 10.1C63.5 10.1 67.9 28 67.9 28L69.2 27.3C69.2 26.8 72.2 12.2 81.1 12.2L106.6 14.1C110.9 14.1 121.5 13.7 124.4 11.6C127.4 9.5 131.3 0 131.3 0L135 1C135 5.1 130.4 24.9 115.2 24.9C108.5 24.9 98.8 21.2 94.1 21.2C90.3 21.2 78.2 23.6 78.2 23.6L72.2 38.5L65.5 40C65.5 37.9 57.6 22.3 57.6 22.3C57.6 22.3 46.8 19.9 41.7 19.9L23.8 24.7C2.4 24.7 0 5.1 0 1.8Z"/>
+<path id="wv9" d="M0 1.8C0 1 0.2 0 3.8 0C3.8 4.8 8.1 9.5 8.1 9.5C8.1 9.5 9.7 14 21.4 14C23.6 14 26.5 13.8 29.5 13.3L54.4 10.1L55.2 10.1C63.5 10.1 67.9 27.9 67.9 27.9L69.2 27.3C69.2 26.8 72.2 12.2 81.1 12.2L106.6 14.1C110.9 14.1 121.5 13.7 124.4 11.6C127.4 9.5 131.3 0 131.3 0L135 1C135 5.1 130.4 24.9 115.2 24.9C108.5 24.9 98.8 21.2 94.1 21.2C90.3 21.2 78.2 23.6 78.2 23.6L72.2 38.5L65.5 40C65.5 37.9 57.6 22.3 57.6 22.3C57.6 22.3 46.8 19.9 41.7 19.9L23.8 24.7C2.4 24.7 0 5.1 0 1.8Z"/>
+<path id="wv10" d="M0 1.8C0 1 0.2 0 3.8 0C3.8 4.8 8.1 9.5 8.1 9.5C8.1 9.5 9.7 14 21.4 14C23.6 14 26.5 13.8 29.5 13.3L54.4 10.1L55.2 10.1C63.5 10.1 67.9 27.9 67.9 27.9L69.2 27.3C69.2 26.8 72.2 12.2 81.1 12.2L106.6 14.1C110.9 14.1 121.5 13.7 124.4 11.6C127.4 9.5 131.3 0 131.3 0L135 1C135 5.1 130.4 24.9 115.2 24.9C108.5 24.9 98.8 21.2 94.1 21.2C90.3 21.2 78.2 23.6 78.2 23.6L72.2 38.6L65.5 40C65.5 37.9 57.6 22.3 57.6 22.3C57.6 22.3 46.8 19.9 41.7 19.9L23.8 24.7C2.4 24.7 0 5.1 0 1.8Z"/>
+<path id="wv11" d="M0 1.8C0 1 0.2 0 3.8 0C3.8 4.8 8.1 9.5 8.1 9.5C8.1 9.5 9.7 14 21.4 14C23.6 14 26.5 13.8 29.5 13.3L54.4 10.1L55.2 10.1C63.5 10.1 67.9 28 67.9 28L69.2 27.3C69.2 26.8 72.2 12.2 81.1 12.2L106.6 14.1C110.9 14.1 121.5 13.6 124.4 11.6C127.4 9.5 131.3 0 131.3 0L135 1C135 5.1 130.4 24.9 115.2 24.9C108.5 24.9 98.8 21.2 94.1 21.2C90.3 21.2 78.2 23.6 78.2 23.6L72.2 38.5L65.5 40C65.5 37.9 57.6 22.3 57.6 22.3C57.6 22.3 46.8 19.9 41.7 19.9L23.8 24.7C2.4 24.7 0 5.1 0 1.8Z"/>
+<path id="wv12" d="M0 1.8C0 1 0.2 0 3.8 0C3.8 4.8 8.1 9.5 8.1 9.5C8.1 9.5 9.7 14 21.4 14C23.6 14 26.5 13.8 29.5 13.3L54.4 10.1L55.2 10.1C63.4 10.1 67.9 27.9 67.9 27.9L69.2 27.3C69.2 26.8 72.2 12.2 81.1 12.2L106.6 14.1C110.9 14.1 121.5 13.7 124.4 11.6C127.4 9.5 131.4 0 131.4 0L135 1C135 5.1 130.4 24.9 115.2 24.9C108.5 24.9 98.8 21.2 94.1 21.2C90.3 21.2 78.2 23.6 78.2 23.6L72.2 38.6L65.5 40C65.5 37.9 57.6 22.3 57.6 22.3C57.6 22.3 46.8 19.9 41.7 19.9L23.8 24.7C2.4 24.7 0 5.1 0 1.8Z"/>
+<path id="wv13" d="M0 1.8C0 1 0.2 0 3.8 0C3.8 4.8 8.1 9.5 8.1 9.5C8.1 9.5 9.7 14 21.4 14C23.6 14 26.5 13.8 29.5 13.3L54.4 10.1L55.2 10.1C63.4 10.1 67.9 28 67.9 28L69.2 27.3C69.2 26.8 72.2 12.2 81.1 12.2L106.6 14.1C110.9 14.1 121.5 13.6 124.4 11.6C127.4 9.5 131.4 0 131.4 0L135 1C135 5.1 130.4 24.9 115.2 24.9C108.5 24.9 98.8 21.2 94.1 21.2C90.3 21.2 78.2 23.6 78.2 23.6L72.2 38.5L65.5 40C65.5 37.9 57.6 22.3 57.6 22.3C57.6 22.3 46.8 19.9 41.7 19.9L23.8 24.7C2.4 24.7 0 5.1 0 1.8Z"/>
+<path id="wv14" d="M0 1.8C0 1 0.2 0 3.8 0C3.8 4.8 8.1 9.5 8.1 9.5C8.1 9.5 9.7 14 21.4 14C23.6 14 26.5 13.8 29.5 13.3L54.4 10.1L55.2 10.1C63.4 10.1 67.9 28 67.9 28L69.2 27.3C69.2 26.8 72.2 12.2 81.1 12.2L106.6 14.1C110.9 14.1 121.5 13.7 124.4 11.6C127.4 9.5 131.4 0 131.4 0L135 1C135 5.1 130.4 24.9 115.2 24.9C108.5 24.9 98.8 21.2 94.1 21.2C90.3 21.2 78.2 23.6 78.2 23.6L72.2 38.5L65.5 40C65.5 37.9 57.6 22.3 57.6 22.3C57.6 22.3 46.8 19.9 41.7 19.9L23.8 24.7C2.4 24.7 0 5.1 0 1.8Z"/>
+<path id="wv15" d="M0 1.8C0 1 0.2 0 3.8 0C3.8 4.8 8.1 9.5 8.1 9.5C8.1 9.5 9.7 14 21.4 14C23.6 14 26.5 13.8 29.5 13.3L54.4 10.1L55.2 10.1C63.4 10.1 67.9 27.9 67.9 27.9L69.2 27.3C69.2 26.8 72.2 12.2 81.1 12.2L106.6 14.1C110.9 14.1 121.5 13.7 124.4 11.6C127.4 9.5 131.4 0 131.4 0L135 1C135 5.1 130.4 24.9 115.2 24.9C108.5 24.9 98.8 21.2 94.1 21.2C90.3 21.2 78.2 23.6 78.2 23.6L72.2 38.5L65.5 40C65.5 37.9 57.6 22.3 57.6 22.3C57.6 22.3 46.8 19.9 41.7 19.9L23.8 24.7C2.4 24.7 0 5.1 0 1.8Z"/>
+<path id="wv16" d="M0 1.8C0 1 0.2 0 3.8 0C3.8 4.8 8.1 9.5 8.1 9.5C8.1 9.5 9.7 14 21.4 14C23.6 14 26.5 13.8 29.5 13.3L54.4 10.1L55.2 10.1C63.5 10.1 67.9 27.9 67.9 27.9L69.2 27.3C69.2 26.8 72.2 12.2 81.1 12.2L106.6 14.1C110.9 14.1 121.5 13.7 124.4 11.6C127.4 9.5 131.4 0 131.4 0L135 1C135 5.1 130.4 24.9 115.2 24.9C108.5 24.9 98.8 21.2 94.1 21.2C90.3 21.2 78.2 23.6 78.2 23.6L72.2 38.6L65.5 40C65.5 37.9 57.6 22.3 57.6 22.3C57.6 22.3 46.8 19.9 41.7 19.9L23.8 24.7C2.4 24.7 0 5.1 0 1.8Z"/>
+<path id="wv17" d="M0 1.8C0 1 0.2 0 3.8 0C3.8 4.8 8.1 9.5 8.1 9.5C8.1 9.5 9.7 14 21.4 14C23.6 14 26.5 13.8 29.5 13.3L54.4 10.1L55.2 10.1C63.5 10.1 67.9 28 67.9 28L69.2 27.3C69.2 26.8 72.2 12.2 81.1 12.2L106.6 14.1C110.9 14.1 121.5 13.6 124.4 11.6C127.4 9.5 131.4 0 131.4 0L135 1C135 5.1 130.4 24.9 115.2 24.9C108.5 24.9 98.8 21.2 94.1 21.2C90.3 21.2 78.2 23.6 78.2 23.6L72.2 38.5L65.5 40C65.5 37.9 57.6 22.3 57.6 22.3C57.6 22.3 46.8 19.9 41.7 19.9L23.8 24.7C2.4 24.7 0 5.1 0 1.8Z"/>
+<path id="wv18" d="M0 1.8C0 1 0.2 0 3.8 0C3.8 4.8 8.1 9.5 8.1 9.5C8.1 9.5 9.7 14 21.4 14C23.6 14 26.5 13.8 29.5 13.3L54.4 10.1L55.2 10.1C63.5 10.1 67.9 28 67.9 28L69.2 27.3C69.2 26.8 72.2 12.2 81.1 12.2L106.6 14.1C110.9 14.1 121.5 13.7 124.4 11.6C127.4 9.5 131.4 0 131.4 0L135 1C135 5.1 130.4 24.9 115.2 24.9C108.5 24.9 98.8 21.2 94.1 21.2C90.3 21.2 78.2 23.6 78.2 23.6L72.2 38.5L65.5 40C65.5 37.9 57.6 22.3 57.6 22.3C57.6 22.3 46.8 19.9 41.7 19.9L23.8 24.7C2.4 24.7 0 5.1 0 1.8Z"/>
+<path id="wv19" d="M0 1.8C0 1 0.2 0 3.8 0C3.8 4.8 8.1 9.5 8.1 9.5C8.1 9.5 9.7 14 21.4 14C23.6 14 26.5 13.8 29.5 13.3L54.4 10.1L55.2 10.1C63.5 10.1 67.9 27.9 67.9 27.9L69.2 27.3C69.2 26.8 72.2 12.2 81.1 12.2L106.6 14.1C110.9 14.1 121.5 13.7 124.4 11.6C127.4 9.5 131.4 0 131.4 0L135 1C135 5.1 130.4 24.9 115.2 24.9C108.5 24.9 98.8 21.2 94.1 21.2C90.3 21.2 78.2 23.6 78.2 23.6L72.2 38.5L65.5 40C65.5 37.9 57.6 22.3 57.6 22.3C57.6 22.3 46.8 19.9 41.7 19.9L23.8 24.7C2.4 24.7 0 5.1 0 1.8Z"/>
+</defs></svg>
+
+<div class="scroller" tabindex="0" role="region" aria-label="Visualizaci&oacute;n — desplazamiento horizontal">
+  <div class="track">
+
+    <section class="panel p1" aria-label="Visualizaci&oacute;n">
+      <svg class="panel__bg" viewBox="0 0 1438 912" preserveAspectRatio="xMidYMin slice" aria-hidden="true" focusable="false">
+      <g fill="#EEEEEE" fill-opacity="0.1694">
+      <use href="#wv0" x="-34.0" y="783.0"/>
+      <use href="#wv0" x="498.0" y="783.0"/>
+      <use href="#wv0" x="-34.0" y="863.0"/>
+      <use href="#wv0" x="498.0" y="863.0"/>
+      <use href="#wv0" x="33.0" y="823.0"/>
+      <use href="#wv0" x="565.0" y="823.0"/>
+      <use href="#wv0" x="33.0" y="903.0"/>
+      <use href="#wv0" x="565.0" y="903.0"/>
+      <use href="#wv1" x="99.0" y="783.0"/>
+      <use href="#wv0" x="631.0" y="783.0"/>
+      <use href="#wv1" x="99.0" y="863.0"/>
+      <use href="#wv0" x="631.0" y="863.0"/>
+      <use href="#wv1" x="166.0" y="823.0"/>
+      <use href="#wv0" x="698.0" y="823.0"/>
+      <use href="#wv1" x="166.0" y="903.0"/>
+      <use href="#wv0" x="698.0" y="903.0"/>
+      <use href="#wv1" x="160.0" y="663.0"/>
+      <use href="#wv1" x="227.0" y="703.0"/>
+      <use href="#wv2" x="294.0" y="743.0"/>
+      <use href="#wv0" x="29.0" y="743.0"/>
+      <use href="#wv1" x="97.0" y="703.0"/>
+      <use href="#wv1" x="164.0" y="743.0"/>
+      <use href="#wv3" x="-101.0" y="743.0"/>
+      <use href="#wv1" x="232.0" y="783.0"/>
+      <use href="#wv0" x="764.0" y="783.0"/>
+      <use href="#wv1" x="232.0" y="863.0"/>
+      <use href="#wv0" x="764.0" y="863.0"/>
+      <use href="#wv2" x="299.0" y="823.0"/>
+      <use href="#wv0" x="831.0" y="823.0"/>
+      <use href="#wv2" x="299.0" y="903.0"/>
+      <use href="#wv0" x="831.0" y="903.0"/>
+      <use href="#wv2" x="365.0" y="783.0"/>
+      <use href="#wv0" x="897.0" y="783.0"/>
+      <use href="#wv2" x="365.0" y="863.0"/>
+      <use href="#wv0" x="897.0" y="863.0"/>
+      <use href="#wv2" x="432.0" y="823.0"/>
+      <use href="#wv0" x="964.0" y="823.0"/>
+      <use href="#wv2" x="432.0" y="903.0"/>
+      <use href="#wv0" x="964.0" y="903.0"/>
+      <use href="#wv10" x="1007.0" y="111.0"/>
+      <use href="#wv11" x="1007.0" y="31.0"/>
+      <use href="#wv8" x="940.0" y="71.0"/>
+      <use href="#wv9" x="940.0" y="-9.0"/>
+      <use href="#wv10" x="1406.0" y="111.0"/>
+      <use href="#wv16" x="874.0" y="111.0"/>
+      <use href="#wv11" x="1406.0" y="31.0"/>
+      <use href="#wv17" x="874.0" y="31.0"/>
+      <use href="#wv8" x="1339.0" y="71.0"/>
+      <use href="#wv18" x="807.0" y="71.0"/>
+      <use href="#wv9" x="1339.0" y="-9.0"/>
+      <use href="#wv19" x="807.0" y="-9.0"/>
+      <use href="#wv10" x="1345.0" y="231.0"/>
+      <use href="#wv10" x="1278.0" y="191.0"/>
+      <use href="#wv10" x="1211.0" y="151.0"/>
+      <use href="#wv10" x="1408.0" y="191.0"/>
+      <use href="#wv10" x="1341.0" y="151.0"/>
+      <use href="#wv10" x="1273.0" y="111.0"/>
+      <use href="#wv16" x="741.0" y="111.0"/>
+      <use href="#wv11" x="1273.0" y="31.0"/>
+      <use href="#wv17" x="741.0" y="31.0"/>
+      <use href="#wv8" x="1206.0" y="71.0"/>
+      <use href="#wv18" x="674.0" y="71.0"/>
+      <use href="#wv9" x="1206.0" y="-9.0"/>
+      <use href="#wv19" x="674.0" y="-9.0"/>
+      <use href="#wv10" x="1140.0" y="111.0"/>
+      <use href="#wv16" x="608.0" y="111.0"/>
+      <use href="#wv11" x="1140.0" y="31.0"/>
+      <use href="#wv17" x="608.0" y="31.0"/>
+      <use href="#wv8" x="1073.0" y="71.0"/>
+      <use href="#wv18" x="541.0" y="71.0"/>
+      <use href="#wv9" x="1073.0" y="-9.0"/>
+      <use href="#wv19" x="541.0" y="-9.0"/>
+      </g>
+      </svg>
+      <svg class="p1__art" viewBox="0 0 338 512" aria-hidden="true" focusable="false">
+<path fill="#F85E84" d="M338 169C338 262.34 262.34 338 169 338C75.66 338 0 262.34 0 169C0 75.66 75.66 0 169 0C262.34 0 338 75.66 338 169Z"/>
+<path fill="#F85E84" d="M338 343C338 436.34 262.34 512 169 512C75.66 512 0 436.34 0 343C0 249.66 75.66 174 169 174C262.34 174 338 249.66 338 343Z"/>
+<path fill="#EDF486" d="M168.94 174.11C230.4 174.11 284.2 206.93 313.76 256C284.2 305.07 230.4 337.89 168.94 337.89C107.48 337.89 53.69 305.07 24.13 256C53.69 206.93 107.48 174.11 168.94 174.11Z"/>
+<path fill="#CC426F" d="M168.94 174.11L168.94 157.11L168.94 157.11L168.94 174.11ZM313.76 256L328.32 264.77L333.6 256L328.32 247.23L313.76 256ZM168.94 337.89L168.94 354.89L168.94 354.89L168.94 337.89ZM24.13 256L9.57 247.23L4.28 256L9.57 264.77L24.13 256ZM168.94 174.11L168.94 191.11C224.2 191.11 272.58 220.6 299.2 264.77L313.76 256L328.32 247.23C295.81 193.27 236.61 157.11 168.94 157.11L168.94 174.11ZM313.76 256L299.2 247.23C272.58 291.4 224.2 320.89 168.94 320.89L168.94 337.89L168.94 354.89C236.61 354.89 295.81 318.73 328.32 264.77L313.76 256ZM168.94 337.89L168.94 320.89C113.69 320.89 65.3 291.4 38.69 247.23L24.13 256L9.57 264.77C42.08 318.73 101.28 354.89 168.94 354.89L168.94 337.89ZM24.13 256L38.69 264.77C65.3 220.6 113.69 191.11 168.94 191.11L168.94 174.11L168.94 157.11C101.28 157.11 42.08 193.27 9.57 247.23L24.13 256Z"/>
+<path fill="#F85E84" d="M266 219L253 219C253 241.09 235.09 259 213 259L213 272L213 285C249.45 285 279 255.45 279 219L266 219ZM213 272L213 259C190.91 259 173 241.09 173 219L160 219L147 219C147 255.45 176.55 285 213 285L213 272ZM160 219L173 219C173 196.91 190.91 179 213 179L213 166L213 153C176.55 153 147 182.55 147 219L160 219ZM213 166L213 179C235.09 179 253 196.91 253 219L266 219L279 219C279 182.55 249.45 153 213 153L213 166Z"/>
+<path fill="#CC426F" d="M266 219C266 248.27 242.27 272 213 272C183.73 272 160 248.27 160 219C160 189.73 183.73 166 213 166C242.27 166 266 189.73 266 219Z"/>
+<path fill="#5CD1FC" d="M219 199.5C219 208.61 211.61 216 202.5 216C193.39 216 186 208.61 186 199.5C186 190.39 193.39 183 202.5 183C211.61 183 219 190.39 219 199.5Z"/>
+      </svg>
+      <div class="p1__text">
+        <h1 class="p1__title">Visualizaci&oacute;n</h1>
+        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam vehicula faucibus orci
+          sit amet euismod. Pellentesque sem nulla, dignissim ac commodo vitae.</p>
+        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam vehicula faucibus orci
+          sit amet euismod. Pellentesque sem nulla, dignissim ac commodo vitae.</p>
+      </div>
+    </section>
+
+    <section class="panel p2" aria-label="Herramientas">
+      <svg class="panel__bg" viewBox="0 0 1438 912" preserveAspectRatio="xMidYMin slice" aria-hidden="true" focusable="false">
+      <g fill="#EEEEEE" fill-opacity="0.1694">
+      <use href="#wv4" x="1234.0" y="111.0"/>
+      <use href="#wv4" x="702.0" y="111.0"/>
+      <use href="#wv5" x="702.0" y="31.0"/>
+      <use href="#wv6" x="1167.0" y="71.0"/>
+      <use href="#wv6" x="635.0" y="71.0"/>
+      <use href="#wv7" x="1167.0" y="-9.0"/>
+      <use href="#wv7" x="635.0" y="-9.0"/>
+      <use href="#wv4" x="1101.0" y="111.0"/>
+      <use href="#wv4" x="569.0" y="111.0"/>
+      <use href="#wv5" x="1101.0" y="31.0"/>
+      <use href="#wv5" x="569.0" y="31.0"/>
+      <use href="#wv6" x="1034.0" y="71.0"/>
+      <use href="#wv8" x="502.0" y="71.0"/>
+      <use href="#wv7" x="1034.0" y="-9.0"/>
+      <use href="#wv9" x="502.0" y="-9.0"/>
+      <use href="#wv4" x="1040.0" y="231.0"/>
+      <use href="#wv4" x="973.0" y="191.0"/>
+      <use href="#wv4" x="906.0" y="151.0"/>
+      <use href="#wv4" x="1171.0" y="151.0"/>
+      <use href="#wv4" x="1103.0" y="191.0"/>
+      <use href="#wv4" x="1036.0" y="151.0"/>
+      <use href="#wv4" x="1301.0" y="151.0"/>
+      <use href="#wv4" x="968.0" y="111.0"/>
+      <use href="#wv10" x="436.0" y="111.0"/>
+      <use href="#wv5" x="968.0" y="31.0"/>
+      <use href="#wv11" x="436.0" y="31.0"/>
+      <use href="#wv6" x="901.0" y="71.0"/>
+      <use href="#wv8" x="369.0" y="71.0"/>
+      <use href="#wv7" x="901.0" y="-9.0"/>
+      <use href="#wv9" x="369.0" y="-9.0"/>
+      <use href="#wv4" x="835.0" y="111.0"/>
+      <use href="#wv10" x="303.0" y="111.0"/>
+      <use href="#wv5" x="835.0" y="31.0"/>
+      <use href="#wv11" x="303.0" y="31.0"/>
+      <use href="#wv6" x="768.0" y="71.0"/>
+      <use href="#wv8" x="236.0" y="71.0"/>
+      <use href="#wv7" x="768.0" y="-9.0"/>
+      <use href="#wv9" x="236.0" y="-9.0"/>
+      <use href="#wv10" x="101.0" y="111.0"/>
+      <use href="#wv11" x="101.0" y="31.0"/>
+      <use href="#wv8" x="34.0" y="71.0"/>
+      <use href="#wv9" x="34.0" y="-9.0"/>
+      <use href="#wv10" x="-32.0" y="111.0"/>
+      <use href="#wv11" x="-32.0" y="31.0"/>
+      <use href="#wv8" x="-99.0" y="71.0"/>
+      <use href="#wv9" x="-99.0" y="-9.0"/>
+      <use href="#wv10" x="-93.0" y="231.0"/>
+      <use href="#wv10" x="38.0" y="151.0"/>
+      <use href="#wv10" x="-30.0" y="191.0"/>
+      <use href="#wv10" x="-97.0" y="151.0"/>
+      <use href="#wv10" x="168.0" y="151.0"/>
+      <use href="#wv6" x="1422.0" y="80.0"/>
+      <use href="#wv5" x="1355.0" y="40.0"/>
+      <use href="#wv7" x="1417.0" y="0.0"/>
+      <use href="#wv7" x="1284.0" y="0.0"/>
+      </g>
+      <g fill="#EEEEEE" fill-opacity="0.1164">
+      <use href="#wv5" x="1234.0" y="31.0"/>
+      </g>
+      <g fill="#EEEEEE" fill-opacity="0.1426">
+      <use href="#wv1" x="1361.0" y="742.0"/>
+      <use href="#wv1" x="1361.0" y="902.0"/>
+      <use href="#wv1" x="1361.0" y="822.0"/>
+      <use href="#wv1" x="1428.0" y="782.0"/>
+      <use href="#wv1" x="1428.0" y="862.0"/>
+      <use href="#wv1" x="1424.0" y="702.0"/>
+      </g>
+      </svg>
+      <h2 class="p2__head">Herramientas</h2>
+      <p class="p2__intro">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullamehicula
+        faucibus orci sitet euismod. Pellentesque sem nulla, dignissim ac commodo vitae.</p>
+      <div class="tools">
+        <article class="tool">
+          <span class="tool__tab" aria-hidden="true"><span class="tool__dot"></span></span>
+          <span class="tool__num">1</span>
+          <p class="tool__text">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam vehicula faucibus orci sitet euismod. Pellentesque sem nulla, dignissim ac commodo vitae.</p>
+        </article>
+        <article class="tool">
+          <span class="tool__tab" aria-hidden="true"><span class="tool__dot"></span></span>
+          <span class="tool__num">2</span>
+          <p class="tool__text">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam vehicula faucibus orci sitet euismod. Pellentesque sem nulla, dignissim ac commodo vitae.</p>
+        </article>
+        <article class="tool">
+          <span class="tool__tab" aria-hidden="true"><span class="tool__dot"></span></span>
+          <span class="tool__num">3</span>
+          <p class="tool__text">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam vehicula faucibus orci sitet euismod. Pellentesque sem nulla, dignissim ac commodo vitae.</p>
+        </article>
+        <article class="tool">
+          <span class="tool__tab" aria-hidden="true"><span class="tool__dot"></span></span>
+          <span class="tool__num">4</span>
+          <p class="tool__text">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam vehicula faucibus orci sitet euismod. Pellentesque sem nulla, dignissim ac commodo vitae.</p>
+        </article>
+      </div>
+    </section>
+
+    <section class="panel p3" aria-label="Preguntas">
+      <svg class="panel__bg" viewBox="0 0 1438 912" preserveAspectRatio="xMidYMin slice" aria-hidden="true" focusable="false">
+      <g fill="#EEEEEE" fill-opacity="0.1694">
+      <use href="#wv12" x="1381.0" y="111.0"/>
+      <use href="#wv4" x="849.0" y="111.0"/>
+      <use href="#wv13" x="1381.0" y="31.0"/>
+      <use href="#wv5" x="849.0" y="31.0"/>
+      <use href="#wv14" x="1314.0" y="71.0"/>
+      <use href="#wv6" x="782.0" y="71.0"/>
+      <use href="#wv15" x="1314.0" y="-9.0"/>
+      <use href="#wv7" x="782.0" y="-9.0"/>
+      <use href="#wv12" x="1248.0" y="111.0"/>
+      <use href="#wv4" x="716.0" y="111.0"/>
+      <use href="#wv13" x="1248.0" y="31.0"/>
+      <use href="#wv5" x="716.0" y="31.0"/>
+      <use href="#wv14" x="1181.0" y="71.0"/>
+      <use href="#wv6" x="649.0" y="71.0"/>
+      <use href="#wv15" x="1181.0" y="-9.0"/>
+      <use href="#wv7" x="649.0" y="-9.0"/>
+      <use href="#wv12" x="1187.0" y="231.0"/>
+      <use href="#wv12" x="1120.0" y="191.0"/>
+      <use href="#wv4" x="1053.0" y="151.0"/>
+      <use href="#wv12" x="1318.0" y="151.0"/>
+      <use href="#wv12" x="1250.0" y="191.0"/>
+      <use href="#wv12" x="1183.0" y="151.0"/>
+      <use href="#wv12" x="1115.0" y="111.0"/>
+      <use href="#wv4" x="583.0" y="111.0"/>
+      <use href="#wv13" x="1115.0" y="31.0"/>
+      <use href="#wv5" x="583.0" y="31.0"/>
+      <use href="#wv6" x="1048.0" y="71.0"/>
+      <use href="#wv6" x="516.0" y="71.0"/>
+      <use href="#wv7" x="1048.0" y="-9.0"/>
+      <use href="#wv7" x="516.0" y="-9.0"/>
+      <use href="#wv4" x="982.0" y="111.0"/>
+      <use href="#wv4" x="450.0" y="111.0"/>
+      <use href="#wv5" x="982.0" y="31.0"/>
+      <use href="#wv5" x="450.0" y="31.0"/>
+      <use href="#wv6" x="915.0" y="71.0"/>
+      <use href="#wv6" x="383.0" y="71.0"/>
+      <use href="#wv7" x="915.0" y="-9.0"/>
+      <use href="#wv7" x="383.0" y="-9.0"/>
+      <use href="#wv7" x="245.0" y="0.0"/>
+      <use href="#wv7" x="112.0" y="0.0"/>
+      <use href="#wv4" x="51.0" y="120.0"/>
+      <use href="#wv6" x="-16.0" y="80.0"/>
+      <use href="#wv5" x="-83.0" y="40.0"/>
+      <use href="#wv5" x="182.0" y="40.0"/>
+      <use href="#wv6" x="114.0" y="80.0"/>
+      <use href="#wv5" x="47.0" y="40.0"/>
+      <use href="#wv5" x="312.0" y="40.0"/>
+      <use href="#wv7" x="-21.0" y="0.0"/>
+      <use href="#wv1" x="1040.0" y="697.0"/>
+      <use href="#wv1" x="1040.0" y="857.0"/>
+      <use href="#wv1" x="1040.0" y="777.0"/>
+      <use href="#wv1" x="1107.0" y="737.0"/>
+      <use href="#wv1" x="1107.0" y="897.0"/>
+      <use href="#wv1" x="1107.0" y="817.0"/>
+      <use href="#wv1" x="1173.0" y="697.0"/>
+      <use href="#wv1" x="1173.0" y="857.0"/>
+      <use href="#wv1" x="1173.0" y="777.0"/>
+      <use href="#wv2" x="1240.0" y="737.0"/>
+      <use href="#wv2" x="1240.0" y="897.0"/>
+      <use href="#wv2" x="1240.0" y="817.0"/>
+      <use href="#wv2" x="1234.0" y="577.0"/>
+      <use href="#wv2" x="1301.0" y="617.0"/>
+      <use href="#wv2" x="1368.0" y="657.0"/>
+      <use href="#wv1" x="1103.0" y="657.0"/>
+      <use href="#wv1" x="1171.0" y="617.0"/>
+      <use href="#wv2" x="1238.0" y="657.0"/>
+      <use href="#wv1" x="973.0" y="657.0"/>
+      <use href="#wv2" x="1306.0" y="697.0"/>
+      <use href="#wv2" x="1306.0" y="857.0"/>
+      <use href="#wv2" x="1306.0" y="777.0"/>
+      <use href="#wv2" x="1373.0" y="737.0"/>
+      <use href="#wv2" x="1373.0" y="897.0"/>
+      <use href="#wv2" x="1373.0" y="817.0"/>
+      </g>
+      <g fill="#EEEEEE" fill-opacity="0.1426">
+      <use href="#wv1" x="-77.0" y="742.0"/>
+      <use href="#wv1" x="-77.0" y="902.0"/>
+      <use href="#wv1" x="455.0" y="902.0"/>
+      <use href="#wv1" x="-77.0" y="822.0"/>
+      <use href="#wv1" x="455.0" y="822.0"/>
+      <use href="#wv1" x="-10.0" y="782.0"/>
+      <use href="#wv1" x="-10.0" y="862.0"/>
+      <use href="#wv1" x="522.0" y="862.0"/>
+      <use href="#wv1" x="56.0" y="742.0"/>
+      <use href="#wv1" x="56.0" y="902.0"/>
+      <use href="#wv1" x="588.0" y="902.0"/>
+      <use href="#wv1" x="56.0" y="822.0"/>
+      <use href="#wv1" x="588.0" y="822.0"/>
+      <use href="#wv1" x="123.0" y="782.0"/>
+      <use href="#wv1" x="123.0" y="862.0"/>
+      <use href="#wv1" x="655.0" y="862.0"/>
+      <use href="#wv1" x="117.0" y="622.0"/>
+      <use href="#wv1" x="184.0" y="662.0"/>
+      <use href="#wv1" x="251.0" y="702.0"/>
+      <use href="#wv1" x="-14.0" y="702.0"/>
+      <use href="#wv1" x="54.0" y="662.0"/>
+      <use href="#wv1" x="121.0" y="702.0"/>
+      <use href="#wv1" x="189.0" y="742.0"/>
+      <use href="#wv1" x="189.0" y="902.0"/>
+      <use href="#wv1" x="721.0" y="902.0"/>
+      <use href="#wv1" x="189.0" y="822.0"/>
+      <use href="#wv1" x="721.0" y="822.0"/>
+      <use href="#wv1" x="256.0" y="782.0"/>
+      <use href="#wv1" x="256.0" y="862.0"/>
+      <use href="#wv1" x="788.0" y="862.0"/>
+      <use href="#wv1" x="322.0" y="902.0"/>
+      <use href="#wv1" x="854.0" y="902.0"/>
+      <use href="#wv1" x="322.0" y="822.0"/>
+      <use href="#wv1" x="854.0" y="822.0"/>
+      <use href="#wv1" x="389.0" y="862.0"/>
+      </g>
+      <g fill="#EEEEEE" fill-opacity="0.0975">
+      <use href="#wv1" x="921.0" y="862.0"/>
+      </g>
+      </svg>
+      <h2 class="p3__head">Preguntas</h2>
+      <p class="p3__intro">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullamehicula
+        faucibus orci sitet euismod. Pellentesque sem nulla, dignissim ac commodo vitae.</p>
+      <div class="ask">
+        <svg class="ask__brace" viewBox="0 0 59 204" preserveAspectRatio="none" aria-hidden="true" focusable="false"><path fill="#282828" d="M55.62 204C51.6 204 22.48 200.4 22.48 168.04L29.59 140.95C29.59 133.28 26.04 116.98 26.04 116.98C26.04 116.98 3.08 105 0 105L2.13 94.93L24.14 85.82C24.14 85.82 27.69 67.6 27.69 61.85C27.69 54.66 22.25 40.03 22.25 29.97C22.25 6.95 51.36 0 57.51 0L58.93 5.51C58.93 5.51 44.97 11.51 41.89 16.06C39.05 20.14 38.11 36.92 38.11 42.91L40.95 81.5C40.95 94.93 19.41 99.48 18.7 99.48L17.75 101.4C17.75 101.4 44.02 108.11 44.02 120.58L44.02 121.78L39.29 159.41C38.82 163.97 38.58 167.8 38.58 171.16C38.58 188.9 44.97 191.77 44.97 191.77C44.97 191.77 51.83 198.25 58.93 198.25L58.93 199.21C58.93 202.08 58.7 204 55.62 204Z"/></svg>
+        <p class="ask__q">&iquest;Curabitur felis nulla, maximus quis turpis non, finibus vestibulum velit?</p>
+        <svg class="ask__brace" viewBox="0 0 59 204" preserveAspectRatio="none" aria-hidden="true" focusable="false"><path fill="#282828" d="M3.31 0C7.34 0 36.45 3.6 36.45 35.96L29.35 63.05C29.35 70.72 32.9 87.02 32.9 87.02C32.9 87.02 55.86 99 58.93 99L56.8 109.07L34.79 118.18C34.79 118.18 31.24 136.4 31.24 142.15C31.24 149.34 36.69 163.97 36.69 174.03C36.69 197.05 7.57 204 1.42 204L0 198.49C0 198.49 13.96 192.49 17.04 187.94C19.88 183.86 20.83 167.08 20.83 161.09L17.99 122.5C17.99 109.07 39.53 104.52 40.24 104.52L41.18 102.6C41.18 102.6 14.91 95.89 14.91 83.42L14.91 82.22L19.64 44.59C20.12 40.03 20.35 36.2 20.35 32.84C20.35 15.1 13.96 12.23 13.96 12.23C13.96 12.23 7.1 5.75 0 5.75L0 4.79C0 1.92 0.24 0 3.31 0Z"/></svg>
+      </div>
+    </section>
+
+  </div>
+  <div class="scroll-hint" aria-hidden="true">
+    <span>Desliza</span><span class="scroll-hint__arrow">&rarr;</span>
+  </div>
+</div>
+
+<footer class="nav">
+  <a class="brand" href="index.html">
+    <span>pro</span>
+    <span>teia</span>
+    <span class="brand__tag">PEDAGOG&Iacute;AS PARA REIMAGINAR</span>
+  </a>
+  <nav class="nav__links" aria-label="Principal">
+    <a href="index.html">Inicio</a>
+    <a href="retos.html" aria-current="page">Momentos</a>
+    <a href="principios.html">Principios</a>
+    <a href="#">Glosario</a>
+    <a href="#">Podcast</a>
+    <a href="#">Contacto</a>
+  </nav>
+</footer>
+
+<script>
+  const scroller = document.querySelector('.scroller');
+  const scrollHint = document.querySelector('.scroll-hint');
+  let isDragging = false;
+  let startX = 0;
+  let startScrollLeft = 0;
+
+  const updateScrollHint = () => {
+    scrollHint.classList.toggle('is-hidden', scroller.scrollLeft > 24);
+  };
+
+  scroller.addEventListener('scroll', updateScrollHint, {passive:true});
+
+  scroller.addEventListener('pointerdown', (event) => {
+    if (event.pointerType === 'mouse' && event.button !== 0) return;
+    isDragging = true;
+    startX = event.clientX;
+    startScrollLeft = scroller.scrollLeft;
+    scroller.classList.add('is-dragging');
+    scroller.setPointerCapture(event.pointerId);
+  });
+
+  scroller.addEventListener('pointermove', (event) => {
+    if (!isDragging) return;
+    scroller.scrollLeft = startScrollLeft - (event.clientX - startX);
+  });
+
+  const stopDragging = (event) => {
+    if (!isDragging) return;
+    isDragging = false;
+    scroller.classList.remove('is-dragging');
+    if (event.pointerId !== undefined && scroller.hasPointerCapture(event.pointerId)) {
+      scroller.releasePointerCapture(event.pointerId);
+    }
+  };
+
+  scroller.addEventListener('pointerup', stopDragging);
+  scroller.addEventListener('pointercancel', stopDragging);
+  scroller.addEventListener('mouseleave', stopDragging);
+
+  scroller.addEventListener('wheel', (event) => {
+    if (Math.abs(event.deltaY) <= Math.abs(event.deltaX)) return;
+    event.preventDefault();
+    scroller.scrollLeft += event.deltaY;
+  }, {passive:false});
+
+  updateScrollHint();
+</script>
+
+<script src="eye-menu.js" defer></script>
+
+</body>
+</html>

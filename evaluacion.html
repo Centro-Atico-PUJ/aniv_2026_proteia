@@ -1,0 +1,695 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Evaluaci&oacute;n — proteia</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Podkova:wght@400..800&family=Source+Serif+4:ital,opsz,wght@0,8..60,200..900;1,8..60,200..900&display=swap" rel="stylesheet">
+<style>
+/* ============================================================
+   proteia — Evaluacion (scroll horizontal, 3 paneles)
+   Colores, coordenadas y trazos extraidos del PDF original
+   (lienzo 4314x1024 = 3 paneles de 1438 + barra de 112).
+   1cqw = 1% del ancho del panel: a 1440px la maqueta coincide.
+   ============================================================ */
+:root{
+  --violeta:#776DFF;
+  --azul:#3D508F;
+  --cian:#5CD1FC;
+  --amarillo:#EDF486;
+  --coral:#F85E84;
+  --crema:#EEEEEE;
+  --morado:#5E3986;
+  --nav:#D9D9D9;
+  --nav-h:clamp(88px,7.78vw,112px);
+
+  --font-display:'Podkova','Bitter',Georgia,'Times New Roman',serif;
+  --font-body:'Source Serif 4','PT Serif',Georgia,'Times New Roman',serif;
+}
+
+*,*::before,*::after{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{
+  margin:0;
+  min-height:100vh;
+  min-height:100svh;
+  display:flex;
+  flex-direction:column;
+  background:var(--violeta);
+  color:var(--crema);
+  font-family:var(--font-body);
+  -webkit-font-smoothing:antialiased;
+}
+
+/* ---------- Carril horizontal ---------- */
+.scroller{
+  position:relative;
+  flex:1 1 auto;
+  min-height:0;
+  overflow-x:auto;
+  overflow-y:hidden;
+  scroll-snap-type:x mandatory;
+  scroll-behavior:smooth;
+  overscroll-behavior-x:contain;
+  scrollbar-width:none;
+  cursor:grab;
+  touch-action:pan-y;
+}
+.scroller.is-dragging{cursor:grabbing;scroll-snap-type:none;scroll-behavior:auto}
+.scroller::-webkit-scrollbar{display:none}
+.track{display:flex;align-items:center;height:100%}
+.scroll-hint{
+  position:absolute;
+  z-index:4;
+  right:clamp(6px,1vw,14px);
+  bottom:clamp(18px,4vw,42px);
+  display:flex;
+  align-items:center;
+  gap:.45em;
+  padding:.5em .7em .5em .9em;
+  border:1px solid currentColor;
+  border-radius:999px;
+  background:rgba(40,40,40,.78);
+  color:var(--crema);
+  font-family:var(--font-display);
+  font-size:clamp(14px,1.25vw,18px);
+  line-height:1;
+  pointer-events:none;
+  transition:opacity .25s ease;
+}
+.scroll-hint__arrow{font-size:1.6em;line-height:.7}
+.scroll-hint.is-hidden{opacity:0}
+
+.panel{
+  position:relative;
+  /* el panel nunca es mas alto que el espacio que queda sobre la barra */
+  flex:0 0 min(100%,1440px,calc((100svh - var(--nav-h)) * 1438 / 912));
+  aspect-ratio:1438/912;
+  container-type:inline-size;
+  overflow:hidden;
+  scroll-snap-align:start;
+  border-right:0;
+}
+.panel__bg{position:absolute;inset:0;width:100%;height:100%;z-index:0;pointer-events:none}
+.panel > *:not(.panel__bg){position:relative;z-index:1}
+
+/* ---------- Panel 1 : Evaluacion ---------- */
+.p1{display:flex;padding:5.56% 9.24% 0 8.26%}
+.p1__art{flex:0 0 28.5%;height:auto;align-self:flex-start;display:block}
+.p1__text{flex:1;margin-left:2.92%;padding-top:4.03%}
+.p1__title{
+  margin:0;
+  font-family:var(--font-display);
+  font-weight:700;
+  font-size:7.99cqw;
+  line-height:1.1;
+}
+.p1__text p{margin:4.3% 0 0;font-size:2.5cqw;line-height:1.389}
+.p1__text p + p{margin-top:2.78%}
+
+/* ---------- Panel 2 : Herramientas ---------- */
+.p2__head,.p3__head{
+  margin:5.07% 0 0;
+  font-family:var(--font-display);
+  font-weight:700;
+  font-size:3.33cqw;
+  line-height:1.15;
+}
+.p2__head{margin-left:7.43%}
+.p2__intro,.p3__intro{margin-top:1.7%;font-size:1.667cqw;line-height:1.917}
+.p2__intro{margin-left:7.43%;max-width:42.8%}
+
+.tools{display:flex;justify-content:space-between;margin:7.26% 2.57% 0 3.06%}
+.tool{
+  position:relative;
+  flex:0 0 19.93%;
+  height:40.21cqw;
+  padding:0 6.94%;
+  border-radius:2.083cqw;
+  background:var(--azul);
+  color:var(--crema);
+  text-align:center;
+}
+.tool__tab{
+  position:absolute;
+  left:50%;
+  top:-3.06cqw;
+  transform:translateX(-50%);
+  width:4.03cqw;
+  height:6.11cqw;
+  overflow:visible;
+}
+.tool__num{
+  display:block;
+  padding-top:5.97cqw;
+  font-family:var(--font-display);
+  font-weight:700;
+  font-size:5cqw;
+  line-height:1.2;
+}
+.tool__text{margin:1.6cqw 0 0;font-size:1.389cqw;line-height:1.85}
+
+/* ---------- Panel 3 : Preguntas ---------- */
+.p3{text-align:center}
+.p3__intro{margin-inline:auto;max-width:42.4%}
+.ask{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:2.2%;
+  width:55.76%;
+  height:35.97cqw;
+  margin:3.51% auto 0;
+  padding:0 4.23%;
+  border-radius:2.083cqw;
+  background:var(--azul);
+  color:var(--crema);
+}
+.ask__brace{flex:none;width:7.35%;height:39.4%}
+.ask__q{margin:0;max-width:68.7%;font-size:3.96cqw;line-height:1.368}
+
+/* ---------- Barra de navegacion ---------- */
+.nav{
+  position:relative;
+  z-index:2;
+  flex:none;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:clamp(16px,3vw,40px);
+  min-height:var(--nav-h);
+  padding:14px clamp(20px,5.07vw,73px);
+  background:var(--morado);
+}
+.brand{
+  display:flex;
+  flex-direction:column;
+  align-items:flex-start;
+  flex:none;
+  color:var(--crema);
+  text-decoration:none;
+  font-family:var(--font-display);
+  font-weight:500;
+  font-size:clamp(26px,2.92vw,42px);
+  line-height:.87;
+}
+.brand__tag{font-size:.13em;letter-spacing:.05em;margin-top:.55em;white-space:nowrap}
+.nav__links{display:flex;align-items:center;justify-content:flex-end;flex-wrap:wrap;gap:clamp(16px,4.72vw,68px)}
+.nav__links a{
+  font-family:var(--font-display);
+  font-size:clamp(15px,1.74vw,25px);
+  color:var(--nav);
+  text-decoration:none;
+}
+.nav__links a:hover{text-decoration:underline;text-underline-offset:.2em}
+.nav__links a[aria-current="page"]{text-decoration:underline;text-underline-offset:.2em;text-decoration-thickness:2px}
+
+a:focus-visible{outline:2px solid var(--crema);outline-offset:6px;border-radius:6px}
+.scroller:focus-visible{outline:2px solid var(--crema);outline-offset:-4px}
+
+/* ---------- Movil: los paneles se apilan ---------- */
+@media (max-width:680px){
+  .scroller{display:block;flex:none;overflow:visible;scroll-snap-type:none;cursor:default;touch-action:auto}
+  .scroll-hint{display:none}
+  .track{flex-direction:column;align-items:stretch;height:auto}
+  .panel{
+    flex:1 1 auto;
+    width:100%;
+    aspect-ratio:auto;
+    border-right:0;
+    border-bottom:0;
+    padding-bottom:44px;
+  }
+  .nav{min-height:auto}
+  .p1{display:block;padding:0 22px}
+  .p1__art{width:52%;max-width:240px;margin:8px 0 20px}
+  .p1__text{margin-left:0;padding-top:0}
+  .p1__title{font-size:clamp(38px,10vw,72px)}
+  .p1__text p{font-size:clamp(15px,4.2vw,22px);line-height:1.6;margin-top:20px}
+  .p1__text p + p{margin-top:20px}
+  .p2,.p3{padding:0 22px}
+  .p2__head,.p3__head{margin:34px 0 0;font-size:clamp(24px,6.4vw,40px)}
+  .p2__intro,.p3__intro{margin-top:12px;max-width:none;font-size:clamp(14px,3.8vw,20px);line-height:1.7}
+  .p2__head,.p2__intro{margin-left:0}
+  .tools{display:grid;grid-template-columns:repeat(2,1fr);gap:64px 16px;margin:64px 0 0}
+  .tool{flex:none;height:auto;padding:0 16px 24px;border-radius:22px}
+  .tool__tab{top:-22px;width:40px;height:60px}
+  .tool__num{padding-top:34px;font-size:clamp(30px,8vw,48px)}
+  .tool__text{margin-top:12px;font-size:clamp(12px,3.2vw,15px);line-height:1.7}
+  .ask{width:100%;height:auto;gap:12px;margin-top:26px;padding:34px 16px;border-radius:22px}
+  .ask__brace{width:26px;height:auto;align-self:stretch}
+  .ask__q{max-width:none;font-size:clamp(20px,5.6vw,34px);line-height:1.35}
+  .nav{flex-direction:column;justify-content:center;gap:20px;padding:26px 20px}
+  .brand{align-items:center}
+  .nav__links{justify-content:center;gap:18px 26px}
+}
+@media (max-width:420px){
+  .tools{grid-template-columns:1fr;gap:60px}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+</style>
+</head>
+<body>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false"><defs>
+<path id="ev0" d="M135 38.2C135 39 134.8 40 131.2 40C131.2 35.2 126.9 30.5 126.9 30.5C126.9 30.5 125.3 26 113.6 26C111.4 26 108.5 26.2 105.5 26.7L80.6 29.9L79.8 29.9C71.5 29.9 67.1 12 67.1 12L65.8 12.7C65.8 13.2 62.8 27.8 53.9 27.8L28.4 25.9C24.1 25.9 13.5 26.4 10.6 28.4C7.6 30.5 3.6 40 3.6 40L0 39C0 34.9 4.6 15.1 19.8 15.1C26.5 15.1 36.2 18.8 40.9 18.8C44.7 18.8 56.8 16.4 56.8 16.4L62.8 1.5L69.5 0C69.5 2.1 77.4 17.7 77.4 17.7C77.4 17.7 88.2 20.1 93.3 20.1L111.2 15.3C132.6 15.3 135 34.9 135 38.2Z"/>
+<path id="ev1" d="M135 38.2C135 39 134.8 40 131.2 40C131.2 35.2 126.9 30.5 126.9 30.5C126.9 30.5 125.3 26 113.6 26C111.4 26 108.5 26.2 105.5 26.7L80.6 29.9L79.8 29.9C71.6 29.9 67.1 12 67.1 12L65.8 12.7C65.8 13.2 62.8 27.8 53.9 27.8L28.4 25.9C24.1 25.9 13.5 26.4 10.6 28.4C7.6 30.5 3.7 40 3.7 40L0 39C0 34.9 4.6 15.1 19.8 15.1C26.5 15.1 36.2 18.8 40.9 18.8C44.7 18.8 56.8 16.4 56.8 16.4L62.8 1.5L69.5 0C69.5 2.1 77.4 17.7 77.4 17.7C77.4 17.7 88.2 20.1 93.3 20.1L111.2 15.3C132.6 15.3 135 34.9 135 38.2Z"/>
+<path id="ev2" d="M135 38.2C135 39 134.8 40 131.2 40C131.2 35.2 126.9 30.5 126.9 30.5C126.9 30.5 125.3 26 113.6 26C111.4 26 108.5 26.2 105.5 26.7L80.6 29.9L79.8 29.9C71.6 29.9 67.1 12 67.1 12L65.8 12.7C65.8 13.2 62.8 27.8 53.9 27.8L28.4 25.9C24.1 25.9 13.5 26.4 10.6 28.4C7.6 30.5 3.6 40 3.6 40L0 39C0 34.9 4.6 15.1 19.8 15.1C26.5 15.1 36.2 18.8 40.9 18.8C44.7 18.8 56.8 16.4 56.8 16.4L62.8 1.5L69.5 0C69.5 2.1 77.4 17.7 77.4 17.7C77.4 17.7 88.2 20.1 93.3 20.1L111.2 15.3C132.6 15.3 135 34.9 135 38.2Z"/>
+<path id="ev3" d="M135 38.2C135 39 134.8 40 131.2 40C131.2 35.2 126.9 30.5 126.9 30.5C126.9 30.5 125.3 26 113.6 26C111.4 26 108.5 26.2 105.5 26.7L80.6 29.9L79.8 29.9C71.5 29.9 67.1 12 67.1 12L65.8 12.7C65.8 13.2 62.8 27.8 53.9 27.8L28.4 25.9C24.1 25.9 13.5 26.4 10.6 28.4C7.6 30.5 3.7 40 3.7 40L0 39C0 34.9 4.6 15.1 19.8 15.1C26.5 15.1 36.2 18.8 40.9 18.8C44.7 18.8 56.8 16.4 56.8 16.4L62.8 1.5L69.5 0C69.5 2.1 77.4 17.7 77.4 17.7C77.4 17.7 88.2 20.1 93.3 20.1L111.2 15.3C132.6 15.3 135 34.9 135 38.2Z"/>
+<path id="ev4" d="M0 1.8C0 1 0.2 0 3.8 0C3.8 4.8 8.1 9.5 8.1 9.5C8.1 9.5 9.7 14 21.4 14C23.6 14 26.5 13.8 29.5 13.3L54.4 10.1L55.2 10.1C63.4 10.1 67.9 27.9 67.9 27.9L69.2 27.3C69.2 26.8 72.2 12.2 81.1 12.2L106.6 14.1C110.9 14.1 121.5 13.7 124.4 11.6C127.4 9.5 131.3 0 131.3 0L135 1C135 5.1 130.4 24.9 115.2 24.9C108.5 24.9 98.8 21.2 94.1 21.2C90.3 21.2 78.2 23.6 78.2 23.6L72.2 38.6L65.5 40C65.5 37.9 57.6 22.3 57.6 22.3C57.6 22.3 46.8 19.9 41.7 19.9L23.8 24.7C2.4 24.7 0 5.1 0 1.8Z"/>
+<path id="ev5" d="M0 1.8C0 1 0.2 0 3.8 0C3.8 4.8 8.1 9.5 8.1 9.5C8.1 9.5 9.7 14 21.4 14C23.6 14 26.5 13.8 29.5 13.3L54.4 10.1L55.2 10.1C63.4 10.1 67.9 28 67.9 28L69.2 27.3C69.2 26.8 72.2 12.2 81.1 12.2L106.6 14.1C110.9 14.1 121.5 13.6 124.4 11.6C127.4 9.5 131.3 0 131.3 0L135 1C135 5.1 130.4 24.9 115.2 24.9C108.5 24.9 98.8 21.2 94.1 21.2C90.3 21.2 78.2 23.6 78.2 23.6L72.2 38.5L65.5 40C65.5 37.9 57.6 22.3 57.6 22.3C57.6 22.3 46.8 19.9 41.7 19.9L23.8 24.7C2.4 24.7 0 5.1 0 1.8Z"/>
+<path id="ev6" d="M0 1.8C0 1 0.2 0 3.8 0C3.8 4.8 8.1 9.5 8.1 9.5C8.1 9.5 9.7 14 21.4 14C23.6 14 26.5 13.8 29.5 13.3L54.4 10.1L55.2 10.1C63.4 10.1 67.9 28 67.9 28L69.2 27.3C69.2 26.8 72.2 12.2 81.1 12.2L106.6 14.1C110.9 14.1 121.5 13.7 124.4 11.6C127.4 9.5 131.3 0 131.3 0L135 1C135 5.1 130.4 24.9 115.2 24.9C108.5 24.9 98.8 21.2 94.1 21.2C90.3 21.2 78.2 23.6 78.2 23.6L72.2 38.5L65.5 40C65.5 37.9 57.6 22.3 57.6 22.3C57.6 22.3 46.8 19.9 41.7 19.9L23.8 24.7C2.4 24.7 0 5.1 0 1.8Z"/>
+<path id="ev7" d="M0 1.8C0 1 0.2 0 3.8 0C3.8 4.8 8.1 9.5 8.1 9.5C8.1 9.5 9.7 14 21.4 14C23.6 14 26.5 13.8 29.5 13.3L54.4 10.1L55.2 10.1C63.4 10.1 67.9 27.9 67.9 27.9L69.2 27.3C69.2 26.8 72.2 12.2 81.1 12.2L106.6 14.1C110.9 14.1 121.5 13.7 124.4 11.6C127.4 9.5 131.3 0 131.3 0L135 1C135 5.1 130.4 24.9 115.2 24.9C108.5 24.9 98.8 21.2 94.1 21.2C90.3 21.2 78.2 23.6 78.2 23.6L72.2 38.5L65.5 40C65.5 37.9 57.6 22.3 57.6 22.3C57.6 22.3 46.8 19.9 41.7 19.9L23.8 24.7C2.4 24.7 0 5.1 0 1.8Z"/>
+<path id="ev8" d="M0 1.8C0 1 0.2 0 3.8 0C3.8 4.8 8.1 9.5 8.1 9.5C8.1 9.5 9.7 14 21.4 14C23.6 14 26.5 13.8 29.5 13.3L54.4 10.1L55.2 10.1C63.5 10.1 67.9 28 67.9 28L69.2 27.3C69.2 26.8 72.2 12.2 81.1 12.2L106.6 14.1C110.9 14.1 121.5 13.7 124.4 11.6C127.4 9.5 131.3 0 131.3 0L135 1C135 5.1 130.4 24.9 115.2 24.9C108.5 24.9 98.8 21.2 94.1 21.2C90.3 21.2 78.2 23.6 78.2 23.6L72.2 38.5L65.5 40C65.5 37.9 57.6 22.3 57.6 22.3C57.6 22.3 46.8 19.9 41.7 19.9L23.8 24.7C2.4 24.7 0 5.1 0 1.8Z"/>
+<path id="ev9" d="M0 1.8C0 1 0.2 0 3.8 0C3.8 4.8 8.1 9.5 8.1 9.5C8.1 9.5 9.7 14 21.4 14C23.6 14 26.5 13.8 29.5 13.3L54.4 10.1L55.2 10.1C63.5 10.1 67.9 27.9 67.9 27.9L69.2 27.3C69.2 26.8 72.2 12.2 81.1 12.2L106.6 14.1C110.9 14.1 121.5 13.7 124.4 11.6C127.4 9.5 131.3 0 131.3 0L135 1C135 5.1 130.4 24.9 115.2 24.9C108.5 24.9 98.8 21.2 94.1 21.2C90.3 21.2 78.2 23.6 78.2 23.6L72.2 38.5L65.5 40C65.5 37.9 57.6 22.3 57.6 22.3C57.6 22.3 46.8 19.9 41.7 19.9L23.8 24.7C2.4 24.7 0 5.1 0 1.8Z"/>
+<path id="ev10" d="M0 1.8C0 1 0.2 0 3.8 0C3.8 4.8 8.1 9.5 8.1 9.5C8.1 9.5 9.7 14 21.4 14C23.6 14 26.5 13.8 29.5 13.3L54.4 10.1L55.2 10.1C63.5 10.1 67.9 27.9 67.9 27.9L69.2 27.3C69.2 26.8 72.2 12.2 81.1 12.2L106.6 14.1C110.9 14.1 121.5 13.7 124.4 11.6C127.4 9.5 131.3 0 131.3 0L135 1C135 5.1 130.4 24.9 115.2 24.9C108.5 24.9 98.8 21.2 94.1 21.2C90.3 21.2 78.2 23.6 78.2 23.6L72.2 38.6L65.5 40C65.5 37.9 57.6 22.3 57.6 22.3C57.6 22.3 46.8 19.9 41.7 19.9L23.8 24.7C2.4 24.7 0 5.1 0 1.8Z"/>
+<path id="ev11" d="M0 1.8C0 1 0.2 0 3.8 0C3.8 4.8 8.1 9.5 8.1 9.5C8.1 9.5 9.7 14 21.4 14C23.6 14 26.5 13.8 29.5 13.3L54.4 10.1L55.2 10.1C63.5 10.1 67.9 28 67.9 28L69.2 27.3C69.2 26.8 72.2 12.2 81.1 12.2L106.6 14.1C110.9 14.1 121.5 13.6 124.4 11.6C127.4 9.5 131.3 0 131.3 0L135 1C135 5.1 130.4 24.9 115.2 24.9C108.5 24.9 98.8 21.2 94.1 21.2C90.3 21.2 78.2 23.6 78.2 23.6L72.2 38.5L65.5 40C65.5 37.9 57.6 22.3 57.6 22.3C57.6 22.3 46.8 19.9 41.7 19.9L23.8 24.7C2.4 24.7 0 5.1 0 1.8Z"/>
+<path id="ev12" d="M0 1.8C0 1 0.2 0 3.8 0C3.8 4.8 8.1 9.5 8.1 9.5C8.1 9.5 9.7 14 21.4 14C23.6 14 26.5 13.8 29.5 13.3L54.4 10.1L55.2 10.1C63.5 10.1 67.9 27.9 67.9 27.9L69.2 27.3C69.2 26.8 72.2 12.2 81.1 12.2L106.6 14.1C110.9 14.1 121.5 13.7 124.4 11.6C127.4 9.5 131.4 0 131.4 0L135 1C135 5.1 130.4 24.9 115.2 24.9C108.5 24.9 98.8 21.2 94.1 21.2C90.3 21.2 78.2 23.6 78.2 23.6L72.2 38.6L65.5 40C65.5 37.9 57.6 22.3 57.6 22.3C57.6 22.3 46.8 19.9 41.7 19.9L23.8 24.7C2.4 24.7 0 5.1 0 1.8Z"/>
+<path id="ev13" d="M0 1.8C0 1 0.2 0 3.8 0C3.8 4.8 8.1 9.5 8.1 9.5C8.1 9.5 9.7 14 21.4 14C23.6 14 26.5 13.8 29.5 13.3L54.4 10.1L55.2 10.1C63.5 10.1 67.9 28 67.9 28L69.2 27.3C69.2 26.8 72.2 12.2 81.1 12.2L106.6 14.1C110.9 14.1 121.5 13.6 124.4 11.6C127.4 9.5 131.4 0 131.4 0L135 1C135 5.1 130.4 24.9 115.2 24.9C108.5 24.9 98.8 21.2 94.1 21.2C90.3 21.2 78.2 23.6 78.2 23.6L72.2 38.5L65.5 40C65.5 37.9 57.6 22.3 57.6 22.3C57.6 22.3 46.8 19.9 41.7 19.9L23.8 24.7C2.4 24.7 0 5.1 0 1.8Z"/>
+<path id="ev14" d="M0 1.8C0 1 0.2 0 3.8 0C3.8 4.8 8.1 9.5 8.1 9.5C8.1 9.5 9.7 14 21.4 14C23.6 14 26.5 13.8 29.5 13.3L54.4 10.1L55.2 10.1C63.5 10.1 67.9 28 67.9 28L69.2 27.3C69.2 26.8 72.2 12.2 81.1 12.2L106.6 14.1C110.9 14.1 121.5 13.7 124.4 11.6C127.4 9.5 131.4 0 131.4 0L135 1C135 5.1 130.4 24.9 115.2 24.9C108.5 24.9 98.8 21.2 94.1 21.2C90.3 21.2 78.2 23.6 78.2 23.6L72.2 38.5L65.5 40C65.5 37.9 57.6 22.3 57.6 22.3C57.6 22.3 46.8 19.9 41.7 19.9L23.8 24.7C2.4 24.7 0 5.1 0 1.8Z"/>
+<path id="ev15" d="M0 1.8C0 1 0.2 0 3.8 0C3.8 4.8 8.1 9.5 8.1 9.5C8.1 9.5 9.7 14 21.4 14C23.6 14 26.5 13.8 29.5 13.3L54.4 10.1L55.2 10.1C63.5 10.1 67.9 27.9 67.9 27.9L69.2 27.3C69.2 26.8 72.2 12.2 81.1 12.2L106.6 14.1C110.9 14.1 121.5 13.7 124.4 11.6C127.4 9.5 131.4 0 131.4 0L135 1C135 5.1 130.4 24.9 115.2 24.9C108.5 24.9 98.8 21.2 94.1 21.2C90.3 21.2 78.2 23.6 78.2 23.6L72.2 38.5L65.5 40C65.5 37.9 57.6 22.3 57.6 22.3C57.6 22.3 46.8 19.9 41.7 19.9L23.8 24.7C2.4 24.7 0 5.1 0 1.8Z"/>
+<path id="ev16" d="M0 1.8C0 1 0.2 0 3.8 0C3.8 4.8 8.1 9.5 8.1 9.5C8.1 9.5 9.7 14 21.4 14C23.6 14 26.5 13.8 29.5 13.3L54.4 10.1L55.2 10.1C63.4 10.1 67.9 27.9 67.9 27.9L69.2 27.3C69.2 26.8 72.2 12.2 81.1 12.2L106.6 14.1C110.9 14.1 121.5 13.7 124.4 11.6C127.4 9.5 131.4 0 131.4 0L135 1C135 5.1 130.4 24.9 115.2 24.9C108.5 24.9 98.8 21.2 94.1 21.2C90.3 21.2 78.2 23.6 78.2 23.6L72.2 38.6L65.5 40C65.5 37.9 57.6 22.3 57.6 22.3C57.6 22.3 46.8 19.9 41.7 19.9L23.8 24.7C2.4 24.7 0 5.1 0 1.8Z"/>
+<path id="ev17" d="M0 1.8C0 1 0.2 0 3.8 0C3.8 4.8 8.1 9.5 8.1 9.5C8.1 9.5 9.7 14 21.4 14C23.6 14 26.5 13.8 29.5 13.3L54.4 10.1L55.2 10.1C63.4 10.1 67.9 28 67.9 28L69.2 27.3C69.2 26.8 72.2 12.2 81.1 12.2L106.6 14.1C110.9 14.1 121.5 13.6 124.4 11.6C127.4 9.5 131.4 0 131.4 0L135 1C135 5.1 130.4 24.9 115.2 24.9C108.5 24.9 98.8 21.2 94.1 21.2C90.3 21.2 78.2 23.6 78.2 23.6L72.2 38.5L65.5 40C65.5 37.9 57.6 22.3 57.6 22.3C57.6 22.3 46.8 19.9 41.7 19.9L23.8 24.7C2.4 24.7 0 5.1 0 1.8Z"/>
+<path id="ev18" d="M0 1.8C0 1 0.2 0 3.8 0C3.8 4.8 8.1 9.5 8.1 9.5C8.1 9.5 9.7 14 21.4 14C23.6 14 26.5 13.8 29.5 13.3L54.4 10.1L55.2 10.1C63.4 10.1 67.9 28 67.9 28L69.2 27.3C69.2 26.8 72.2 12.2 81.1 12.2L106.6 14.1C110.9 14.1 121.5 13.7 124.4 11.6C127.4 9.5 131.4 0 131.4 0L135 1C135 5.1 130.4 24.9 115.2 24.9C108.5 24.9 98.8 21.2 94.1 21.2C90.3 21.2 78.2 23.6 78.2 23.6L72.2 38.5L65.5 40C65.5 37.9 57.6 22.3 57.6 22.3C57.6 22.3 46.8 19.9 41.7 19.9L23.8 24.7C2.4 24.7 0 5.1 0 1.8Z"/>
+<path id="ev19" d="M0 1.8C0 1 0.2 0 3.8 0C3.8 4.8 8.1 9.5 8.1 9.5C8.1 9.5 9.7 14 21.4 14C23.6 14 26.5 13.8 29.5 13.3L54.4 10.1L55.2 10.1C63.4 10.1 67.9 27.9 67.9 27.9L69.2 27.3C69.2 26.8 72.2 12.2 81.1 12.2L106.6 14.1C110.9 14.1 121.5 13.7 124.4 11.6C127.4 9.5 131.4 0 131.4 0L135 1C135 5.1 130.4 24.9 115.2 24.9C108.5 24.9 98.8 21.2 94.1 21.2C90.3 21.2 78.2 23.6 78.2 23.6L72.2 38.5L65.5 40C65.5 37.9 57.6 22.3 57.6 22.3C57.6 22.3 46.8 19.9 41.7 19.9L23.8 24.7C2.4 24.7 0 5.1 0 1.8Z"/>
+</defs></svg>
+
+<div class="scroller" tabindex="0" role="region" aria-label="Evaluaci&oacute;n — desplazamiento horizontal">
+  <div class="track">
+
+    <section class="panel p1" aria-label="Evaluaci&oacute;n">
+      <svg class="panel__bg" viewBox="0 0 1438 912" preserveAspectRatio="xMidYMin slice" aria-hidden="true" focusable="false">
+      <g fill="#EEEEEE" fill-opacity="0.1694">
+      <use href="#ev0" x="-34.0" y="783.0"/>
+      <use href="#ev0" x="498.0" y="783.0"/>
+      <use href="#ev0" x="-34.0" y="863.0"/>
+      <use href="#ev0" x="498.0" y="863.0"/>
+      <use href="#ev0" x="33.0" y="823.0"/>
+      <use href="#ev0" x="565.0" y="823.0"/>
+      <use href="#ev0" x="33.0" y="903.0"/>
+      <use href="#ev0" x="565.0" y="903.0"/>
+      <use href="#ev1" x="99.0" y="783.0"/>
+      <use href="#ev0" x="631.0" y="783.0"/>
+      <use href="#ev1" x="99.0" y="863.0"/>
+      <use href="#ev0" x="631.0" y="863.0"/>
+      <use href="#ev1" x="166.0" y="823.0"/>
+      <use href="#ev0" x="698.0" y="823.0"/>
+      <use href="#ev1" x="166.0" y="903.0"/>
+      <use href="#ev0" x="698.0" y="903.0"/>
+      <use href="#ev1" x="160.0" y="663.0"/>
+      <use href="#ev1" x="227.0" y="703.0"/>
+      <use href="#ev2" x="294.0" y="743.0"/>
+      <use href="#ev0" x="29.0" y="743.0"/>
+      <use href="#ev1" x="97.0" y="703.0"/>
+      <use href="#ev1" x="164.0" y="743.0"/>
+      <use href="#ev3" x="-101.0" y="743.0"/>
+      <use href="#ev1" x="232.0" y="783.0"/>
+      <use href="#ev0" x="764.0" y="783.0"/>
+      <use href="#ev1" x="232.0" y="863.0"/>
+      <use href="#ev0" x="764.0" y="863.0"/>
+      <use href="#ev2" x="299.0" y="823.0"/>
+      <use href="#ev0" x="831.0" y="823.0"/>
+      <use href="#ev2" x="299.0" y="903.0"/>
+      <use href="#ev0" x="831.0" y="903.0"/>
+      <use href="#ev2" x="365.0" y="783.0"/>
+      <use href="#ev0" x="897.0" y="783.0"/>
+      <use href="#ev2" x="365.0" y="863.0"/>
+      <use href="#ev0" x="897.0" y="863.0"/>
+      <use href="#ev2" x="432.0" y="823.0"/>
+      <use href="#ev0" x="964.0" y="823.0"/>
+      <use href="#ev2" x="432.0" y="903.0"/>
+      <use href="#ev0" x="964.0" y="903.0"/>
+      <use href="#ev10" x="1007.0" y="111.0"/>
+      <use href="#ev11" x="1007.0" y="31.0"/>
+      <use href="#ev8" x="940.0" y="71.0"/>
+      <use href="#ev9" x="940.0" y="-9.0"/>
+      <use href="#ev10" x="1406.0" y="111.0"/>
+      <use href="#ev12" x="874.0" y="111.0"/>
+      <use href="#ev11" x="1406.0" y="31.0"/>
+      <use href="#ev13" x="874.0" y="31.0"/>
+      <use href="#ev8" x="1339.0" y="71.0"/>
+      <use href="#ev14" x="807.0" y="71.0"/>
+      <use href="#ev9" x="1339.0" y="-9.0"/>
+      <use href="#ev15" x="807.0" y="-9.0"/>
+      <use href="#ev10" x="1345.0" y="231.0"/>
+      <use href="#ev10" x="1278.0" y="191.0"/>
+      <use href="#ev10" x="1211.0" y="151.0"/>
+      <use href="#ev10" x="1408.0" y="191.0"/>
+      <use href="#ev10" x="1341.0" y="151.0"/>
+      <use href="#ev10" x="1273.0" y="111.0"/>
+      <use href="#ev12" x="741.0" y="111.0"/>
+      <use href="#ev11" x="1273.0" y="31.0"/>
+      <use href="#ev13" x="741.0" y="31.0"/>
+      <use href="#ev8" x="1206.0" y="71.0"/>
+      <use href="#ev14" x="674.0" y="71.0"/>
+      <use href="#ev9" x="1206.0" y="-9.0"/>
+      <use href="#ev15" x="674.0" y="-9.0"/>
+      <use href="#ev10" x="1140.0" y="111.0"/>
+      <use href="#ev12" x="608.0" y="111.0"/>
+      <use href="#ev11" x="1140.0" y="31.0"/>
+      <use href="#ev13" x="608.0" y="31.0"/>
+      <use href="#ev8" x="1073.0" y="71.0"/>
+      <use href="#ev14" x="541.0" y="71.0"/>
+      <use href="#ev9" x="1073.0" y="-9.0"/>
+      <use href="#ev15" x="541.0" y="-9.0"/>
+      </g>
+      </svg>
+      <svg class="p1__art" viewBox="0 0 338 512" aria-hidden="true" focusable="false">
+<path fill="#5CD1FC" d="M338 169C338 262.3 262.3 338 169 338C75.7 338 0 262.3 0 169C0 75.7 75.7 0 169 0C262.3 0 338 75.7 338 169Z"/>
+<path fill="#5CD1FC" d="M338 343C338 436.3 262.3 512 169 512C75.7 512 0 436.3 0 343C0 249.7 75.7 174 169 174C262.3 174 338 249.7 338 343Z"/>
+<path fill="#FCB95C" d="M34.8 240.4C60.3 288.4 110.8 321 169 321C227.1 321 277.6 288.4 303.2 240.5C307 245.4 310.5 250.6 313.8 256C284.2 305.1 230.4 337.9 168.9 337.9C107.5 337.9 53.7 305.1 24.1 256C27.4 250.6 30.9 245.4 34.8 240.4Z"/>
+<path fill="#3D508F" d="M321 169C321 252.9 252.9 321 169 321C85.1 321 17 252.9 17 169C17 85.1 85.1 17 169 17C252.9 17 321 85.1 321 169Z"/>
+<path fill="#776DFF" d="M169 174C223.7 174 272.4 200 303.2 240.3C277.7 288.3 227.2 321 169 321C110.8 321 60.3 288.3 34.8 240.3C65.6 200 114.3 174 169 174Z"/>
+<path fill="#EDF486" d="M183 200C183 222.1 165.1 240 143 240C120.9 240 103 222.1 103 200C103 177.9 120.9 160 143 160C165.1 160 183 177.9 183 200Z"/>
+<path fill="#F85E84" d="M183 94C183 101.7 176.7 108 169 108C161.3 108 155 101.7 155 94C155 86.3 161.3 80 169 80C176.7 80 183 86.3 183 94Z"/>
+<path fill="#5CD1FC" d="M241 140C241 156 228 169 212 169C196 169 183 156 183 140C183 124 196 111 212 111C228 111 241 124 241 140Z"/>
+<path fill="#EDF486" d="M26.8 332.1C30.3 326.8 38.1 327.4 41.6 332.7C68.7 374.2 115.6 401.6 168.9 401.6C222.1 401.6 269 374.2 296.1 332.7C299.6 327.4 307.4 326.8 310.8 332.2C312.6 334.9 312.6 338.4 310.9 341.1C307.4 346.4 303.7 351.5 299.7 356.4L327.9 377.5C332.4 380.8 333.3 387.1 330 391.5C326.7 395.9 320.4 396.8 316 393.5L286.1 371.2C275.5 381.4 263.5 390.3 250.5 397.5L280.4 443C283.4 447.6 282.1 453.8 277.5 456.9C272.9 459.9 266.7 458.6 263.6 454L232.3 406.2C216.4 412.6 199.3 416.7 181.4 418C181.5 418.4 181.5 418.7 181.5 419L181.5 479.5C181.5 485 177 489.5 171.5 489.5C166 489.5 161.5 485 161.5 479.5L161.5 419C161.5 418.8 161.5 418.6 161.5 418.4C143.6 417.6 126.4 414 110.4 408.1L80.3 454C77.3 458.6 71.1 459.9 66.5 456.9C61.9 453.8 60.6 447.6 63.6 443L91.8 400C77.7 392.7 64.7 383.6 53.3 372.8L28.3 393.2C24.1 396.7 17.8 396.1 14.3 391.8C10.8 387.6 11.4 381.3 15.7 377.8L39.5 358.3C34.9 352.8 30.7 347.1 26.8 341.1C25 338.4 25 334.9 26.8 332.1Z"/>
+      </svg>
+      <div class="p1__text">
+        <h1 class="p1__title">Evaluaci&oacute;n</h1>
+        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam vehicula faucibus orci
+          sit amet euismod. Pellentesque sem nulla, dignissim ac commodo vitae.</p>
+        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam vehicula faucibus orci
+          sit amet euismod. Pellentesque sem nulla, dignissim ac commodo vitae.</p>
+      </div>
+    </section>
+
+    <section class="panel p2" aria-label="Herramientas">
+      <svg class="panel__bg" viewBox="0 0 1438 912" preserveAspectRatio="xMidYMin slice" aria-hidden="true" focusable="false">
+      <g fill="#EEEEEE" fill-opacity="0.1426">
+      <use href="#ev1" x="1361.0" y="742.0"/>
+      <use href="#ev1" x="1361.0" y="902.0"/>
+      <use href="#ev1" x="1361.0" y="822.0"/>
+      <use href="#ev1" x="1428.0" y="782.0"/>
+      <use href="#ev1" x="1428.0" y="862.0"/>
+      <use href="#ev1" x="1424.0" y="702.0"/>
+      </g>
+      <g fill="#EEEEEE" fill-opacity="0.1694">
+      <use href="#ev4" x="1234.0" y="111.0"/>
+      <use href="#ev4" x="702.0" y="111.0"/>
+      <use href="#ev5" x="702.0" y="31.0"/>
+      <use href="#ev6" x="1167.0" y="71.0"/>
+      <use href="#ev6" x="635.0" y="71.0"/>
+      <use href="#ev7" x="1167.0" y="-9.0"/>
+      <use href="#ev7" x="635.0" y="-9.0"/>
+      <use href="#ev4" x="1101.0" y="111.0"/>
+      <use href="#ev4" x="569.0" y="111.0"/>
+      <use href="#ev5" x="1101.0" y="31.0"/>
+      <use href="#ev5" x="569.0" y="31.0"/>
+      <use href="#ev6" x="1034.0" y="71.0"/>
+      <use href="#ev8" x="502.0" y="71.0"/>
+      <use href="#ev7" x="1034.0" y="-9.0"/>
+      <use href="#ev9" x="502.0" y="-9.0"/>
+      <use href="#ev4" x="1040.0" y="231.0"/>
+      <use href="#ev4" x="973.0" y="191.0"/>
+      <use href="#ev4" x="906.0" y="151.0"/>
+      <use href="#ev4" x="1171.0" y="151.0"/>
+      <use href="#ev4" x="1103.0" y="191.0"/>
+      <use href="#ev4" x="1036.0" y="151.0"/>
+      <use href="#ev4" x="1301.0" y="151.0"/>
+      <use href="#ev4" x="968.0" y="111.0"/>
+      <use href="#ev10" x="436.0" y="111.0"/>
+      <use href="#ev5" x="968.0" y="31.0"/>
+      <use href="#ev11" x="436.0" y="31.0"/>
+      <use href="#ev6" x="901.0" y="71.0"/>
+      <use href="#ev8" x="369.0" y="71.0"/>
+      <use href="#ev7" x="901.0" y="-9.0"/>
+      <use href="#ev9" x="369.0" y="-9.0"/>
+      <use href="#ev4" x="835.0" y="111.0"/>
+      <use href="#ev10" x="303.0" y="111.0"/>
+      <use href="#ev5" x="835.0" y="31.0"/>
+      <use href="#ev11" x="303.0" y="31.0"/>
+      <use href="#ev6" x="768.0" y="71.0"/>
+      <use href="#ev8" x="236.0" y="71.0"/>
+      <use href="#ev7" x="768.0" y="-9.0"/>
+      <use href="#ev9" x="236.0" y="-9.0"/>
+      <use href="#ev10" x="101.0" y="111.0"/>
+      <use href="#ev11" x="101.0" y="31.0"/>
+      <use href="#ev8" x="34.0" y="71.0"/>
+      <use href="#ev9" x="34.0" y="-9.0"/>
+      <use href="#ev10" x="-32.0" y="111.0"/>
+      <use href="#ev11" x="-32.0" y="31.0"/>
+      <use href="#ev8" x="-99.0" y="71.0"/>
+      <use href="#ev9" x="-99.0" y="-9.0"/>
+      <use href="#ev10" x="-93.0" y="231.0"/>
+      <use href="#ev10" x="38.0" y="151.0"/>
+      <use href="#ev10" x="-30.0" y="191.0"/>
+      <use href="#ev10" x="-97.0" y="151.0"/>
+      <use href="#ev10" x="168.0" y="151.0"/>
+      <use href="#ev6" x="1422.0" y="80.0"/>
+      <use href="#ev5" x="1355.0" y="40.0"/>
+      <use href="#ev7" x="1417.0" y="0.0"/>
+      <use href="#ev7" x="1284.0" y="0.0"/>
+      </g>
+      <g fill="#EEEEEE" fill-opacity="0.1164">
+      <use href="#ev5" x="1234.0" y="31.0"/>
+      </g>
+      </svg>
+      <h2 class="p2__head">Herramientas</h2>
+      <p class="p2__intro">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullamehicula
+        faucibus orci sitet euismod. Pellentesque sem nulla, dignissim ac commodo vitae.</p>
+      <div class="tools">
+        <article class="tool">
+          <svg class="tool__tab" viewBox="0 0 58 88" aria-hidden="true" focusable="false">
+<path fill="#5CD1FC" d="M29 0L29 0C45 0 58 13 58 29L58 59C58 75 45 88 29 88L29 88C13 88 0 75 0 59L0 29C0 13 13 0 29 0Z"/>
+<path fill="#3D508F" d="M0 29C0 13 13 0 29 0L29 0C45 0 58 13 58 29L58 45L0 45L0 29Z"/>
+<path fill="#EDF486" d="M47 44C47 54.5 38.7 63 28.5 63C18.3 63 10 54.5 10 44C10 33.5 18.3 25 28.5 25C38.7 25 47 33.5 47 44Z"/>
+          </svg>
+          <span class="tool__num">1</span>
+          <p class="tool__text">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam vehicula faucibus orci sitet euismod. Pellentesque sem nulla, dignissim ac commodo vitae.</p>
+        </article>
+        <article class="tool">
+          <svg class="tool__tab" viewBox="0 0 58 88" aria-hidden="true" focusable="false">
+<path fill="#5CD1FC" d="M29 0L29 0C45 0 58 13 58 29L58 59C58 75 45 88 29 88L29 88C13 88 0 75 0 59L0 29C0 13 13 0 29 0Z"/>
+<path fill="#3D508F" d="M0 29C0 13 13 0 29 0L29 0C45 0 58 13 58 29L58 45L0 45L0 29Z"/>
+<path fill="#EDF486" d="M47 44C47 54.5 38.7 63 28.5 63C18.3 63 10 54.5 10 44C10 33.5 18.3 25 28.5 25C38.7 25 47 33.5 47 44Z"/>
+          </svg>
+          <span class="tool__num">2</span>
+          <p class="tool__text">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam vehicula faucibus orci sitet euismod. Pellentesque sem nulla, dignissim ac commodo vitae.</p>
+        </article>
+        <article class="tool">
+          <svg class="tool__tab" viewBox="0 0 58 88" aria-hidden="true" focusable="false">
+<path fill="#5CD1FC" d="M29 0L29 0C45 0 58 13 58 29L58 59C58 75 45 88 29 88L29 88C13 88 0 75 0 59L0 29C0 13 13 0 29 0Z"/>
+<path fill="#3D508F" d="M0 29C0 13 13 0 29 0L29 0C45 0 58 13 58 29L58 45L0 45L0 29Z"/>
+<path fill="#EDF486" d="M47 44C47 54.5 38.7 63 28.5 63C18.3 63 10 54.5 10 44C10 33.5 18.3 25 28.5 25C38.7 25 47 33.5 47 44Z"/>
+          </svg>
+          <span class="tool__num">3</span>
+          <p class="tool__text">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam vehicula faucibus orci sitet euismod. Pellentesque sem nulla, dignissim ac commodo vitae.</p>
+        </article>
+        <article class="tool">
+          <svg class="tool__tab" viewBox="0 0 58 88" aria-hidden="true" focusable="false">
+<path fill="#5CD1FC" d="M29 0L29 0C45 0 58 13 58 29L58 59C58 75 45 88 29 88L29 88C13 88 0 75 0 59L0 29C0 13 13 0 29 0Z"/>
+<path fill="#3D508F" d="M0 29C0 13 13 0 29 0L29 0C45 0 58 13 58 29L58 45L0 45L0 29Z"/>
+<path fill="#EDF486" d="M47 44C47 54.5 38.7 63 28.5 63C18.3 63 10 54.5 10 44C10 33.5 18.3 25 28.5 25C38.7 25 47 33.5 47 44Z"/>
+          </svg>
+          <span class="tool__num">4</span>
+          <p class="tool__text">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam vehicula faucibus orci sitet euismod. Pellentesque sem nulla, dignissim ac commodo vitae.</p>
+        </article>
+      </div>
+    </section>
+
+    <section class="panel p3" aria-label="Preguntas">
+      <svg class="panel__bg" viewBox="0 0 1438 912" preserveAspectRatio="xMidYMin slice" aria-hidden="true" focusable="false">
+      <g fill="#EEEEEE" fill-opacity="0.1426">
+      <use href="#ev1" x="-77.0" y="742.0"/>
+      <use href="#ev1" x="-77.0" y="902.0"/>
+      <use href="#ev1" x="455.0" y="902.0"/>
+      <use href="#ev1" x="-77.0" y="822.0"/>
+      <use href="#ev1" x="455.0" y="822.0"/>
+      <use href="#ev1" x="-10.0" y="782.0"/>
+      <use href="#ev1" x="-10.0" y="862.0"/>
+      <use href="#ev1" x="522.0" y="862.0"/>
+      <use href="#ev1" x="56.0" y="742.0"/>
+      <use href="#ev1" x="56.0" y="902.0"/>
+      <use href="#ev1" x="588.0" y="902.0"/>
+      <use href="#ev1" x="56.0" y="822.0"/>
+      <use href="#ev1" x="588.0" y="822.0"/>
+      <use href="#ev1" x="123.0" y="782.0"/>
+      <use href="#ev1" x="123.0" y="862.0"/>
+      <use href="#ev1" x="655.0" y="862.0"/>
+      <use href="#ev1" x="117.0" y="622.0"/>
+      <use href="#ev1" x="184.0" y="662.0"/>
+      <use href="#ev1" x="251.0" y="702.0"/>
+      <use href="#ev1" x="-14.0" y="702.0"/>
+      <use href="#ev1" x="54.0" y="662.0"/>
+      <use href="#ev1" x="121.0" y="702.0"/>
+      <use href="#ev1" x="189.0" y="742.0"/>
+      <use href="#ev1" x="189.0" y="902.0"/>
+      <use href="#ev1" x="721.0" y="902.0"/>
+      <use href="#ev1" x="189.0" y="822.0"/>
+      <use href="#ev1" x="721.0" y="822.0"/>
+      <use href="#ev1" x="256.0" y="782.0"/>
+      <use href="#ev1" x="256.0" y="862.0"/>
+      <use href="#ev1" x="788.0" y="862.0"/>
+      <use href="#ev1" x="322.0" y="902.0"/>
+      <use href="#ev1" x="854.0" y="902.0"/>
+      <use href="#ev1" x="322.0" y="822.0"/>
+      <use href="#ev1" x="854.0" y="822.0"/>
+      <use href="#ev1" x="389.0" y="862.0"/>
+      </g>
+      <g fill="#EEEEEE" fill-opacity="0.0975">
+      <use href="#ev1" x="921.0" y="862.0"/>
+      </g>
+      <g fill="#EEEEEE" fill-opacity="0.1694">
+      <use href="#ev1" x="1040.0" y="697.0"/>
+      <use href="#ev1" x="1040.0" y="857.0"/>
+      <use href="#ev1" x="1040.0" y="777.0"/>
+      <use href="#ev1" x="1107.0" y="737.0"/>
+      <use href="#ev1" x="1107.0" y="897.0"/>
+      <use href="#ev1" x="1107.0" y="817.0"/>
+      <use href="#ev1" x="1173.0" y="697.0"/>
+      <use href="#ev1" x="1173.0" y="857.0"/>
+      <use href="#ev1" x="1173.0" y="777.0"/>
+      <use href="#ev2" x="1240.0" y="737.0"/>
+      <use href="#ev2" x="1240.0" y="897.0"/>
+      <use href="#ev2" x="1240.0" y="817.0"/>
+      <use href="#ev2" x="1234.0" y="577.0"/>
+      <use href="#ev2" x="1301.0" y="617.0"/>
+      <use href="#ev2" x="1368.0" y="657.0"/>
+      <use href="#ev1" x="1103.0" y="657.0"/>
+      <use href="#ev1" x="1171.0" y="617.0"/>
+      <use href="#ev2" x="1238.0" y="657.0"/>
+      <use href="#ev1" x="973.0" y="657.0"/>
+      <use href="#ev2" x="1306.0" y="697.0"/>
+      <use href="#ev2" x="1306.0" y="857.0"/>
+      <use href="#ev2" x="1306.0" y="777.0"/>
+      <use href="#ev2" x="1373.0" y="737.0"/>
+      <use href="#ev2" x="1373.0" y="897.0"/>
+      <use href="#ev2" x="1373.0" y="817.0"/>
+      <use href="#ev7" x="245.0" y="0.0"/>
+      <use href="#ev7" x="112.0" y="0.0"/>
+      <use href="#ev4" x="51.0" y="120.0"/>
+      <use href="#ev6" x="-16.0" y="80.0"/>
+      <use href="#ev5" x="-83.0" y="40.0"/>
+      <use href="#ev5" x="182.0" y="40.0"/>
+      <use href="#ev6" x="114.0" y="80.0"/>
+      <use href="#ev5" x="47.0" y="40.0"/>
+      <use href="#ev5" x="312.0" y="40.0"/>
+      <use href="#ev7" x="-21.0" y="0.0"/>
+      <use href="#ev16" x="1381.0" y="111.0"/>
+      <use href="#ev4" x="849.0" y="111.0"/>
+      <use href="#ev17" x="1381.0" y="31.0"/>
+      <use href="#ev5" x="849.0" y="31.0"/>
+      <use href="#ev18" x="1314.0" y="71.0"/>
+      <use href="#ev6" x="782.0" y="71.0"/>
+      <use href="#ev19" x="1314.0" y="-9.0"/>
+      <use href="#ev7" x="782.0" y="-9.0"/>
+      <use href="#ev16" x="1248.0" y="111.0"/>
+      <use href="#ev4" x="716.0" y="111.0"/>
+      <use href="#ev17" x="1248.0" y="31.0"/>
+      <use href="#ev5" x="716.0" y="31.0"/>
+      <use href="#ev18" x="1181.0" y="71.0"/>
+      <use href="#ev6" x="649.0" y="71.0"/>
+      <use href="#ev19" x="1181.0" y="-9.0"/>
+      <use href="#ev7" x="649.0" y="-9.0"/>
+      <use href="#ev16" x="1187.0" y="231.0"/>
+      <use href="#ev16" x="1120.0" y="191.0"/>
+      <use href="#ev4" x="1053.0" y="151.0"/>
+      <use href="#ev16" x="1318.0" y="151.0"/>
+      <use href="#ev16" x="1250.0" y="191.0"/>
+      <use href="#ev16" x="1183.0" y="151.0"/>
+      <use href="#ev16" x="1115.0" y="111.0"/>
+      <use href="#ev4" x="583.0" y="111.0"/>
+      <use href="#ev17" x="1115.0" y="31.0"/>
+      <use href="#ev5" x="583.0" y="31.0"/>
+      <use href="#ev6" x="1048.0" y="71.0"/>
+      <use href="#ev6" x="516.0" y="71.0"/>
+      <use href="#ev7" x="1048.0" y="-9.0"/>
+      <use href="#ev7" x="516.0" y="-9.0"/>
+      <use href="#ev4" x="982.0" y="111.0"/>
+      <use href="#ev4" x="450.0" y="111.0"/>
+      <use href="#ev5" x="982.0" y="31.0"/>
+      <use href="#ev5" x="450.0" y="31.0"/>
+      <use href="#ev6" x="915.0" y="71.0"/>
+      <use href="#ev6" x="383.0" y="71.0"/>
+      <use href="#ev7" x="915.0" y="-9.0"/>
+      <use href="#ev7" x="383.0" y="-9.0"/>
+      </g>
+      </svg>
+      <h2 class="p3__head">Preguntas</h2>
+      <p class="p3__intro">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullamehicula
+        faucibus orci sitet euismod. Pellentesque sem nulla, dignissim ac commodo vitae.</p>
+      <div class="ask">
+        <svg class="ask__brace" viewBox="0 0 59 204" preserveAspectRatio="none" aria-hidden="true" focusable="false"><path fill="#EEEEEE" d="M55.6 204C51.6 204 22.5 200.4 22.5 168L29.6 141C29.6 133.3 26 117 26 117C26 117 3.1 105 0 105L2.1 94.9L24.1 85.8C24.1 85.8 27.7 67.6 27.7 61.9C27.7 54.7 22.2 40 22.2 30C22.2 6.9 51.4 0 57.5 0L58.9 5.5C58.9 5.5 45 11.5 41.9 16.1C39.1 20.1 38.1 36.9 38.1 42.9L40.9 81.5C40.9 94.9 19.4 99.5 18.7 99.5L17.8 101.4C17.8 101.4 44 108.1 44 120.6L44 121.8L39.3 159.4C38.8 164 38.6 167.8 38.6 171.2C38.6 188.9 45 191.8 45 191.8C45 191.8 51.8 198.2 58.9 198.2L58.9 199.2C58.9 202.1 58.7 204 55.6 204Z"/></svg>
+        <p class="ask__q">&iquest;Curabitur felis nulla, maximus quis turpis non, finibus vestibulum velit?</p>
+        <svg class="ask__brace" viewBox="0 0 59 204" preserveAspectRatio="none" aria-hidden="true" focusable="false"><path fill="#EEEEEE" d="M3.3 0C7.3 0 36.4 3.6 36.4 36L29.3 63C29.3 70.7 32.9 87 32.9 87C32.9 87 55.9 99 58.9 99L56.8 109.1L34.8 118.2C34.8 118.2 31.2 136.4 31.2 142.1C31.2 149.3 36.7 164 36.7 174C36.7 197 7.6 204 1.4 204L0 198.5C0 198.5 14 192.5 17 187.9C19.9 183.9 20.8 167.1 20.8 161.1L18 122.5C18 109.1 39.5 104.5 40.2 104.5L41.2 102.6C41.2 102.6 14.9 95.9 14.9 83.4L14.9 82.2L19.6 44.6C20.1 40 20.3 36.2 20.3 32.8C20.3 15.1 14 12.2 14 12.2C14 12.2 7.1 5.8 0 5.8L0 4.8C0 1.9 0.2 0 3.3 0Z"/></svg>
+      </div>
+    </section>
+
+  </div>
+  <div class="scroll-hint" aria-hidden="true">
+    <span>Desliza</span><span class="scroll-hint__arrow">&rarr;</span>
+  </div>
+</div>
+
+<footer class="nav">
+  <a class="brand" href="index.html">
+    <span>pro</span>
+    <span>teia</span>
+    <span class="brand__tag">PEDAGOG&Iacute;AS PARA REIMAGINAR</span>
+  </a>
+  <nav class="nav__links" aria-label="Principal">
+    <a href="index.html">Inicio</a>
+    <a href="retos.html" aria-current="page">Momentos</a>
+    <a href="principios.html">Principios</a>
+    <a href="#">Glosario</a>
+    <a href="#">Podcast</a>
+    <a href="#">Contacto</a>
+  </nav>
+</footer>
+
+<script>
+  const scroller = document.querySelector('.scroller');
+  const scrollHint = document.querySelector('.scroll-hint');
+  let isDragging = false;
+  let startX = 0;
+  let startScrollLeft = 0;
+
+  const updateScrollHint = () => {
+    scrollHint.classList.toggle('is-hidden', scroller.scrollLeft > 24);
+  };
+
+  scroller.addEventListener('scroll', updateScrollHint, {passive:true});
+
+  scroller.addEventListener('pointerdown', (event) => {
+    if (event.pointerType === 'mouse' && event.button !== 0) return;
+    isDragging = true;
+    startX = event.clientX;
+    startScrollLeft = scroller.scrollLeft;
+    scroller.classList.add('is-dragging');
+    scroller.setPointerCapture(event.pointerId);
+  });
+
+  scroller.addEventListener('pointermove', (event) => {
+    if (!isDragging) return;
+    scroller.scrollLeft = startScrollLeft - (event.clientX - startX);
+  });
+
+  const stopDragging = (event) => {
+    if (!isDragging) return;
+    isDragging = false;
+    scroller.classList.remove('is-dragging');
+    if (event.pointerId !== undefined && scroller.hasPointerCapture(event.pointerId)) {
+      scroller.releasePointerCapture(event.pointerId);
+    }
+  };
+
+  scroller.addEventListener('pointerup', stopDragging);
+  scroller.addEventListener('pointercancel', stopDragging);
+  scroller.addEventListener('mouseleave', stopDragging);
+
+  scroller.addEventListener('wheel', (event) => {
+    if (Math.abs(event.deltaY) <= Math.abs(event.deltaX)) return;
+    event.preventDefault();
+    scroller.scrollLeft += event.deltaY;
+  }, {passive:false});
+
+  updateScrollHint();
+</script>
+
+<script src="eye-menu.js" defer></script>
+
+</body>
+</html>
