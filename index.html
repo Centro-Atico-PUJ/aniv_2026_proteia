@@ -86,7 +86,7 @@ body{
 .lockup{
   display:flex;
   justify-content:center;
-  width:min(88%,940px);
+  width:min(64%,620px);
   max-width:100%;
 }
 .lockup__logo{display:block;width:100%;height:auto}
@@ -168,9 +168,9 @@ body{
   display:flex;
   align-items:center;
   justify-content:space-between;
-  gap:clamp(16px,3vw,40px);
-  min-height:clamp(72px,7.78vw,112px);
-  padding:12px clamp(20px,5.07vw,73px);
+  gap:clamp(12px,2.2vw,28px);
+  min-height:clamp(56px,5.6vw,80px);
+  padding:10px clamp(18px,3.8vw,52px);
   background:var(--morado);
   color:var(--crema);
 }
@@ -183,7 +183,7 @@ body{
   text-decoration:none;
   font-family:var(--font-display);
   font-weight:500;
-  font-size:clamp(26px,2.92vw,42px);
+  font-size:clamp(19px,2.1vw,30px);
   line-height:.87;
 }
 .brand__tag{
@@ -197,11 +197,11 @@ body{
   align-items:center;
   justify-content:flex-end;
   flex-wrap:wrap;
-  gap:clamp(16px,4.72vw,68px);
+  gap:clamp(12px,3.2vw,44px);
 }
 .nav__links a{
   font-family:var(--font-display);
-  font-size:clamp(15px,1.74vw,25px);
+  font-size:clamp(13px,1.25vw,18px);
   color:var(--crema);
   text-decoration:none;
 }
@@ -238,23 +238,29 @@ a:focus-visible{
 
 /* ---------- Pantallas de poca altura: todo cabe sin scroll ---------- */
 @media (max-height:720px){
-  .lockup{width:min(88%,900px)}
+  .lockup{width:min(64%,600px)}
   .rule{width:min(84%,860px);margin-top:clamp(14px,2.8vh,26px)}
   .intro{margin-top:clamp(12px,2.4vh,20px);font-size:clamp(13px,2.1vh,15px);line-height:1.5}
   .intro__mark{margin-top:.3em}
   .cta{margin-top:clamp(14px,3vh,30px)}
 }
 @media (max-height:560px){
-  .lockup{width:min(78%,700px)}
+  .lockup{width:min(58%,480px)}
   .intro{font-size:clamp(12px,1.5vh,15px);line-height:1.45}
   .intro br{display:none}
   .cta{margin-top:clamp(10px,2vh,22px);min-height:38px}
-  .nav{min-height:0;padding:8px clamp(16px,4vw,60px)}
+  .nav{min-height:0;padding:8px clamp(14px,3vw,40px)}
 }
+
+/* El parrafo entra con un fundido + deslizamiento hacia arriba, igual
+   que el resto del logotipo, en vez de aparecer de golpe. */
+.intro{opacity:0;transform:translateY(28px);animation:reveal-up .8s cubic-bezier(.22,1,.36,1) 2.3s forwards}
+@keyframes reveal-up{to{opacity:1;transform:translateY(0)}}
 
 @media (prefers-reduced-motion:reduce){
   *{transition:none!important;animation:none!important}
   .lk{opacity:1!important;transform:none!important}
+  .intro{opacity:1!important;transform:none!important}
 }
 </style>
 </head>
@@ -685,7 +691,9 @@ a:focus-visible{
   if (!intro) { html.classList.remove('intro-active'); return; }
 
   var LOAD_MS = reduce ? 1100 : 3400;   /* pantalla de carga */
-  var HOOK_MS = reduce ? 4000 : 4800;   /* portada gancho    */
+  var HOOK_MS = reduce ? 5200 : 8200;   /* portada gancho: da tiempo a leer despues de que
+                                            terminan las animaciones (~4.95s); el boton
+                                            "Saltar intro" sigue disponible en todo momento */
   var rafId = null, done = false;
 
   function reveal() {

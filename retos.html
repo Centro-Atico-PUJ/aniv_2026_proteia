@@ -55,6 +55,7 @@ body{
   height:auto;
   z-index:0;
   pointer-events:none;
+  will-change:transform;
 }
 .wrap{
   position:relative;
@@ -80,10 +81,10 @@ body{
   display:grid;
   grid-template-columns:46.02% 46.02%;
   column-gap:7.96%;
-  margin-top:clamp(38px,5.4vw,78px);
+  margin-top:clamp(46px,6.6vw,96px);
 }
 .cols p{margin:0;font-size:clamp(15px,1.39vw,20px);line-height:1.9}
-.col--right{
+.cols .col--right{
   margin-top:clamp(58px,20.5vw,300px);
   text-align:right;
 }
@@ -93,7 +94,7 @@ body{
   display:inline-flex;
   align-items:center;
   gap:.85em;
-  margin-top:clamp(40px,4.65vw,67px);
+  margin-top:clamp(50px,5.8vw,84px);
   padding:clamp(8px,.83vw,12px) clamp(16px,1.6vw,23px);
   border:2px solid var(--crema);
   border-radius:999px;
@@ -120,7 +121,7 @@ body{
   display:grid;
   grid-template-columns:repeat(3,27.73%);
   justify-content:space-between;
-  margin-top:clamp(70px,10.76vw,155px);
+  margin-top:clamp(84px,12.4vw,178px);
 }
 .card{
   display:flex;
@@ -169,7 +170,7 @@ body{
 }
 
 .card__label{
-  margin-top:clamp(18px,2.5vw,36px);
+  margin-top:clamp(24px,3.2vw,44px);
   font-family:var(--font-display);
   font-weight:500;
   font-size:clamp(20px,2.36vw,34px);
@@ -183,9 +184,9 @@ body{
   display:flex;
   align-items:center;
   justify-content:space-between;
-  gap:clamp(16px,3vw,40px);
-  min-height:clamp(88px,7.78vw,112px);
-  padding:14px clamp(20px,5.07vw,73px);
+  gap:clamp(12px,2.2vw,28px);
+  min-height:clamp(56px,5.6vw,80px);
+  padding:10px clamp(18px,3.8vw,52px);
   background:var(--naranja);
   color:var(--morado);
 }
@@ -198,7 +199,7 @@ body{
   text-decoration:none;
   font-family:var(--font-display);
   font-weight:500;
-  font-size:clamp(26px,2.92vw,42px);
+  font-size:clamp(19px,2.1vw,30px);
   line-height:.87;
 }
 .brand__tag{font-size:.13em;letter-spacing:.05em;margin-top:.55em;white-space:nowrap}
@@ -207,11 +208,11 @@ body{
   align-items:center;
   justify-content:flex-end;
   flex-wrap:wrap;
-  gap:clamp(16px,4.72vw,68px);
+  gap:clamp(12px,3.2vw,44px);
 }
 .nav__links a{
   font-family:var(--font-display);
-  font-size:clamp(15px,1.74vw,25px);
+  font-size:clamp(13px,1.25vw,18px);
   color:var(--morado);
   text-decoration:none;
 }
@@ -229,7 +230,7 @@ a:focus-visible{outline:2px solid var(--crema);outline-offset:6px;border-radius:
 @media (max-width:1000px){
   .wrap{padding-left:7%;padding-right:7%}
   .cols{grid-template-columns:1fr;row-gap:28px}
-  .col--right{margin-top:0;text-align:left}
+  .cols .col--right{margin-top:0;text-align:left}
   .cards{grid-template-columns:repeat(3,30%);justify-content:space-between}
 }
 @media (max-width:860px){
@@ -238,8 +239,10 @@ a:focus-visible{outline:2px solid var(--crema);outline-offset:6px;border-radius:
   .nav__links{justify-content:center;gap:18px 26px}
 }
 @media (max-width:680px){
-  .cards{grid-template-columns:1fr;row-gap:52px;justify-items:center}
-  .card{max-width:340px}
+  .cards{grid-template-columns:1fr;row-gap:60px;justify-items:center}
+  /* Los iconos de cada reto ocupaban casi toda la pantalla (alto ~1.6x su
+     ancho): se limitan a un tamaño legible que no exija tanto scroll. */
+  .card{width:100%;max-width:220px}
   .hint{align-items:flex-start;border-radius:26px}
 }
 
@@ -259,8 +262,18 @@ a:focus-visible{outline:2px solid var(--crema);outline-offset:6px;border-radius:
   .card__label{margin-top:clamp(14px,2vw,22px)}
 }
 
+/* Titulo y columnas ya estan a la vista apenas se entra a la seccion
+   (no hay nada que esperar a que "entre en pantalla"): se revelan con
+   un fundido + deslizamiento apenas carga la pagina, igual que el
+   resto de los textos, pero disparado por la carga en vez del scroll. */
+@keyframes reveal-up{from{opacity:0;transform:translateY(42px)}to{opacity:1;transform:translateY(0)}}
+.title{opacity:0;animation:reveal-up .85s cubic-bezier(.22,1,.36,1) .15s forwards}
+.col--left{opacity:0;animation:reveal-up .85s cubic-bezier(.22,1,.36,1) .32s forwards}
+.cols .col--right{opacity:0;animation:reveal-up .85s cubic-bezier(.22,1,.36,1) .41s forwards}
+
 @media (prefers-reduced-motion:reduce){
   *{transition:none!important;animation:none!important}
+  .title,.col--left,.cols .col--right{opacity:1!important;transform:none!important}
 }
 </style>
 </head>
@@ -550,6 +563,67 @@ a:focus-visible{outline:2px solid var(--crema);outline-offset:6px;border-radius:
   </nav>
 </footer>
 
+
+<script>
+/* Parallax sutil: la trama de fondo se desplaza mas lento que el texto
+   al hacer scroll, para que la pagina se sienta viva (igual que la
+   secuencia de entrada) en vez de moverse toda en bloque. */
+(function () {
+  'use strict';
+  var bg = document.querySelector('.texture');
+  if (!bg) return;
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+  var ticking = false;
+  function update() {
+    var y = window.pageYOffset || document.documentElement.scrollTop || 0;
+    bg.style.transform = 'translateX(-50%) translateY(' + (y * -0.12) + 'px)';
+    ticking = false;
+  }
+  function onScroll() {
+    if (!ticking) { window.requestAnimationFrame(update); ticking = true; }
+  }
+  window.addEventListener('scroll', onScroll, { passive: true });
+  update();
+})();
+
+/* El aviso y las etiquetas de las tarjetas estan mas abajo: se
+   revelan con fundido + deslizamiento la primera vez que entran en
+   pantalla al hacer scroll (el titulo y las columnas ya se revelan
+   solos, con la carga de la pagina, ver @keyframes reveal-up arriba). */
+(function () {
+  'use strict';
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  var nodes = document.querySelectorAll('.hint, .card__label');
+  if (!nodes.length || !('IntersectionObserver' in window)) return;
+
+  nodes.forEach(function (el, i) {
+    el.style.opacity = '0';
+    el.style.transform = 'translateY(42px)';
+    el.style.transition = 'opacity .85s cubic-bezier(.22,1,.36,1) ' + ((i % 4) * 0.09).toFixed(2) +
+      's, transform .85s cubic-bezier(.22,1,.36,1) ' + ((i % 4) * 0.09).toFixed(2) + 's';
+  });
+
+  var io = new IntersectionObserver(function (entries) {
+    entries.forEach(function (entry) {
+      if (!entry.isIntersecting) return;
+      entry.target.style.opacity = '1';
+      entry.target.style.transform = 'translateY(0)';
+      io.unobserve(entry.target);
+    });
+  }, { threshold: 0.15, rootMargin: '0px 0px -8% 0px' });
+
+  /* Se espera a que el navegador pinte el estado inicial (opacidad 0) y
+     se da una pequena pausa antes de observar: asi el texto que ya esta
+     a la vista al cargar la pagina (titulo, columnas) tambien se ve
+     aparecer con el fundido, en vez de saltar directo al estado final. */
+  requestAnimationFrame(function () {
+    setTimeout(function () {
+      nodes.forEach(function (el) { io.observe(el); });
+    }, 150);
+  });
+})();
+</script>
 <script src="eye-menu.js" defer></script>
 
 </body>

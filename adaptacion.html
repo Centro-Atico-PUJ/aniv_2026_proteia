@@ -23,7 +23,7 @@
   --crema:#EEEEEE;
   --morado:#5E3986;
   --nav:#D9D9D9;
-  --nav-h:clamp(88px,7.78vw,112px);
+  --nav-h:clamp(56px,5.6vw,80px);
 
   --font-display:'Podkova','Bitter',Georgia,'Times New Roman',serif;
   --font-body:'Source Serif 4','PT Serif',Georgia,'Times New Roman',serif;
@@ -178,9 +178,9 @@ body{
   display:flex;
   align-items:center;
   justify-content:space-between;
-  gap:clamp(16px,3vw,40px);
+  gap:clamp(12px,2.2vw,28px);
   min-height:var(--nav-h);
-  padding:14px clamp(20px,5.07vw,73px);
+  padding:10px clamp(18px,3.8vw,52px);
   background:var(--morado);
 }
 .brand{
@@ -192,14 +192,14 @@ body{
   text-decoration:none;
   font-family:var(--font-display);
   font-weight:500;
-  font-size:clamp(26px,2.92vw,42px);
+  font-size:clamp(19px,2.1vw,30px);
   line-height:.87;
 }
 .brand__tag{font-size:.13em;letter-spacing:.05em;margin-top:.55em;white-space:nowrap}
-.nav__links{display:flex;align-items:center;justify-content:flex-end;flex-wrap:wrap;gap:clamp(16px,4.72vw,68px)}
+.nav__links{display:flex;align-items:center;justify-content:flex-end;flex-wrap:wrap;gap:clamp(12px,3.2vw,44px)}
 .nav__links a{
   font-family:var(--font-display);
-  font-size:clamp(15px,1.74vw,25px);
+  font-size:clamp(13px,1.25vw,18px);
   color:var(--nav);
   text-decoration:none;
 }
@@ -224,21 +224,21 @@ a:focus-visible{outline:2px solid var(--tinta);outline-offset:6px;border-radius:
   }
   .nav{min-height:auto}
   .p1{display:block;padding:0 22px}
-  .p1__art{width:52%;max-width:240px;margin:8px 0 20px}
+  .p1__art{width:52%;max-width:240px;margin:14px 0 26px}
   .p1__text{margin-left:0;padding-top:0}
   .p1__title{font-size:clamp(38px,10vw,72px)}
-  .p1__text p{font-size:clamp(15px,4.2vw,22px);line-height:1.6;margin-top:20px}
-  .p1__text p + p{margin-top:20px}
+  .p1__text p{font-size:clamp(15px,4.2vw,22px);line-height:1.65;margin-top:24px}
+  .p1__text p + p{margin-top:24px}
   .p2,.p3{padding:0 22px}
-  .p2__head,.p3__head{margin:34px 0 0;font-size:clamp(24px,6.4vw,40px)}
-  .p2__intro,.p3__intro{margin-top:12px;max-width:none;font-size:clamp(14px,3.8vw,20px);line-height:1.7}
+  .p2__head,.p3__head{margin:46px 0 0;font-size:clamp(24px,6.4vw,40px)}
+  .p2__intro,.p3__intro{margin-top:16px;max-width:none;font-size:clamp(14px,3.8vw,20px);line-height:1.7}
   .p2__head,.p2__intro{margin-left:0}
-  .tools{display:grid;grid-template-columns:repeat(2,1fr);gap:64px 16px;margin:64px 0 0}
+  .tools{display:grid;grid-template-columns:repeat(2,1fr);gap:72px 16px;margin:76px 0 0}
   .tool{flex:none;height:auto;padding:0 16px 24px;border-radius:22px}
   .tool__tab{top:-28px;width:40px;height:60px}
   .tool__num{padding-top:34px;font-size:clamp(30px,8vw,48px)}
-  .tool__text{margin-top:12px;font-size:clamp(12px,3.2vw,15px);line-height:1.7}
-  .ask{width:100%;height:auto;gap:12px;margin-top:26px;padding:34px 16px;border-radius:22px}
+  .tool__text{margin-top:14px;font-size:clamp(12px,3.2vw,15px);line-height:1.7}
+  .ask{width:100%;height:auto;gap:12px;margin-top:36px;padding:36px 18px;border-radius:22px}
   .ask__brace{width:26px;height:auto;align-self:stretch}
   .ask__q{max-width:none;font-size:clamp(20px,5.6vw,34px);line-height:1.35}
   .nav{flex-direction:column;justify-content:center;gap:20px;padding:26px 20px}
@@ -246,8 +246,9 @@ a:focus-visible{outline:2px solid var(--tinta);outline-offset:6px;border-radius:
   .nav__links{justify-content:center;gap:18px 26px}
 }
 @media (max-width:420px){
-  .tools{grid-template-columns:1fr;gap:60px}
+  .tools{grid-template-columns:1fr;gap:68px}
 }
+
 @media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
 </style>
 </head>
@@ -681,6 +682,41 @@ a:focus-visible{outline:2px solid var(--tinta);outline-offset:6px;border-radius:
   updateScrollHint();
 </script>
 
+<script>
+/* Los textos aparecen con un fundido + deslizamiento hacia arriba la
+   primera vez que entran en pantalla (no en bucle). */
+(function () {
+  'use strict';
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  var nodes = document.querySelectorAll('.p1__title, .p1__text p, .p2__head, .p2__intro, .tool__text, .p3__head, .p3__intro, .ask__q');
+  if (!nodes.length || !('IntersectionObserver' in window)) return;
+
+  nodes.forEach(function (el, i) {
+    el.style.opacity = '0';
+    el.style.transform = 'translateY(42px)';
+    el.style.transition = 'opacity .85s cubic-bezier(.22,1,.36,1) ' + ((i % 4) * 0.09).toFixed(2) +
+      's, transform .85s cubic-bezier(.22,1,.36,1) ' + ((i % 4) * 0.09).toFixed(2) + 's';
+  });
+
+  var io = new IntersectionObserver(function (entries) {
+    entries.forEach(function (entry) {
+      if (!entry.isIntersecting) return;
+      entry.target.style.opacity = '1';
+      entry.target.style.transform = 'translateY(0)';
+      io.unobserve(entry.target);
+    });
+  }, { threshold: 0.15 });
+
+  /* Se espera a que el navegador pinte el estado inicial (opacidad 0)
+     antes de observar: si no, el texto que ya esta a la vista al
+     cargar la pagina "salta" directo al final sin mostrar el fundido. */
+  requestAnimationFrame(function () {
+    setTimeout(function () {
+      nodes.forEach(function (el) { io.observe(el); });
+    }, 150);
+  });
+})();
+</script>
 <script src="eye-menu.js" defer></script>
 
 </body>
