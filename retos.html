@@ -3,17 +3,21 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Los Tres Retos para transformar imaginarios — proteia</title>
+<title>Los tres Métodos para transformar imaginarios — proteia</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Podkova:wght@400..800&family=Source+Serif+4:ital,opsz,wght@0,8..60,200..900;1,8..60,200..900&display=swap" rel="stylesheet">
 <style>
 /* ============================================================
-   proteia — Los Tres Retos
+   proteia — Los Tres Métodos
    Colores, coordenadas y trazos extraidos de los PDF originales
    (lienzo 1440x1825). Ilustraciones, ojo, llaves y trama de
    ondas son los vectores originales, no re-dibujos.
    ============================================================ */
+@font-face{font-family:"Jauria";src:url("tipo/jauria.otf") format("opentype");font-weight:400;font-style:normal;font-display:swap}
+@font-face{font-family:"Jauria";src:url("tipo/jauria-Bold.otf") format("opentype");font-weight:700;font-style:normal;font-display:swap}
+@font-face{font-family:"Jauria";src:url("tipo/jauria-Italic.otf") format("opentype");font-weight:400;font-style:italic;font-display:swap}
+
 :root{
   --fondo:#282828;
   --crema:#EEEEEE;
@@ -26,8 +30,8 @@
   --violeta:#776DFF;
   --azul:#3D508F;
 
-  --font-display:'Podkova','Bitter',Georgia,'Times New Roman',serif;
-  --font-body:'Source Serif 4','PT Serif',Georgia,'Times New Roman',serif;
+  --font-display:'Jauria','Podkova','Bitter',Georgia,'Times New Roman',serif;
+  --font-body:'Jauria','Source Serif 4','PT Serif',Georgia,'Times New Roman',serif;
 }
 
 *,*::before,*::after{box-sizing:border-box}
@@ -51,7 +55,7 @@ body{
   top:0;
   left:50%;
   transform:translateX(-50%);
-  width:max(1100px,100%);
+  width:max(760px,70%);
   height:auto;
   z-index:0;
   pointer-events:none;
@@ -70,7 +74,7 @@ body{
   padding-top:clamp(96px,10.4vw,150px);
   font-family:var(--font-display);
   font-weight:700;
-  font-size:clamp(27px,3.33vw,48px);
+  font-size:clamp(27px,6.667vw,96px);
   line-height:1.16;
   letter-spacing:.005em;
   text-wrap:balance;
@@ -88,32 +92,10 @@ body{
   margin-top:clamp(58px,20.5vw,300px);
   text-align:right;
 }
-
-/* ---------- Aviso ---------- */
-.hint{
-  display:inline-flex;
-  align-items:center;
-  gap:.85em;
-  margin-top:clamp(50px,5.8vw,84px);
-  padding:clamp(8px,.83vw,12px) clamp(16px,1.6vw,23px);
-  border:2px solid var(--crema);
-  border-radius:999px;
-  font-size:clamp(14px,1.32vw,19px);
-  font-style:italic;
-  line-height:1.25;
-}
-.hint__icon{
-  flex:none;
-  display:grid;
-  place-items:center;
-  width:1.45em;
-  height:1.45em;
-  border:1px solid var(--crema);
-  border-radius:50%;
-  font-size:.9em;
-  font-style:italic;
-  font-family:var(--font-body);
-  line-height:1;
+.cultura-highlight{
+  display:inline-block;
+  white-space:nowrap;
+  color:var(--naranja);
 }
 
 /* ---------- Los tres retos ---------- */
@@ -127,54 +109,69 @@ body{
   display:flex;
   flex-direction:column;
   align-items:center;
+  align-self:start;
+  width:100%;
+  max-width:250px;
+  margin-inline:auto;
+  padding:clamp(20px,2.2vw,28px) clamp(16px,1.8vw,22px) clamp(26px,2.8vw,34px);
+  border:1.5px solid rgba(238,238,238,.32);
+  border-radius:20px;
   text-decoration:none;
   color:var(--crema);
+  transition:border-color .22s ease,transform .22s ease,background-color .22s ease;
+}
+.card:hover,
+.card:focus-visible{
+  border-color:var(--crema);
+  background:rgba(238,238,238,.06);
+  transform:translateY(-4px);
+}
+.card__label{
+  order:-1;
+  margin:0 0 clamp(16px,2vw,24px);
+  font-family:var(--font-display);
+  font-weight:700;
+  font-size:clamp(12px,1.05vw,15px);
+  letter-spacing:.14em;
+  text-transform:uppercase;
+  text-align:center;
 }
 .card__media{position:relative;display:block;width:100%}
 .card__art{
   display:block;
   width:100%;
   height:auto;
-  overflow:visible;
-  transition:transform .32s cubic-bezier(.22,.61,.36,1);
 }
-.card:hover .card__art,
-.card:focus-visible .card__art{transform:translateY(calc(var(--shift) * -1))}
 
-/* descripcion entre llaves: aparece en el hueco que deja la figura */
+/* explicacion entre llaves: oculta por defecto, se despliega suave al
+   pasar el cursor (o con foco de teclado) sin sobreponerse al icono ni
+   afectar la altura de las otras tarjetas. */
+.card__desc-wrap{
+  display:grid;
+  grid-template-rows:0fr;
+  width:100%;
+  transition:grid-template-rows .3s ease;
+}
+.card:hover .card__desc-wrap,
+.card:focus-visible .card__desc-wrap{grid-template-rows:1fr}
 .card__desc{
-  position:absolute;
-  top:70.9%;
-  left:0;
-  right:0;
-  height:32.46%;
   display:flex;
   align-items:stretch;
-  opacity:0;
-  visibility:hidden;
-  transition:opacity .28s ease .04s,visibility 0s linear .32s;
+  min-height:0;
+  overflow:hidden;
+  margin-top:clamp(14px,2vw,22px);
 }
-.card:hover .card__desc,
-.card:focus-visible .card__desc{opacity:1;visibility:visible;transition-delay:.1s,0s}
-.card__brace{flex:none;width:11.83%;height:100%}
+.card__brace{flex:none;width:11.83%;align-self:stretch;opacity:.35}
 .card__descText{
   flex:1;
   min-width:0;
   display:flex;
   align-items:center;
   justify-content:center;
-  padding:0 .35em;
+  padding:.35em .3em;
   text-align:center;
-  font-size:clamp(11px,1.11vw,16px);
-  line-height:1.875;
-}
-
-.card__label{
-  margin-top:clamp(24px,3.2vw,44px);
-  font-family:var(--font-display);
-  font-weight:500;
-  font-size:clamp(20px,2.36vw,34px);
-  text-align:center;
+  font-size:clamp(11px,1.02vw,15px);
+  line-height:1.7;
 }
 
 /* ---------- Barra de navegacion ---------- */
@@ -212,6 +209,7 @@ body{
 }
 .nav__links a{
   font-family:var(--font-display);
+  font-weight:400;
   font-size:clamp(13px,1.25vw,18px);
   color:var(--morado);
   text-decoration:none;
@@ -222,6 +220,16 @@ body{
   text-underline-offset:.2em;
   text-decoration-thickness:2px;
 }
+.nav__links a[href="retos.html"]{font-weight:700}
+.nav__has-sub{position:relative;display:inline-flex;align-items:center}
+.nav__caret{margin-left:.3em;font-size:.85em;opacity:.75}
+.nav__submenu{list-style:none;margin:0;padding:8px;position:absolute;bottom:calc(100% + 12px);left:50%;transform:translateX(-50%);min-width:176px;background:var(--morado);border-radius:14px;box-shadow:0 12px 30px rgba(40,40,40,.32);opacity:0;visibility:hidden;transition:opacity .16s ease;z-index:20}
+.nav__has-sub:hover > .nav__submenu,
+.nav__has-sub:focus-within > .nav__submenu{opacity:1;visibility:visible}
+.nav__submenu li{margin:0}
+.nav__submenu a{display:block;padding:8px 14px;border-radius:8px;white-space:nowrap;color:var(--crema)}
+.nav__submenu a:hover{background:rgba(255,255,255,.14)}
+.nav__submenu a[aria-current="page"]{background:rgba(255,255,255,.18)}
 
 a:focus-visible{outline:2px solid var(--crema);outline-offset:6px;border-radius:6px}
 .nav a:focus-visible{outline-color:var(--morado)}
@@ -239,27 +247,10 @@ a:focus-visible{outline:2px solid var(--crema);outline-offset:6px;border-radius:
   .nav__links{justify-content:center;gap:18px 26px}
 }
 @media (max-width:680px){
-  .cards{grid-template-columns:1fr;row-gap:60px;justify-items:center}
+  .cards{grid-template-columns:1fr;row-gap:28px;justify-items:center}
   /* Los iconos de cada reto ocupaban casi toda la pantalla (alto ~1.6x su
      ancho): se limitan a un tamaño legible que no exija tanto scroll. */
-  .card{width:100%;max-width:220px}
-  .hint{align-items:flex-start;border-radius:26px}
-}
-
-/* Sin hover (tactil) o en una sola columna: la descripcion queda siempre visible */
-@media (hover:none),(max-width:680px){
-  .card__art{transform:none!important}
-  .card__desc{
-    position:static;
-    height:auto;
-    margin-top:clamp(14px,2vw,22px);
-    opacity:1;
-    visibility:visible;
-    transition:none;
-  }
-  .card__brace{height:auto;align-self:stretch}
-  .card__descText{padding:.4em .35em}
-  .card__label{margin-top:clamp(14px,2vw,22px)}
+  .card{width:100%;max-width:210px}
 }
 
 /* Titulo y columnas ya estan a la vista apenas se entra a la seccion
@@ -305,7 +296,7 @@ a:focus-visible{outline:2px solid var(--crema);outline-offset:6px;border-radius:
 <path id="w19" d="M0 1.8C0 1 0.2 0 3.8 0C3.8 4.8 8.1 9.5 8.1 9.5C8.1 9.5 9.7 14 21.4 14C23.6 14 26.5 13.8 29.5 13.3L54.4 10.1L55.2 10.1C63.4 10.1 67.9 27.9 67.9 27.9L69.2 27.3C69.2 26.8 72.2 12.2 81.1 12.2L106.6 14.1C110.9 14.1 121.5 13.7 124.4 11.6C127.4 9.5 131.3 0 131.3 0L135 1C135 5.1 130.4 24.9 115.2 24.9C108.5 24.9 98.8 21.2 94.1 21.2C90.3 21.2 78.2 23.6 78.2 23.6L72.2 38.6L65.5 40C65.5 37.9 57.6 22.3 57.6 22.3C57.6 22.3 46.8 19.9 41.7 19.9L23.8 24.7C2.4 24.7 0 5.1 0 1.8Z"/>
 <path id="w20" d="M0 1.8C0 1 0.2 0 3.8 0C3.8 4.8 8.1 9.5 8.1 9.5C8.1 9.5 9.7 14 21.4 14C23.6 14 26.5 13.8 29.5 13.3L54.4 10.1L55.2 10.1C63.4 10.1 67.9 28 67.9 28L69.2 27.3C69.2 26.8 72.2 12.2 81.1 12.2L106.6 14.1C110.9 14.1 121.5 13.6 124.4 11.6C127.4 9.5 131.3 0 131.3 0L135 1C135 5.1 130.4 24.9 115.2 24.9C108.5 24.9 98.8 21.2 94.1 21.2C90.3 21.2 78.2 23.6 78.2 23.6L72.2 38.5L65.5 40C65.5 37.9 57.6 22.3 57.6 22.3C57.6 22.3 46.8 19.9 41.7 19.9L23.8 24.7C2.4 24.7 0 5.1 0 1.8Z"/>
 </defs>
-<g fill="#EEEEEE" fill-opacity="0.1426">
+<g fill="#EEEEEE" fill-opacity="0.07">
 <use href="#w0" x="287.0" y="675.0"/>
 <use href="#w0" x="287.0" y="835.0"/>
 <use href="#w1" x="819.0" y="835.0"/>
@@ -378,13 +369,13 @@ a:focus-visible{outline:2px solid var(--crema);outline-offset:6px;border-radius:
 <use href="#w3" x="216.0" y="639.0"/>
 <use href="#w3" x="216.0" y="559.0"/>
 </g>
-<g fill="#EEEEEE" fill-opacity="0.0975">
+<g fill="#EEEEEE" fill-opacity="0.05">
 <use href="#w2" x="1152.0" y="955.0"/>
 <use href="#w2" x="1285.0" y="795.0"/>
 <use href="#w3" x="150.0" y="759.0"/>
 <use href="#w0" x="283.0" y="599.0"/>
 </g>
-<g fill="#EEEEEE" fill-opacity="0.1694">
+<g fill="#EEEEEE" fill-opacity="0.08">
 <use href="#w4" x="987.0" y="245.0"/>
 <use href="#w5" x="455.0" y="245.0"/>
 <use href="#w6" x="987.0" y="85.0"/>
@@ -452,7 +443,7 @@ a:focus-visible{outline:2px solid var(--crema);outline-offset:6px;border-radius:
 <use href="#w8" x="-11.0" y="125.0"/>
 <use href="#w18" x="521.0" y="-35.0"/>
 </g>
-<g fill="#EEEEEE" fill-opacity="0.06">
+<g fill="#EEEEEE" fill-opacity="0.03">
 <use href="#w10" x="56.0" y="5.0"/>
 <use href="#w14" x="-11.0" y="-35.0"/>
 </g>
@@ -460,28 +451,16 @@ a:focus-visible{outline:2px solid var(--crema);outline-offset:6px;border-radius:
 
   <div class="wrap">
 
-    <h1 class="title">Los Tres Retos para transformar imaginarios</h1>
+    <h1 class="title">Los tres Métodos para transformar imaginarios</h1>
 
     <div class="cols">
-      <p class="col--left">Interdum et malesuada fames ac ante ipsum primis in faucibus. Sed et
-        tincidunt leo. Proin in lectus augue. Donec sollicitudin erat et libero mattis, a semper
-        lorem mollis. Quisque pellentesque placerat dolor, vel placerat dui rhoncus quis.
-        Maecenas eget pretium orci. Integer suscipit lacus turpis, dapibus finibus justo egestas
-        ut. Praesent sed convallis purus, vitae eleifend orci. In vel convallis nulla.</p>
-      <p class="col--right">Phasellus efficitur nunc sit amet leo feugiat, sed maximus odio
-        molestie. Maecenas at ultricies velit. Nullam ac pulvinar mauris, sed porta sem. Duis
-        molestie, mauris in feugiat vulputate, mauris ante dapibus mi, quis bibendum neque nulla
-        nec metus. Aenean euismod imperdiet diam at rhoncus. Donec congue metus nisl, a eleifend
-        eros ornare eu.</p>
+      <p class="col--left">Transformar un imaginario implica afrontar tres grandes retos: (i) el reto de visualizar ese imaginario, (ii) evaluarlo y (iii) adaptarlo. Comprender cada uno de estos retos te permitirá identificar las herramientas que necesitas. Por eso, en Proteia trabajamos para que tus iniciativas sean verdaderas plataformas de coincidencia: espacios donde se pueda visualizar imaginarios, evaluar su viabilidad y adaptar lo que se requiera. </p>
+      <p class="col--right">Algunas plataformas de coincidencia son espacios dialógicos; otras se centran en experiencias en torno al arte. Algunas tienen el objetivo explícito de transformar imaginarios; otras lo hacen de manera implícita… las posibilidades son infinitas. <strong class="cultura-highlight">&iexcl;Transformar imaginarios es transformar cultura!</strong> </p>
     </div>
 
-    <p class="hint">
-      <span class="hint__icon" aria-hidden="true">i</span>
-      Haz clic sobre los elementos para ingresar a cada secci&oacute;n.
-    </p>
-
     <div class="cards">
-      <a class="card" href="visualizacion.html" style="--shift:29.29%">
+      <a class="card" href="visualizacion.html" aria-label="Visualización — Para transformar un imaginario, necesitamos reconocerlo. Visualizar imaginarios es tomar consciencia de los lentes a través de los cuales vemos el mundo.">
+        <span class="card__label" aria-hidden="true">Visualizaci&oacute;n</span>
         <span class="card__media">
           <svg class="card__art" viewBox="0 0 338 536" aria-hidden="true" focusable="false">
 <path fill="#F85E84" d="M338 193C338 286.3 262.3 362 169 362C75.7 362 0 286.3 0 193C0 99.7 75.7 24 169 24C262.3 24 338 99.7 338 193Z"/>
@@ -492,15 +471,17 @@ a:focus-visible{outline:2px solid var(--crema);outline-offset:6px;border-radius:
 <path fill="#CC426F" d="M266 243C266 272.3 242.3 296 213 296C183.7 296 160 272.3 160 243C160 213.7 183.7 190 213 190C242.3 190 266 213.7 266 243Z"/>
 <path fill="#5CD1FC" d="M219 223.5C219 232.6 211.6 240 202.5 240C193.4 240 186 232.6 186 223.5C186 214.4 193.4 207 202.5 207C211.6 207 219 214.4 219 223.5Z"/>
           </svg>
+        </span>
+        <span class="card__desc-wrap" aria-hidden="true">
           <span class="card__desc">
             <svg class="card__brace" viewBox="0 0 40 174" preserveAspectRatio="none" aria-hidden="true" focusable="false"><path fill="#EEEEEE" d="M38.23 0C39.04 0 40 0.2 40 4.91C35.18 4.91 30.52 10.43 30.52 10.43C30.52 10.43 26.02 12.47 26.02 27.6C26.02 30.47 26.18 34.15 26.67 38.03L29.88 70.13L29.88 71.15C29.88 81.79 12.05 87.51 12.05 87.51L12.69 89.15C13.17 89.15 27.79 93.03 27.79 104.48L25.86 137.4C25.86 142.92 26.35 156.62 28.43 160.3C30.52 164.19 40 169.3 40 169.3L39.04 174C34.86 174 15.1 168.07 15.1 148.44C15.1 139.85 18.8 127.38 18.8 121.25C18.8 116.34 16.39 100.8 16.39 100.8L1.45 93.03L0 84.44C2.09 84.44 17.67 74.22 17.67 74.22C17.67 74.22 20.08 60.32 20.08 53.77L15.26 30.67C15.26 3.07 34.86 0 38.23 0Z"/></svg>
             <span class="card__descText">Para transformar un imaginario, necesitamos reconocerlo. Visualizar imaginarios es tomar consciencia de los lentes a trav&eacute;s de los cuales vemos el mundo.</span>
             <svg class="card__brace" viewBox="0 0 39 174" preserveAspectRatio="none" aria-hidden="true" focusable="false"><path fill="#EEEEEE" d="M2.19 0C4.86 0 24.12 3.07 24.12 30.67L19.42 53.77C19.42 60.32 21.77 74.22 21.77 74.22C21.77 74.22 36.96 84.44 39 84.44L37.59 93.03L23.02 100.8C23.02 100.8 20.67 116.34 20.67 121.25C20.67 127.38 24.28 139.85 24.28 148.44C24.28 168.07 5.01 174 0.94 174L0 169.3C0 169.3 9.24 164.19 11.28 160.3C13.16 156.82 13.78 142.51 13.78 137.4L11.9 104.48C11.9 93.03 26.16 89.15 26.63 89.15L27.25 87.51C27.25 87.51 9.87 81.79 9.87 71.15L9.87 70.13L13 38.03C13.31 34.15 13.47 30.87 13.47 28.01C13.47 12.88 9.24 10.43 9.24 10.43C9.24 10.43 4.7 4.91 0 4.91L0 4.09C0 1.64 0.16 0 2.19 0Z"/></svg>
           </span>
         </span>
-        <span class="card__label">Visualizaci&oacute;n</span>
       </a>
-      <a class="card" href="evaluacion.html" style="--shift:24.63%">
+      <a class="card" href="evaluacion.html" aria-label="Evaluación — Los imaginarios son realidades vivas y dinámicas. Evaluar imaginarios es revisar si siguen siendo importantes, si requieren refuerzos o reconfiguraciones.">
+        <span class="card__label" aria-hidden="true">Evaluaci&oacute;n</span>
         <span class="card__media">
           <svg class="card__art" viewBox="0 0 338 536" aria-hidden="true" focusable="false">
 <path fill="#5CD1FC" d="M338 169C338 262.3 262.3 338 169 338C75.7 338 0 262.3 0 169C0 75.7 75.7 0 169 0C262.3 0 338 75.7 338 169Z"/>
@@ -513,15 +494,17 @@ a:focus-visible{outline:2px solid var(--crema);outline-offset:6px;border-radius:
 <path fill="#5CD1FC" d="M241 140C241 156 228 169 212 169C196 169 183 156 183 140C183 124 196 111 212 111C228 111 241 124 241 140Z"/>
 <path fill="#EDF486" d="M26.8 332.1C30.3 326.8 38.1 327.4 41.6 332.7C68.7 374.2 115.6 401.6 168.9 401.6C222.1 401.6 269 374.2 296.1 332.7C299.6 327.4 307.4 326.8 310.8 332.2C312.6 334.9 312.6 338.4 310.9 341.1C307.4 346.4 303.7 351.5 299.7 356.4L327.9 377.5C332.4 380.8 333.3 387.1 330 391.5C326.7 395.9 320.4 396.8 316 393.5L286.1 371.2C275.5 381.4 263.5 390.3 250.5 397.5L280.4 443C283.4 447.6 282.1 453.8 277.5 456.9C272.9 459.9 266.7 458.6 263.6 454L232.3 406.2C216.4 412.6 199.3 416.7 181.5 418C181.5 418.4 181.5 418.7 181.5 419L181.5 479.5C181.5 485 177 489.5 171.5 489.5C166 489.5 161.5 485 161.5 479.5L161.5 419C161.5 418.8 161.5 418.6 161.5 418.3C143.6 417.6 126.4 414 110.4 408.1L80.3 454C77.3 458.6 71.1 459.9 66.5 456.9C61.9 453.8 60.6 447.6 63.6 443L91.8 400C77.7 392.7 64.7 383.6 53.3 372.8L28.3 393.2C24.1 396.7 17.8 396.1 14.3 391.8C10.8 387.6 11.4 381.3 15.7 377.8L39.5 358.3C34.9 352.8 30.7 347.1 26.8 341.1C25 338.4 25 334.9 26.8 332.1Z"/>
           </svg>
+        </span>
+        <span class="card__desc-wrap" aria-hidden="true">
           <span class="card__desc">
             <svg class="card__brace" viewBox="0 0 40 174" preserveAspectRatio="none" aria-hidden="true" focusable="false"><path fill="#EEEEEE" d="M38.23 0C39.04 0 40 0.2 40 4.91C35.18 4.91 30.52 10.43 30.52 10.43C30.52 10.43 26.02 12.47 26.02 27.6C26.02 30.47 26.18 34.15 26.67 38.03L29.88 70.13L29.88 71.15C29.88 81.79 12.05 87.51 12.05 87.51L12.69 89.15C13.17 89.15 27.79 93.03 27.79 104.48L25.86 137.4C25.86 142.92 26.35 156.62 28.43 160.3C30.52 164.19 40 169.3 40 169.3L39.04 174C34.86 174 15.1 168.07 15.1 148.44C15.1 139.85 18.8 127.38 18.8 121.25C18.8 116.34 16.39 100.8 16.39 100.8L1.45 93.03L0 84.44C2.09 84.44 17.67 74.22 17.67 74.22C17.67 74.22 20.08 60.32 20.08 53.77L15.26 30.67C15.26 3.07 34.86 0 38.23 0Z"/></svg>
             <span class="card__descText">Los imaginarios son realidades vivas y din&aacute;micas. Evaluar imaginarios es revisar si siguen siendo importantes, si requieren refuerzos o reconfiguraciones.</span>
             <svg class="card__brace" viewBox="0 0 39 174" preserveAspectRatio="none" aria-hidden="true" focusable="false"><path fill="#EEEEEE" d="M2.19 0C4.86 0 24.12 3.07 24.12 30.67L19.42 53.77C19.42 60.32 21.77 74.22 21.77 74.22C21.77 74.22 36.96 84.44 39 84.44L37.59 93.03L23.02 100.8C23.02 100.8 20.67 116.34 20.67 121.25C20.67 127.38 24.28 139.85 24.28 148.44C24.28 168.07 5.01 174 0.94 174L0 169.3C0 169.3 9.24 164.19 11.28 160.3C13.16 156.82 13.78 142.51 13.78 137.4L11.9 104.48C11.9 93.03 26.16 89.15 26.63 89.15L27.25 87.51C27.25 87.51 9.87 81.79 9.87 71.15L9.87 70.13L13 38.03C13.31 34.15 13.47 30.87 13.47 28.01C13.47 12.88 9.24 10.43 9.24 10.43C9.24 10.43 4.7 4.91 0 4.91L0 4.09C0 1.64 0.16 0 2.19 0Z"/></svg>
           </span>
         </span>
-        <span class="card__label">Evaluaci&oacute;n</span>
       </a>
-      <a class="card" href="adaptacion.html" style="--shift:28.54%">
+      <a class="card" href="adaptacion.html" aria-label="Adaptación — Es más fácil reimaginar junto a otros. Adaptar imaginarios es permitirnos ser curiosos para jugar, explorar posibilidades y reconfigurar nuestras relaciones.">
+        <span class="card__label" aria-hidden="true">Adaptaci&oacute;n</span>
         <span class="card__media">
           <svg class="card__art" viewBox="0 0 338 536" aria-hidden="true" focusable="false">
 <path fill="#776DFF" d="M0 367C0 273.7 75.7 198 169 198C262.3 198 338 273.7 338 367C338 460.3 262.3 536 169 536C75.7 536 0 460.3 0 367Z"/>
@@ -534,13 +517,14 @@ a:focus-visible{outline:2px solid var(--crema);outline-offset:6px;border-radius:
 <path fill="#EDF486" d="M314.2 207.4C310.7 212.7 302.9 212.1 299.4 206.8C272.3 165.3 225.4 137.9 172.1 137.9C118.9 137.9 72 165.3 44.8 206.8C41.4 212.1 33.6 212.7 30.2 207.3C28.4 204.6 28.4 201.1 30.2 198.4C33.6 193.1 37.3 188 41.3 183.1L13.1 162C8.6 158.7 7.7 152.4 11 148C14.3 143.6 20.6 142.7 25 146L54.9 168.3C65.5 158.1 77.5 149.2 90.5 142L60.6 96.5C57.6 91.9 58.9 85.7 63.5 82.6C68.1 79.6 74.3 80.9 77.4 85.5L108.7 133.3C124.6 126.9 141.7 122.8 159.5 121.5C159.5 121.1 159.5 120.8 159.5 120.5L159.5 60C159.5 54.5 164 50 169.5 50C175 50 179.5 54.5 179.5 60L179.5 120.5C179.5 120.7 179.5 120.9 179.5 121.2C197.4 121.9 214.6 125.5 230.6 131.4L260.7 85.5C263.7 80.9 269.9 79.6 274.5 82.6C279.1 85.7 280.4 91.9 277.4 96.5L249.2 139.5C263.3 146.8 276.3 155.9 287.7 166.7L312.7 146.3C316.9 142.8 323.2 143.4 326.7 147.7C330.2 151.9 329.6 158.2 325.3 161.7L301.5 181.2C306.1 186.7 310.3 192.4 314.2 198.4C316 201.1 316 204.6 314.2 207.4Z"/>
 <path fill="#EDF486" d="M314.2 352.7C310.7 347.4 302.9 348 299.4 353.3C272.3 394.8 225.4 422.2 172.1 422.2C118.9 422.2 72 394.8 44.8 353.3C41.4 348 33.6 347.4 30.2 352.8C28.4 355.5 28.4 359 30.2 361.7C33.6 367 37.3 372.1 41.3 377L13.1 398.1C8.6 401.4 7.7 407.7 11 412.1C14.3 416.5 20.6 417.4 25 414.1L54.9 391.8C65.5 402 77.5 410.9 90.5 418.1L60.6 463.6C57.6 468.2 58.9 474.4 63.5 477.5C68.1 480.5 74.3 479.2 77.4 474.6L108.7 426.8C124.6 433.2 141.7 437.3 159.5 438.6C159.5 439 159.5 439.3 159.5 439.6L159.5 500.1C159.5 505.6 164 510.1 169.5 510.1C175 510.1 179.5 505.6 179.5 500.1L179.5 439.6C179.5 439.4 179.5 439.2 179.5 439C197.4 438.2 214.6 434.6 230.6 428.7L260.7 474.6C263.7 479.2 269.9 480.5 274.5 477.5C279.1 474.4 280.4 468.2 277.4 463.6L249.2 420.6C263.3 413.3 276.3 404.2 287.7 393.4L312.7 413.8C316.9 417.3 323.2 416.7 326.7 412.4C330.2 408.2 329.6 401.8 325.3 398.4L301.5 378.9C306.1 373.4 310.3 367.7 314.2 361.7C316 359 316 355.5 314.2 352.7Z"/>
           </svg>
+        </span>
+        <span class="card__desc-wrap" aria-hidden="true">
           <span class="card__desc">
             <svg class="card__brace" viewBox="0 0 40 174" preserveAspectRatio="none" aria-hidden="true" focusable="false"><path fill="#EEEEEE" d="M38.23 0C39.04 0 40 0.2 40 4.91C35.18 4.91 30.52 10.43 30.52 10.43C30.52 10.43 26.02 12.47 26.02 27.6C26.02 30.47 26.18 34.15 26.67 38.03L29.88 70.13L29.88 71.15C29.88 81.79 12.05 87.51 12.05 87.51L12.69 89.15C13.17 89.15 27.79 93.03 27.79 104.48L25.86 137.4C25.86 142.92 26.35 156.62 28.43 160.3C30.52 164.19 40 169.3 40 169.3L39.04 174C34.86 174 15.1 168.07 15.1 148.44C15.1 139.85 18.8 127.38 18.8 121.25C18.8 116.34 16.39 100.8 16.39 100.8L1.45 93.03L0 84.44C2.09 84.44 17.67 74.22 17.67 74.22C17.67 74.22 20.08 60.32 20.08 53.77L15.26 30.67C15.26 3.07 34.86 0 38.23 0Z"/></svg>
             <span class="card__descText">Es m&aacute;s f&aacute;cil reimaginar junto a otros. Adaptar imaginarios es permitirnos ser curiosos para jugar, explorar posibilidades y reconfigurar nuestras relaciones.</span>
             <svg class="card__brace" viewBox="0 0 39 174" preserveAspectRatio="none" aria-hidden="true" focusable="false"><path fill="#EEEEEE" d="M2.19 0C4.86 0 24.12 3.07 24.12 30.67L19.42 53.77C19.42 60.32 21.77 74.22 21.77 74.22C21.77 74.22 36.96 84.44 39 84.44L37.59 93.03L23.02 100.8C23.02 100.8 20.67 116.34 20.67 121.25C20.67 127.38 24.28 139.85 24.28 148.44C24.28 168.07 5.01 174 0.94 174L0 169.3C0 169.3 9.24 164.19 11.28 160.3C13.16 156.82 13.78 142.51 13.78 137.4L11.9 104.48C11.9 93.03 26.16 89.15 26.63 89.15L27.25 87.51C27.25 87.51 9.87 81.79 9.87 71.15L9.87 70.13L13 38.03C13.31 34.15 13.47 30.87 13.47 28.01C13.47 12.88 9.24 10.43 9.24 10.43C9.24 10.43 4.7 4.91 0 4.91L0 4.09C0 1.64 0.16 0 2.19 0Z"/></svg>
           </span>
         </span>
-        <span class="card__label">Adaptaci&oacute;n</span>
       </a>
     </div>
 
@@ -554,12 +538,19 @@ a:focus-visible{outline:2px solid var(--crema);outline-offset:6px;border-radius:
     <span class="brand__tag">PEDAGOG&Iacute;AS PARA REIMAGINAR</span>
   </a>
   <nav class="nav__links" aria-label="Principal">
-    <a href="index.html">Inicio</a>
-    <a href="retos.html" aria-current="page">Momentos</a>
+    <a href="index.html?intro=skip">Inicio</a>
+    <div class="nav__has-sub">
+      <a href="retos.html" aria-current="page">Método<span class="nav__caret" aria-hidden="true">&rsaquo;</span></a>
+      <ul class="nav__submenu">
+        <li><a href="visualizacion.html">Visualización</a></li>
+        <li><a href="evaluacion.html">Evaluación</a></li>
+        <li><a href="adaptacion.html">Adaptación</a></li>
+      </ul>
+    </div>
     <a href="principios.html">Principios</a>
-    <a href="#">Glosario</a>
-    <a href="#">Podcast</a>
-    <a href="#">Contacto</a>
+    <a href="en-construccion.html">Glosario</a>
+    <a href="en-construccion.html">Podcast</a>
+    <a href="creditos.html">Créditos</a>
   </nav>
 </footer>
 
@@ -594,7 +585,7 @@ a:focus-visible{outline:2px solid var(--crema);outline-offset:6px;border-radius:
 (function () {
   'use strict';
   if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-  var nodes = document.querySelectorAll('.hint, .card__label');
+  var nodes = document.querySelectorAll('.card__label');
   if (!nodes.length || !('IntersectionObserver' in window)) return;
 
   nodes.forEach(function (el, i) {

@@ -8,12 +8,16 @@
   "use strict";
 
   var LINKS = [
-    { label: "Inicio",     href: "index.html" },
-    { label: "Momentos",   href: "retos.html" },
+    { label: "Inicio",     href: "index.html?intro=skip" },
+    { label: "Método",     href: "retos.html", featured: true, children: [
+        { label: "Visualización", href: "visualizacion.html" },
+        { label: "Evaluación",    href: "evaluacion.html" },
+        { label: "Adaptación",    href: "adaptacion.html" }
+      ] },
     { label: "Principios", href: "principios.html" },
-    { label: "Glosario",   href: "#" },
-    { label: "Podcast",    href: "#" },
-    { label: "Contacto",   href: "#" }
+    { label: "Glosario",   href: "en-construccion.html" },
+    { label: "Podcast",    href: "en-construccion.html" },
+    { label: "Créditos",   href: "creditos.html" }
   ];
 
   var EYE_SVG =
@@ -25,7 +29,10 @@
     '</svg>';
 
   var CSS = [
-    ".eye-menu{position:fixed;top:clamp(12px,2.2vw,22px);left:clamp(12px,2.2vw,22px);z-index:9999;--em-morado:#5E3986;--em-crema:#EEEEEE}",
+    "@font-face{font-family:'Jauria';src:url('tipo/jauria.otf') format('opentype');font-weight:400;font-style:normal;font-display:swap}",
+    "@font-face{font-family:'Jauria';src:url('tipo/jauria-Bold.otf') format('opentype');font-weight:700;font-style:normal;font-display:swap}",
+    "@font-face{font-family:'Jauria';src:url('tipo/jauria-Italic.otf') format('opentype');font-weight:400;font-style:italic;font-display:swap}",
+    ".eye-menu{position:fixed;top:clamp(12px,2.2vw,22px);left:clamp(12px,2.2vw,22px);z-index:9999;--em-morado:#5E3986;--em-morado-oscuro:#331F49;--em-crema:#EEEEEE}",
     ".eye-menu__btn{display:block;width:clamp(40px,5vw,50px);height:auto;padding:0;margin:0;border:0;background:transparent;cursor:pointer;line-height:0;border-radius:50%;-webkit-tap-highlight-color:transparent;filter:drop-shadow(0 4px 12px rgba(40,40,40,.35));transition:transform .18s ease}",
     ".eye-menu__btn svg{display:block;width:100%;height:auto}",
     ".eye-menu__btn:hover{transform:scale(1.07)}",
@@ -36,10 +43,17 @@
     ".eye-menu__panel[hidden]{display:none}",
     ".eye-menu__panel ul{list-style:none;margin:0;padding:0}",
     ".eye-menu__panel li{margin:0}",
-    ".eye-menu__panel a{display:block;padding:10px 14px;border-radius:10px;font-family:'Podkova','Bitter',Georgia,'Times New Roman',serif;font-size:16px;line-height:1.1;color:var(--em-crema);text-decoration:none;white-space:nowrap}",
+    ".eye-menu__panel a{display:block;padding:10px 14px;border-radius:10px;font-family:'Jauria','Podkova','Bitter',Georgia,'Times New Roman',serif;font-weight:400;font-size:16px;line-height:1.1;color:var(--em-crema);text-decoration:none;white-space:nowrap}",
     ".eye-menu__panel a:hover{background:rgba(255,255,255,.12)}",
     ".eye-menu__panel a:focus-visible{outline:2px solid var(--em-crema);outline-offset:-2px}",
-    ".eye-menu__panel a[aria-current=\"page\"]{background:rgba(255,255,255,.18);font-weight:700}",
+    ".eye-menu__panel a[aria-current=\"page\"]{background:rgba(255,255,255,.18)}",
+    ".eye-menu__panel a.eye-menu__item--featured{background:var(--em-morado-oscuro);font-weight:700}",
+    ".eye-menu__panel a.eye-menu__item--featured:hover{background:#432a5e}",
+    ".eye-menu__has-sub{position:relative}",
+    ".eye-menu__has-sub > a{padding-right:30px}",
+    ".eye-menu__caret{position:absolute;right:14px;top:50%;transform:translateY(-50%);font-size:.8em;opacity:.8;pointer-events:none}",
+    ".eye-menu__submenu{list-style:none;margin:0;padding:8px;position:absolute;left:100%;top:0;min-width:172px;background:var(--em-morado-oscuro);border-radius:16px;box-shadow:0 12px 34px rgba(40,40,40,.38);opacity:0;visibility:hidden;transition:opacity .16s ease}",
+    ".eye-menu__has-sub:hover > .eye-menu__submenu,.eye-menu__has-sub:focus-within > .eye-menu__submenu{opacity:1;visibility:visible}",
     "@keyframes eyeMenuIn{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:none}}",
     "@media (prefers-reduced-motion:reduce){.eye-menu__panel{animation:none}.eye-menu__btn{transition:none}}"
   ].join("");
@@ -53,6 +67,12 @@
     return ALIAS[name] || name;
   }
 
+  // Compara solo el archivo de destino, ignorando "?..." o "#..." (p.ej.
+  // "index.html?intro=skip" sigue reconociendose como "index.html").
+  function hrefFile(href) {
+    return href.toLowerCase().split("#")[0].split("?")[0];
+  }
+
   function build() {
     if (document.querySelector(".eye-menu")) return;
 
@@ -63,8 +83,23 @@
     var here = currentFile();
 
     var items = LINKS.map(function (l) {
-      var current = l.href.toLowerCase() === here ? ' aria-current="page"' : "";
-      return "<li><a href=\"" + l.href + "\"" + current + ">" + l.label + "</a></li>";
+      var childOnThisPage = l.children && l.children.some(function (c) {
+        return hrefFile(c.href) === here;
+      });
+      var current = (hrefFile(l.href) === here || childOnThisPage) ? ' aria-current="page"' : "";
+      var cls = l.featured ? ' class="eye-menu__item--featured"' : "";
+      var a = "<a href=\"" + l.href + "\"" + cls + current + ">" + l.label +
+        (l.children ? '<span class="eye-menu__caret" aria-hidden="true">&rsaquo;</span>' : "") +
+        "</a>";
+
+      if (!l.children) return "<li>" + a + "</li>";
+
+      var subItems = l.children.map(function (c) {
+        var subCurrent = hrefFile(c.href) === here ? ' aria-current="page"' : "";
+        return "<li><a href=\"" + c.href + "\"" + subCurrent + ">" + c.label + "</a></li>";
+      }).join("");
+      return "<li class=\"eye-menu__has-sub\">" + a +
+        '<ul class="eye-menu__submenu">' + subItems + "</ul></li>";
     }).join("");
 
     var wrap = document.createElement("div");

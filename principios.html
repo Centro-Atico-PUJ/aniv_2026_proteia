@@ -15,6 +15,10 @@
    La escena es un contenedor de proporcion fija: 1cqw = 1% de
    su ancho, asi que a 1440px cada elemento cae en su sitio.
    ============================================================ */
+@font-face{font-family:"Jauria";src:url("tipo/jauria.otf") format("opentype");font-weight:400;font-style:normal;font-display:swap}
+@font-face{font-family:"Jauria";src:url("tipo/jauria-Bold.otf") format("opentype");font-weight:700;font-style:normal;font-display:swap}
+@font-face{font-family:"Jauria";src:url("tipo/jauria-Italic.otf") format("opentype");font-weight:400;font-style:italic;font-display:swap}
+
 :root{
   --morado:#5E3986;
   --crema:#EEEEEE;
@@ -24,8 +28,8 @@
   --violeta:#776DFF;
   --tinta:#282828;
 
-  --font-display:'Podkova','Bitter',Georgia,'Times New Roman',serif;
-  --font-body:'Source Serif 4','PT Serif',Georgia,'Times New Roman',serif;
+  --font-display:'Jauria','Podkova','Bitter',Georgia,'Times New Roman',serif;
+  --font-body:'Jauria','Source Serif 4','PT Serif',Georgia,'Times New Roman',serif;
 }
 
 *,*::before,*::after{box-sizing:border-box}
@@ -129,7 +133,7 @@ body{
 
 /* ---------- Nube de principios ---------- */
 .fig-blue{left:11.25cqw;top:71.74cqw;width:5.972cqw;height:auto}
-.brace{top:78.26cqw;height:12.083cqw}
+.brace{top:78.26cqw;height:12.083cqw;opacity:.35}
 .brace--l{left:36.875cqw;width:2.778cqw}
 .brace--r{left:60.28cqw;width:2.708cqw}
 .core{
@@ -231,12 +235,23 @@ body{
 .nav__links{display:flex;align-items:center;justify-content:flex-end;flex-wrap:wrap;gap:clamp(12px,3.2vw,44px)}
 .nav__links a{
   font-family:var(--font-display);
+  font-weight:400;
   font-size:clamp(13px,1.25vw,18px);
   color:var(--morado);
   text-decoration:none;
 }
 .nav__links a:hover{text-decoration:underline;text-underline-offset:.2em}
 .nav__links a[aria-current="page"]{text-decoration:underline;text-underline-offset:.2em;text-decoration-thickness:2px}
+.nav__links a[href="retos.html"]{font-weight:700}
+.nav__has-sub{position:relative;display:inline-flex;align-items:center}
+.nav__caret{margin-left:.3em;font-size:.85em;opacity:.75}
+.nav__submenu{list-style:none;margin:0;padding:8px;position:absolute;bottom:calc(100% + 12px);left:50%;transform:translateX(-50%);min-width:176px;background:var(--morado);border-radius:14px;box-shadow:0 12px 30px rgba(40,40,40,.32);opacity:0;visibility:hidden;transition:opacity .16s ease;z-index:20}
+.nav__has-sub:hover > .nav__submenu,
+.nav__has-sub:focus-within > .nav__submenu{opacity:1;visibility:visible}
+.nav__submenu li{margin:0}
+.nav__submenu a{display:block;padding:8px 14px;border-radius:8px;white-space:nowrap;color:var(--crema)}
+.nav__submenu a:hover{background:rgba(255,255,255,.14)}
+.nav__submenu a[aria-current="page"]{background:rgba(255,255,255,.18)}
 
 a:focus-visible,.prin:focus-visible{outline:2px solid var(--crema);outline-offset:6px;border-radius:6px}
 .nav a:focus-visible{outline-color:var(--morado)}
@@ -603,12 +618,19 @@ a:focus-visible,.prin:focus-visible{outline:2px solid var(--crema);outline-offse
     <span class="brand__tag">PEDAGOG&Iacute;AS PARA REIMAGINAR</span>
   </a>
   <nav class="nav__links" aria-label="Principal">
-    <a href="index.html">Inicio</a>
-    <a href="retos.html">Momentos</a>
+    <a href="index.html?intro=skip">Inicio</a>
+    <div class="nav__has-sub">
+      <a href="retos.html">Método<span class="nav__caret" aria-hidden="true">&rsaquo;</span></a>
+      <ul class="nav__submenu">
+        <li><a href="visualizacion.html">Visualización</a></li>
+        <li><a href="evaluacion.html">Evaluación</a></li>
+        <li><a href="adaptacion.html">Adaptación</a></li>
+      </ul>
+    </div>
     <a href="principios.html" aria-current="page">Principios</a>
-    <a href="#">Glosario</a>
-    <a href="#">Podcast</a>
-    <a href="#">Contacto</a>
+    <a href="en-construccion.html">Glosario</a>
+    <a href="en-construccion.html">Podcast</a>
+    <a href="creditos.html">Créditos</a>
   </nav>
 </footer>
 
