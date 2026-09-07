@@ -3,7 +3,13 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<script>document.documentElement.classList.add('intro-active');</script>
+<script>
+/* Si se llega desde el menu "Inicio" de otra seccion (?intro=skip),
+   la intro nunca se activa: se entra directo al index. */
+if (!/(?:^|[?&])intro=skip(?:&|$)/.test(location.search)) {
+  document.documentElement.classList.add('intro-active');
+}
+</script>
 <style>
 /* Mientras corre la intro: bloquea el scroll, oculta el ojo flotante y
    CONGELA la animacion del logotipo del hero en su fotograma inicial.
@@ -30,6 +36,10 @@ html.intro-active .cta{ animation-play-state:paused !important; }
    declarada. Cambia --font-display / --font-body si tienes las
    fuentes originales.
    ============================================================ */
+@font-face{font-family:"Jauria";src:url("tipo/jauria.otf") format("opentype");font-weight:400;font-style:normal;font-display:swap}
+@font-face{font-family:"Jauria";src:url("tipo/jauria-Bold.otf") format("opentype");font-weight:700;font-style:normal;font-display:swap}
+@font-face{font-family:"Jauria";src:url("tipo/jauria-Italic.otf") format("opentype");font-weight:400;font-style:italic;font-display:swap}
+
 :root{
   --naranja:#FCB95C;
   --tinta:#282828;
@@ -37,8 +47,8 @@ html.intro-active .cta{ animation-play-state:paused !important; }
   --rosa:#CC426F;
   --crema:#EEEEEE;
 
-  --font-display:'Podkova','Bitter',Georgia,'Times New Roman',serif;
-  --font-body:'Source Serif 4','PT Serif',Georgia,'Times New Roman',serif;
+  --font-display:'Jauria','Podkova','Bitter',Georgia,'Times New Roman',serif;
+  --font-body:'Jauria','Source Serif 4','PT Serif',Georgia,'Times New Roman',serif;
 }
 
 *,*::before,*::after{box-sizing:border-box}
@@ -79,8 +89,8 @@ body{
 
 /* ---------- Ondas + ojo (vectores originales) ---------- */
 .art{position:absolute;z-index:0;pointer-events:none;display:block}
-.art--top{top:0;left:0;width:max(220px,32%);height:auto}
-.art--bottom{bottom:0;left:50%;transform:translateX(-50%);width:max(760px,100%);height:auto}
+.art--top{top:0;left:0;width:max(150px,20%);height:auto}
+.art--bottom{bottom:0;left:50%;transform:translateX(-50%);width:max(520px,66%);height:auto}
 
 /* ---------- Logotipo ---------- */
 .lockup{
@@ -201,6 +211,7 @@ body{
 }
 .nav__links a{
   font-family:var(--font-display);
+  font-weight:400;
   font-size:clamp(13px,1.25vw,18px);
   color:var(--crema);
   text-decoration:none;
@@ -211,6 +222,16 @@ body{
   text-underline-offset:.2em;
   text-decoration-thickness:2px;
 }
+.nav__links a[href="retos.html"]{font-weight:700}
+.nav__has-sub{position:relative;display:inline-flex;align-items:center}
+.nav__caret{margin-left:.3em;font-size:.85em;opacity:.75}
+.nav__submenu{list-style:none;margin:0;padding:8px;position:absolute;bottom:calc(100% + 12px);left:50%;transform:translateX(-50%);min-width:176px;background:var(--morado);border-radius:14px;box-shadow:0 12px 30px rgba(40,40,40,.32);opacity:0;visibility:hidden;transition:opacity .16s ease;z-index:20}
+.nav__has-sub:hover > .nav__submenu,
+.nav__has-sub:focus-within > .nav__submenu{opacity:1;visibility:visible}
+.nav__submenu li{margin:0}
+.nav__submenu a{display:block;padding:8px 14px;border-radius:8px;white-space:nowrap;color:var(--crema)}
+.nav__submenu a:hover{background:rgba(255,255,255,.14)}
+.nav__submenu a[aria-current="page"]{background:rgba(255,255,255,.18)}
 
 /* ---------- Foco visible ---------- */
 a:focus-visible{
@@ -292,7 +313,7 @@ a:focus-visible{
   position:absolute; inset:0; z-index:1;
   display:flex;
   background:#5CD1FC; color:#282828;
-  font-family:'Source Serif 4','PT Serif',Georgia,'Times New Roman',serif;
+  font-family:'Jauria','Source Serif 4','PT Serif',Georgia,'Times New Roman',serif;
   -webkit-font-smoothing:antialiased;
   overflow:hidden;
   opacity:0; transition:opacity .55s ease;
@@ -312,9 +333,9 @@ a:focus-visible{
 .intro-gancho .ig-stage > *:not(.ig-texture){ position:absolute; z-index:1; }
 
 .intro-gancho .ig-title{
-  margin:0; left:26cqw; top:6.67cqw; width:66.5cqw; text-align:center;
-  font-family:'Podkova','Bitter',Georgia,'Times New Roman',serif;
-  font-weight:700; font-size:5.417cqw; line-height:1.44; color:#000;
+  margin:0; left:26cqw; top:5.2cqw; width:74cqw; text-align:center;
+  font-family:'Jauria','Podkova','Bitter',Georgia,'Times New Roman',serif;
+  font-weight:700; font-size:6cqw; line-height:1.4; color:#000;
 }
 .intro-gancho .ig-title-line{
   display:block; width:max-content; max-width:100%;
@@ -353,7 +374,7 @@ a:focus-visible{
   .intro-gancho .brk{ display:block; }
   .intro-gancho .ig-stage > .ig-fig{ width:56px; }
   .intro-gancho .ig-fig--sun{ order:1; margin-bottom:8px; }
-  .intro-gancho .ig-title{ order:2; font-size:clamp(24px,6.8vw,32px); line-height:1.2; text-align:left; width:auto; }
+  .intro-gancho .ig-title{ order:2; font-size:clamp(27px,7.6vw,36px); line-height:1.2; text-align:left; width:auto; }
   .intro-gancho .ig-fig--coral{ order:3; margin-top:16px; }
   .intro-gancho .ig-def--reimaginar{ order:4; margin-top:8px; font-size:clamp(15px,4.6vw,18px); line-height:1.35; }
   .intro-gancho .ig-fig--blue{ order:5; margin-top:16px; }
@@ -364,7 +385,7 @@ a:focus-visible{
 .intro-skip{
   position:absolute; left:50%; bottom:6vh; transform:translateX(-50%); z-index:5;
   background:none; border:0; cursor:pointer;
-  font-family:'Source Serif 4',Georgia,serif;
+  font-family:'Jauria','Source Serif 4',Georgia,serif;
   font-size:11px; font-weight:600; letter-spacing:.22em; text-transform:uppercase;
   color:#9a9a9a; padding:10px 14px;
   transition:color .25s ease;
@@ -690,6 +711,15 @@ a:focus-visible{
   var html   = document.documentElement;
   if (!intro) { html.classList.remove('intro-active'); return; }
 
+  if (/(?:^|[?&])intro=skip(?:&|$)/.test(location.search)) {
+    html.classList.remove('intro-active');
+    intro.parentNode.removeChild(intro);
+    if (window.history && history.replaceState) {
+      history.replaceState(null, '', location.pathname + location.hash);
+    }
+    return;
+  }
+
   var LOAD_MS = reduce ? 1100 : 3400;   /* pantalla de carga */
   var HOOK_MS = reduce ? 5200 : 8200;   /* portada gancho: da tiempo a leer despues de que
                                             terminan las animaciones (~4.95s); el boton
@@ -788,7 +818,7 @@ a:focus-visible{
 <main class="hero">
 
   <svg class="art art--top" viewBox="0 0 420 166" preserveAspectRatio="xMinYMin meet" aria-hidden="true" focusable="false">
-  <g fill="#EEEEEE" fill-opacity="0.55">
+  <g fill="#EEEEEE" fill-opacity="0.28">
   <path d="M18,83C18,84 18,85 14,85C14,80 10,76 10,76C10,76 8,71 -3,71C-6,71 -8,71 -12,72L-36,75L-37,75C-45,75 -50,57 -50,57L-51,58C-51,58 -54,73 -63,73L-89,71C-93,71 -104,71 -106,73C-109,76 -113,85 -113,85L-117,84C-117,80 -112,60 -97,60C-91,60 -81,64 -76,64C-72,64 -60,61 -60,61L-54,46L-48,45C-48,47 -40,63 -40,63C-40,63 -29,65 -24,65L-6,60C16,60 18,80 18,83Z"/>
   <path d="M18,163C18,164 18,165 14,165C14,160 10,156 10,156C10,156 8,151 -3,151C-6,151 -8,151 -12,152L-36,155L-37,155C-45,155 -50,137 -50,137L-51,138C-51,138 -54,153 -63,153L-89,151C-93,151 -104,151 -106,153C-109,156 -113,165 -113,165L-117,164C-117,160 -112,140 -97,140C-91,140 -81,144 -76,144C-72,144 -60,141 -60,141L-54,126L-48,125C-48,127 -40,143 -40,143C-40,143 -29,145 -24,145L-6,140C16,140 18,160 18,163Z"/>
   <path d="M84,43C84,44 84,45 80,45C80,40 76,36 76,36C76,36 74,31 63,31C60,31 58,31 54,32L30,35L29,35C21,35 16,17 16,17L15,18C15,18 12,33 3,33L-23,31C-27,31 -38,31 -40,33C-43,36 -47,45 -47,45L-51,44C-51,40 -46,20 -31,20C-25,20 -15,24 -10,24C-6,24 6,21 6,21L12,6L18,5C18,7 26,23 26,23C26,23 37,25 42,25L60,20C82,20 84,40 84,43Z"/>
@@ -810,7 +840,7 @@ a:focus-visible{
   </svg>
 
   <svg class="art art--bottom" viewBox="0 703 1440 210" preserveAspectRatio="xMidYMax meet" aria-hidden="true" focusable="false">
-  <g fill="#EEEEEE" fill-opacity="0.3">
+  <g fill="#EEEEEE" fill-opacity="0.16">
   <path d="M153,861C153,862 153,863 149,863C149,858 145,854 145,854C145,854 143,849 132,849C129,849 127,849 123,850L99,853L98,853C90,853 85,835 85,835L84,836C84,836 81,851 72,851L46,849C42,849 31,849 29,851C26,854 22,863 22,863L18,862C18,858 23,838 38,838C44,838 54,842 59,842C63,842 75,839 75,839L81,824L87,823C87,825 95,841 95,841C95,841 106,843 111,843L129,838C151,838 153,858 153,861Z"/>
   <path d="M153,861C153,862 153,863 149,863C149,858 145,854 145,854C145,854 143,849 132,849C129,849 127,849 123,850L99,853L98,853C90,853 85,835 85,835L84,836C84,836 81,851 72,851L46,849C42,849 31,849 29,851C26,854 22,863 22,863L18,862C18,858 23,838 38,838C44,838 54,842 59,842C63,842 75,839 75,839L81,824L87,823C87,825 95,841 95,841C95,841 106,843 111,843L129,838C151,838 153,858 153,861Z"/>
   <path d="M153,861C153,862 153,863 149,863C149,858 145,854 145,854C145,854 143,849 132,849C129,849 127,849 123,850L99,853L98,853C90,853 85,835 85,835L84,836C84,836 81,851 72,851L46,849C42,849 31,849 29,851C26,854 22,863 22,863L18,862C18,858 23,838 38,838C44,838 54,842 59,842C63,842 75,839 75,839L81,824L87,823C87,825 95,841 95,841C95,841 106,843 111,843L129,838C151,838 153,858 153,861Z"/>
@@ -999,12 +1029,19 @@ a:focus-visible{
     <span class="brand__tag">PEDAGOG&Iacute;AS PARA REIMAGINAR</span>
   </a>
   <nav class="nav__links" aria-label="Principal">
-    <a href="index.html" aria-current="page">Inicio</a>
-    <a href="retos.html">Momentos</a>
+    <a href="index.html?intro=skip" aria-current="page">Inicio</a>
+    <div class="nav__has-sub">
+      <a href="retos.html">Método<span class="nav__caret" aria-hidden="true">&rsaquo;</span></a>
+      <ul class="nav__submenu">
+        <li><a href="visualizacion.html">Visualización</a></li>
+        <li><a href="evaluacion.html">Evaluación</a></li>
+        <li><a href="adaptacion.html">Adaptación</a></li>
+      </ul>
+    </div>
     <a href="principios.html">Principios</a>
-    <a href="#">Glosario</a>
-    <a href="#">Podcast</a>
-    <a href="#">Contacto</a>
+    <a href="en-construccion.html">Glosario</a>
+    <a href="en-construccion.html">Podcast</a>
+    <a href="creditos.html">Créditos</a>
   </nav>
 </footer>
 
